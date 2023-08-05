@@ -1,0 +1,12 @@
+[General]
+# this section only has one instance and therefore no name
+
+[UartEndpoint alpha]
+Device = /dev/ttyACM0
+Baud = 2000000
+
+# bind to 0.0.0.0:10000
+[UdpEndpoint bravo]
+Mode = Server
+Address = 0.0.0.0
+Port = 14550
