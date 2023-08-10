@@ -15,7 +15,7 @@ After=syslog.target network-online.target
 Type=simple
 
 
-ExecStart=$HOME/ark_jetson_scripts/start_mavlink_usb_udp.sh
+ExecStart=/usr/bin/start_mavlink_usb_udp.sh
 
 
 Restart=on-failure
