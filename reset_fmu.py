@@ -23,26 +23,28 @@ import RPi.GPIO as GPIO
 import time
 
 # Pin Definitions
-output_pin = 33  # BCM pin 18, BOARD pin 12
+reset_pin = 33  # BCM pin 18, BOARD pin 12
+vbus_det_pin = 32
 
 def main():
     # Pin Setup:
     GPIO.setmode(GPIO.BOARD)  # BCM pin-numbering scheme from Raspberry Pi
     # set pin as an output pin with optional initial state of HIGH
-    GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(reset_pin, GPIO.OUT, initial=GPIO.HIGH)
+    GPIO.setup(vbus_det_pin, GPIO.OUT, initial=GPIO.LOW)
 
-    print("Starting demo now! Press CTRL+C to exit")
-    curr_value = GPIO.HIGH
-    try:
-            time.sleep(1)
-            # Toggle the output every second
-            #print("Outputting {} to pin {}".format(curr_value, output_pin))
-            GPIO.output(output_pin, curr_value)
-            time.sleep(1)
-            curr_value ^= GPIO.HIGH
-            GPIO.output(output_pin, curr_value)
-    finally:
-        GPIO.cleanup()
+    # Disable vbus detect for a faster reset
+    GPIO.output(vbus_det_pin, GPIO.LOW)
+
+    print("Resetting Flight Controller!")
+
+    GPIO.output(reset_pin, GPIO.HIGH)
+    time.sleep(0.1)
+    GPIO.output(reset_pin, GPIO.LOW)
+
+    # Renable vbus detect to enable usb interface
+    time.sleep(1)
+    GPIO.output(vbus_det_pin, GPIO.HIGH)
 
 if __name__ == '__main__':
     main()
