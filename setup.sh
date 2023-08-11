@@ -7,6 +7,8 @@ sudo usermod -a -G dialout $USER
 sudo systemctl stop nvgetty
 sudo systemctl disable nvgetty
 
+sudo snap install micro-xrce-dds-agent --edge
+
 sudo pip3 install Jetson.GPIO
 sudo groupadd -f -r gpio
 sudo usermod -a -G gpio $USER
