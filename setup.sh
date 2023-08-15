@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo apt update
+sudo apt install apt-utils -y
 sudo apt install gcc-arm-none-eabi -y
 sudo apt remove modemmanager -y
 sudo usermod -a -G dialout $USER
@@ -9,6 +10,7 @@ sudo systemctl disable nvgetty
 
 sudo snap install micro-xrce-dds-agent --edge
 
+sudo apt install python3-pip -y
 sudo pip3 install Jetson.GPIO
 sudo groupadd -f -r gpio
 sudo usermod -a -G gpio $USER
