@@ -30,7 +30,7 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 # TODO: build from source?
 sudo snap install micro-xrce-dds-agent --edge
 
-# Clone and build mavlink-router
+# Clone, build, install, and start mavlink-router
 git clone --recurse-submodules https://github.com/mavlink-router/mavlink-router.git
 cd mavlink-router
 meson setup build .
@@ -39,11 +39,13 @@ sudo ninja -C build install
 cd ..
 
 sudo cp mavlink-router.service /etc/systemd/system/
+sudo cp start_mavlink_router_service.sh /usr/bin/
 sudo cp enable_vbus_det_pixhawk.py /usr/bin/
+sudo cp main.conf /etc/mavlink-router/
 
 # Restart mavlink-router service
-sudo systemctl stop mavlink_router.service
-sudo systemctl disable mavlink_router.service
+sudo systemctl stop mavlink-router.service
+sudo systemctl disable mavlink-router.service
 sudo systemctl daemon-reload
-sudo systemctl enable mavlink_router
-sudo systemctl start mavlink_router
+sudo systemctl enable mavlink-router
+sudo systemctl start mavlink-router

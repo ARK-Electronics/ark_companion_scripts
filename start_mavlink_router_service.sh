@@ -7,4 +7,4 @@ python3 /usr/bin/enable_vbus_det_pixhawk.py
 
 sleep 1
 
-sudo mavlink-routerd
+# sudo mavlink-routerd
