@@ -1,0 +1,14 @@
+[Unit]
+Description=Mavlink Router
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/start_mavlink_router_service.sh
+Restart=on-failure
+RestartSec=5
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

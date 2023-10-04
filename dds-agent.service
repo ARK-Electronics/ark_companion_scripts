@@ -1,33 +1,14 @@
 [Unit]
-
-Description=Mavlink Router
-
-
+Description=Micro-XRCE-DDS-Agent
 Wants=network.target
-
-
 After=syslog.target network-online.target
 
-
 [Service]
-
-
 Type=simple
-
-
-ExecStart=/usr/bin/start_mavlink_usb_udp.sh
-
-
+ExecStart=/snap/bin/micro-xrce-dds-agent serial -b 921600 -D /dev/ttyTHS0
 Restart=on-failure
-
-
-RestartSec=15
-
-
+RestartSec=5
 KillMode=process
 
-
 [Install]
-
-
 WantedBy=multi-user.target

@@ -1,0 +1,1 @@
+./px_uploader.py --port /dev/ttyACM0 /tmp/ark_fmu-v6x_default.px4
