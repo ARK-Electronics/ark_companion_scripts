@@ -48,10 +48,10 @@ sudo cp enable_vbus_det_pixhawk.py /usr/bin/
 sudo cp main.conf /etc/mavlink-router/
 
 # Restart mavlink-router service
-sudo systemctl stop mavlink-router.service
-sudo systemctl disable mavlink-router.service
 sudo systemctl daemon-reload
 sudo systemctl enable mavlink-router
 sudo systemctl start mavlink-router
+sudo systemctl enable dds-agent
+sudo systemctl start dds-agent
 
 # TODO: start DDS agent
