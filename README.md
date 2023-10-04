@@ -1,7 +1,7 @@
 ## Getting started
 If you're just getting started run the `setup.sh` script. This will install dependencies, configure the system, and build/install and start mavlink-router.
 
-These are the steps if you'd like to do it manually for the sake of understanding.
+These are the steps if you'd like to do it manually.
 
 #### Install dependencies
 ```
@@ -18,7 +18,6 @@ sudo apt install -y \
 
 sudo pip3 install Jetson.GPIO meson pyserial
 ```
-
 #### Configure environment
 ```
 sudo systemctl stop nvgetty
@@ -37,7 +36,6 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 ```
 sudo snap install micro-xrce-dds-agent --edge
 ```
-
 #### Clone, build, install, and start mavlink-router
 ```
 git clone --recurse-submodules https://github.com/mavlink-router/mavlink-router.git
@@ -50,18 +48,18 @@ cd ..
 #### Copy the files onto the system
 ```
 sudo cp mavlink-router.service /etc/systemd/system/
+sudo cp dds-agent.service /etc/systemd/system/
 sudo cp start_mavlink_router_service.sh /usr/bin/
 sudo cp enable_vbus_det_pixhawk.py /usr/bin/
 sudo cp main.conf /etc/mavlink-router/
 ```
 #### Restart mavlink-router service
 ```
-sudo systemctl stop mavlink-router.service
-sudo systemctl disable mavlink-router.service
 sudo systemctl daemon-reload
 sudo systemctl enable mavlink-router
 sudo systemctl start mavlink-router
+sudo systemctl enable dds-agent
+sudo systemctl start dds-agent
 ```
-
 ## mavlink-router conf file
 See the **main.conf** file for mavlink-router configuration details
