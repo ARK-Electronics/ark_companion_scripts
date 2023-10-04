@@ -1,0 +1,14 @@
+[Unit]
+Description=Micro-XRCE-DDS-Agent
+Wants=network.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=micro-xrce-dds-agent serial -b 921600 -D /dev/ttyTHS0
+Restart=on-failure
+RestartSec=5
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

@@ -34,7 +34,6 @@ sudo cp 99-gpio.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && sudo udevadm trigger
 ```
 #### Install DDS agent
-TODO: build from source?
 ```
 sudo snap install micro-xrce-dds-agent --edge
 ```

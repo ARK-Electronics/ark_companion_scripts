@@ -27,7 +27,7 @@ sudo usermod -a -G gpio $USER
 sudo cp 99-gpio.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && sudo udevadm trigger
 
-# TODO: build from source?
+# Install DDS agent
 sudo snap install micro-xrce-dds-agent --edge
 
 # Clone, build, install, and start mavlink-router
@@ -38,7 +38,11 @@ ninja -C build
 sudo ninja -C build install
 cd ..
 
+# Added systemd services
 sudo cp mavlink-router.service /etc/systemd/system/
+sudo cp dds-agent.service /etc/systemd/system/
+
+# Copy files to system
 sudo cp start_mavlink_router_service.sh /usr/bin/
 sudo cp enable_vbus_det_pixhawk.py /usr/bin/
 sudo cp main.conf /etc/mavlink-router/
@@ -49,3 +53,5 @@ sudo systemctl disable mavlink-router.service
 sudo systemctl daemon-reload
 sudo systemctl enable mavlink-router
 sudo systemctl start mavlink-router
+
+# TODO: start DDS agent
