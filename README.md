@@ -13,10 +13,11 @@ sudo apt install -y \
 		git \
 		ninja-build \
 		pkg-config \
-		gcc g++ \
+		gcc \
+		g++ \
 		systemd \
 
-sudo pip3 install Jetson.GPIO meson pyserial
+sudo pip3 install Jetson.GPIO meson pyserial jetson-stats
 ```
 #### Configure environment
 ```
