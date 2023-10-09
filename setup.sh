@@ -41,6 +41,7 @@ cd ..
 # Added systemd services
 sudo cp mavlink-router.service /etc/systemd/system/
 sudo cp dds-agent.service /etc/systemd/system/
+sudo cp jetson-clocks.service /etc/systemd/system/
 
 # Copy files to system
 sudo cp start_mavlink_router_service.sh /usr/bin/
@@ -53,5 +54,7 @@ sudo systemctl enable mavlink-router
 sudo systemctl start mavlink-router
 sudo systemctl enable dds-agent
 sudo systemctl start dds-agent
+sudo systemctl enable jetson-clocks
+sudo systemctl start jetson-clocks
 
 # TODO: start DDS agent
