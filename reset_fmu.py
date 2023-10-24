@@ -43,7 +43,7 @@ def main():
     GPIO.output(reset_pin, GPIO.LOW)
 
     # Renable vbus detect to enable usb interface
-    #time.sleep(1)
+    time.sleep(1)
     GPIO.output(vbus_det_pin, GPIO.HIGH)
 
 if __name__ == '__main__':
