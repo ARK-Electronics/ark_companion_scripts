@@ -44,8 +44,8 @@ sudo cp services/dds-agent.service /etc/systemd/system/
 sudo cp services/jetson-clocks.service /etc/systemd/system/
 
 # Copy files to system
-sudo cp start_mavlink_router_service.sh /usr/bin/
-sudo cp enable_vbus_det_pixhawk.py /usr/bin/
+sudo cp start_mavlink_router.sh /usr/bin/
+sudo cp vbus_enable.py /usr/bin/
 sudo cp start_can_interface.sh /usr/bin/
 sudo cp main.conf /etc/mavlink-router/
 

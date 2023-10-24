@@ -31,9 +31,9 @@ def main():
     # set pin as an output pin with optional initial state of HIGH
     GPIO.setup(vbus_det_pin, GPIO.OUT, initial=GPIO.HIGH)
 
-    curr_value = GPIO.HIGH
-    print("Outputting {} to pin {}".format(curr_value, vbus_det_pin))
-    GPIO.output(vbus_det_pin, curr_value)
+    value = GPIO.HIGH
+    print("Outputting {} to pin {}".format(value, vbus_det_pin))
+    GPIO.output(vbus_det_pin, value)
 
 if __name__ == '__main__':
     main()
