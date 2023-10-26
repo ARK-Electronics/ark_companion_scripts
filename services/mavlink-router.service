@@ -2,9 +2,10 @@
 Description=Mavlink Router
 Wants=network.target
 After=syslog.target network-online.target
+Before=px4-time.service
 
 [Service]
-Type=oneshot
+Type=exec
 ExecStart=/usr/bin/start_mavlink_router.sh
 Restart=on-failure
 RestartSec=5
