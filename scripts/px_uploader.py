@@ -887,9 +887,8 @@ def main():
                         print("Found board id: %s,%s bootloader version: %s on %s" % (up.board_type, up.board_rev, up.bl_rev, port))
                         break
 
-                    except Exception as e:
-                        print("Exception!!! ahhhh exception speliramus!")
-                        print(e)
+                    except Exception:
+
                         if not up.send_reboot(args.use_protocol_splitter_format):
                             break
 
@@ -908,7 +907,6 @@ def main():
 
                 try:
                     # ok, we have a bootloader, try flashing it
-                    print("calling upload!!!")
                     up.upload(args.firmware, force=args.force, boot_delay=args.boot_delay)
 
                     # if we made this far without raising exceptions, the upload was successful
@@ -918,16 +916,12 @@ def main():
                     # print the error
                     print("\nERROR: %s" % ex.args)
 
-                except FirmwareNotSuitableException as ex:
-                    print("FirmwareNotSuitableException")
-                    print(ex)
+                except FirmwareNotSuitableException:
                     unsuitable_board = True
                     up.close()
                     continue
 
-                except IOError as ex:
-                    print("IOError")
-                    print(ex)
+                except IOError:
                     up.close()
                     continue
 
