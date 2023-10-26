@@ -5,6 +5,6 @@
 # Enable mavlink usb stream first
 python3 /usr/bin/vbus_enable.py
 
-sleep 1
+sleep 3
 
 mavlink-routerd
