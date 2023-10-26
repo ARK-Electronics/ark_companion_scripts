@@ -1,0 +1,14 @@
+[Unit]
+Description=Sets the time in UTC on PX4
+Wants=network.target
+After=syslog.target network-online.target mavlink-router.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/px4_set_time.sh
+Restart=on-failure
+RestartSec=5
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

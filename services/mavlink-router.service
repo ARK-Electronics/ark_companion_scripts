@@ -4,7 +4,7 @@ Wants=network.target
 After=syslog.target network-online.target
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=/usr/bin/start_mavlink_router.sh
 Restart=on-failure
 RestartSec=5

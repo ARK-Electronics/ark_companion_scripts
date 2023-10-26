@@ -9,7 +9,8 @@ sudo apt install -y \
 		git \
 		ninja-build \
 		pkg-config \
-		gcc g++ \
+		gcc \
+		g++ \
 		systemd \
 
 sudo pip3 install Jetson.GPIO meson pyserial pymavlink dronecan
@@ -30,34 +31,47 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 # Install DDS agent
 sudo snap install micro-xrce-dds-agent --edge
 
-# Clone, build, install, and start mavlink-router
-git clone --recurse-submodules https://github.com/mavlink-router/mavlink-router.git
-cd mavlink-router
+# Build mavlink-router
+pushd .
+git clone --recurse-submodules https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router
+cd ~/code/mavlink-router
 meson setup build .
 ninja -C build
 sudo ninja -C build install
-cd ..
+popd
 
-# Added systemd services
-sudo cp services/mavlink-router.service /etc/systemd/system/
-sudo cp services/dds-agent.service /etc/systemd/system/
-sudo cp services/jetson-clocks.service /etc/systemd/system/
-sudo cp services/jetson-can.service /etc/systemd/system/
+# Put executables in place
+executables=(
+	start_mavlink_router.sh
+	vbus_enable.py
+	vbus_disable.py
+	start_can_interface.sh
+	px4_set_time.sh
+	px4_shell_command.py
+)
 
-# Copy files to system
-sudo cp start_mavlink_router.sh /usr/bin/
-sudo cp vbus_enable.py /usr/bin/
-sudo cp vbus_disable.py /usr/bin/
-sudo cp start_can_interface.sh /usr/bin/
+for e in ${executables[@]}; do
+	sudo cp $e /usr/bin/
+done
+
+# Put services in place
+services=(
+	mavlink-router.service
+	dds-agent.service
+	jetson-clocks.service
+	jetson-can.service
+	px4-time.service
+)
+
+for service in ${services[@]}; do
+	sudo cp services/$service /etc/systemd/system/
+done
+
+# mavlink-router configuration
 sudo cp main.conf /etc/mavlink-router/
 
-# Restart mavlink-router service
-sudo systemctl daemon-reload
-sudo systemctl enable mavlink-router
-sudo systemctl start mavlink-router
-sudo systemctl enable dds-agent
-sudo systemctl start dds-agent
-sudo systemctl enable jetson-clocks
-sudo systemctl start jetson-clocks
-sudo systemctl enable jetson-can
-sudo systemctl start jetson-can
+# Start services
+for service in ${services[@]}; do
+	sudo cp services/$f /etc/systemd/system/
+	sudo systemctl enable $service && sudo systemctl start $service
+done
