@@ -42,8 +42,7 @@ def main():
     time.sleep(0.1)
     GPIO.output(reset_pin, GPIO.LOW)
 
-    # Renable vbus detect to enable usb interface
-    time.sleep(1)
+    # Enable VBUS immediatly to catch bootloader and wait
     GPIO.output(vbus_det_pin, GPIO.HIGH)
 
 if __name__ == '__main__':
