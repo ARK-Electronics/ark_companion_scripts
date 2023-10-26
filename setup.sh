@@ -40,38 +40,28 @@ ninja -C build
 sudo ninja -C build install
 popd
 
-# Put executables in place
-executables=(
-	start_mavlink_router.sh
-	vbus_enable.py
-	vbus_disable.py
-	start_can_interface.sh
-	px4_set_time.sh
-	px4_shell_command.py
-)
-
-for e in ${executables[@]}; do
-	sudo cp $e /usr/bin/
-done
-
-# Put services in place
-services=(
-	mavlink-router.service
-	dds-agent.service
-	jetson-clocks.service
-	jetson-can.service
-	px4-time.service
-)
-
-for service in ${services[@]}; do
-	sudo cp services/$service /etc/systemd/system/
-done
-
 # mavlink-router configuration
 sudo cp main.conf /etc/mavlink-router/
 
+echo "Installing ARK Jetson scripts"
+# Copy scripts to /usr/bin
+for file in "scripts/"*; do
+	sudo cp $file /usr/bin
+done
+
+echo "Installing ARK Jetson services"
+# Copy service files and get list of names
+service_list=()
+for file in "services/"*; do
+	filename=$(basename $file)
+	echo "Copying $filename to /etc/systemd/system/"
+	sudo cp $file /etc/systemd/system/
+	service_list+=($filename)
+done
+
+echo "Starting ARK Jetson services"
 # Start services
-for service in ${services[@]}; do
-	sudo cp services/$f /etc/systemd/system/
+for service in ${service_list[@]}; do
+	echo "Starting $service"
 	sudo systemctl enable $service && sudo systemctl start $service
 done
