@@ -9,10 +9,11 @@ sudo apt install -y \
 		git \
 		ninja-build \
 		pkg-config \
-		gcc g++ \
+		gcc \
+		g++ \
 		systemd \
 
-sudo pip3 install Jetson.GPIO meson pyserial
+sudo pip3 install Jetson.GPIO meson pyserial pymavlink dronecan
 
 # Configure environment
 sudo systemctl stop nvgetty
@@ -30,28 +31,37 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 # Install DDS agent
 sudo snap install micro-xrce-dds-agent --edge
 
-# Clone, build, install, and start mavlink-router
-git clone --recurse-submodules https://github.com/mavlink-router/mavlink-router.git
-cd mavlink-router
+# Build mavlink-router
+pushd .
+git clone --recurse-submodules https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router
+cd ~/code/mavlink-router
 meson setup build .
 ninja -C build
 sudo ninja -C build install
-cd ..
+popd
 
-# Added systemd services
-sudo cp mavlink-router.service /etc/systemd/system/
-sudo cp dds-agent.service /etc/systemd/system/
-
-# Copy files to system
-sudo cp start_mavlink_router_service.sh /usr/bin/
-sudo cp enable_vbus_det_pixhawk.py /usr/bin/
+# mavlink-router configuration
 sudo cp main.conf /etc/mavlink-router/
 
-# Restart mavlink-router service
-sudo systemctl daemon-reload
-sudo systemctl enable mavlink-router
-sudo systemctl start mavlink-router
-sudo systemctl enable dds-agent
-sudo systemctl start dds-agent
+echo "Installing ARK Jetson scripts"
+# Copy scripts to /usr/bin
+for file in "scripts/"*; do
+	sudo cp $file /usr/bin
+done
 
-# TODO: start DDS agent
+echo "Installing ARK Jetson services"
+# Copy service files and get list of names
+service_list=()
+for file in "services/"*; do
+	filename=$(basename $file)
+	echo "Copying $filename to /etc/systemd/system/"
+	sudo cp $file /etc/systemd/system/
+	service_list+=($filename)
+done
+
+echo "Starting ARK Jetson services"
+# Start services
+for service in ${service_list[@]}; do
+	echo "Starting $service"
+	sudo systemctl enable $service && sudo systemctl start $service
+done

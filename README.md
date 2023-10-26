@@ -1,65 +1,21 @@
 ## Getting started
-If you're just getting started run the `setup.sh` script. This will install dependencies, configure the system, and build/install and start mavlink-router.
+Please run the **setup.sh** script to install the scripts and services. You can safely run this script as many times as needed.
 
-These are the steps if you'd like to do it manually.
+## Services
+**dds-agent.service** <br>
+This service starts the DDS agent which connects with the PX4 uXRCE-DDS-Client. `Telem1` on the flight controller is connected directly to the Jetson UART `/dev/ttyTHS0`
 
-#### Install dependencies
-```
-sudo apt update
-sudo apt install -y \
-		apt-utils \
-		gcc-arm-none-eabi \
-		python3-pip \
-		git \
-		ninja-build \
-		pkg-config \
-		gcc g++ \
-		systemd \
+**jetson-can.service** <br>
+This service enables the Jetson CAN interface.
 
-sudo pip3 install Jetson.GPIO meson pyserial
-```
-#### Configure environment
-```
-sudo systemctl stop nvgetty
-sudo systemctl disable nvgetty
+**jetson-clocks.service** <br>
+This service fixes the Jetson clocks to their maximum rate.
 
-sudo apt remove modemmanager -y
-sudo usermod -a -G dialout $USER
+**mavlink-router.service** <br>
+This service enables mavlink-router to route mavlink packets between endpoints. The **main.conf** file defines these endpoints and is installed at **/etc/mavlink-router/**.
 
-sudo groupadd -f -r gpio
-sudo usermod -a -G gpio $USER
+**px4-time.service** <br>
+This service sets the time on PX4 to match the Jetson time. This is required for accruate log timestamping on systems without GPS.
 
-sudo cp 99-gpio.rules /etc/udev/rules.d/
-sudo udevadm control --reload-rules && sudo udevadm trigger
-```
-#### Install DDS agent
-```
-sudo snap install micro-xrce-dds-agent --edge
-```
-#### Clone, build, install, and start mavlink-router
-```
-git clone --recurse-submodules https://github.com/mavlink-router/mavlink-router.git
-cd mavlink-router
-meson setup build .
-ninja -C build
-sudo ninja -C build install
-cd ..
-```
-#### Copy the files onto the system
-```
-sudo cp mavlink-router.service /etc/systemd/system/
-sudo cp dds-agent.service /etc/systemd/system/
-sudo cp start_mavlink_router_service.sh /usr/bin/
-sudo cp enable_vbus_det_pixhawk.py /usr/bin/
-sudo cp main.conf /etc/mavlink-router/
-```
-#### Restart mavlink-router service
-```
-sudo systemctl daemon-reload
-sudo systemctl enable mavlink-router
-sudo systemctl start mavlink-router
-sudo systemctl enable dds-agent
-sudo systemctl start dds-agent
-```
-## mavlink-router conf file
-See the **main.conf** file for mavlink-router configuration details
+## Scripts
+The files in the scripts directory get installed directly to **/usr/bin** on the Jetson.
