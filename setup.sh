@@ -65,3 +65,9 @@ for service in ${service_list[@]}; do
 	echo "Starting $service"
 	sudo systemctl enable $service && sudo systemctl start $service
 done
+
+# Enable the time-sync service
+sudo systemctl enable systemd-time-wait-sync.service
+
+# Add some helpful aliases
+echo "alias mavshell=\"mavlink_shell.py udp:0.0.0.0:14569\"" >> ~/.bash_aliases

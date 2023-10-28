@@ -115,7 +115,7 @@ def main():
     # Send heartbeat so that mavlink-router will route data back to us
     mav_serialport.mav.mav.heartbeat_send(mavutil.mavlink.MAV_TYPE_GCS, mavutil.mavlink.MAV_AUTOPILOT_GENERIC, 0, 0, 0)
 
-    mav_serialport.write('\n') # make sure the shell is started
+    mav_serialport.write('\n\n\n') # make sure the shell is started
     mav_serialport.read(4096)
 
     mav_serialport.write(args.command + '\n')

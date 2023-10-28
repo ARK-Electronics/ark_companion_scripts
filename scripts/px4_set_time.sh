@@ -12,4 +12,14 @@ if [[ $output != *"Successfully set system time"* ]]; then
 fi
 
 echo "Successfully set system time"
-echo "output: $output"
+echo "response: $output"
+
+# never exit, hack to allow restarting w/ mavlink-router
+tail -f
+
+# journalctl -b -f \
+#     -u systemd-timesyncd.service \
+#     -u systemd-time-wait-sync.service \
+#     -u time-sync.target \
+#     -u mavlink-router.service \
+#     -u px4-time.service
