@@ -2,7 +2,6 @@
 Description=Mavlink Router
 Wants=network.target
 After=syslog.target network-online.target
-Before=px4-time.service
 
 [Service]
 Type=exec
