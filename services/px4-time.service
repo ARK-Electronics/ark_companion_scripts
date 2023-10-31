@@ -9,7 +9,6 @@ Type=exec
 ExecStart=/usr/bin/px4_set_time.sh
 Restart=on-failure
 RestartSec=5
-KillMode=process
 
 [Install]
 WantedBy=multi-user.target
