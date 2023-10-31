@@ -8,7 +8,6 @@ Type=simple
 ExecStart=/snap/bin/micro-xrce-dds-agent serial -b 921600 -D /dev/ttyTHS0
 Restart=on-failure
 RestartSec=5
-KillMode=process
 
 [Install]
 WantedBy=multi-user.target
