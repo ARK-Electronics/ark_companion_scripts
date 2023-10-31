@@ -22,4 +22,3 @@ tail -f
 #     -u systemd-time-wait-sync.service \
 #     -u time-sync.target \
 #     -u mavlink-router.service \
-#     -u px4-time.service
