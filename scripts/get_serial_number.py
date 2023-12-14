@@ -31,6 +31,9 @@ def main():
     except Exception as e:
         print('Error: ' + str(e))
 
+        # if error is permission denied, run the following command:
+        # sudo usermod -a -G i2c $USER
+
         print('Serial Number Chip Not Found')
         return -1
 

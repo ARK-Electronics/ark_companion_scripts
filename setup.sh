@@ -24,6 +24,7 @@ sudo usermod -a -G dialout $USER
 
 sudo groupadd -f -r gpio
 sudo usermod -a -G gpio $USER
+sudo usermod -a -G i2c $USER
 
 sudo cp 99-gpio.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && sudo udevadm trigger
