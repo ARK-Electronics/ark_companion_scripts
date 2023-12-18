@@ -30,7 +30,16 @@ sudo cp 99-gpio.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && sudo udevadm trigger
 
 # Install DDS agent
-sudo snap install micro-xrce-dds-agent --edge
+# sudo snap install micro-xrce-dds-agent --edge
+pushd .
+git clone --recurse-submodules https://github.com/eProsima/Micro-XRCE-DDS-Agent.git ~/code/Micro-XRCE-DDS-Agent
+cd ~/code/Micro-XRCE-DDS-Agent
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+popd
 
 # Build mavlink-router
 pushd .
