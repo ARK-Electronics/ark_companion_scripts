@@ -5,7 +5,7 @@ After=syslog.target network-online.target time-sync.target
 
 [Service]
 Type=simple
-ExecStart=MicroXRCEAgent serial -b 3000000 -D /dev/ttyTHS0
+ExecStart=/snap/bin/micro-xrce-dds-agent serial -b 3000000 -D /dev/ttyTHS0
 Restart=on-failure
 RestartSec=5
 
