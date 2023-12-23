@@ -1,8 +1,8 @@
 [Unit]
 Description=Mavlink Router
 Wants=network.target
-Requires=dev-serial-by\x2did-usb\x2dARK_ARK_FMU_v6X.x_0\x2dif00.device
-After=dev-serial-by\x2did-usb\x2dARK_ARK_FMU_v6X.x_0\x2dif00.device syslog.target network-online.target
+Requires=sys-devices-platform-3550000.xudc-gadget-net-usb0.device
+After=sys-devices-platform-3550000.xudc-gadget-net-usb0.device syslog.target network-online.target
 
 [Service]
 Type=exec
