@@ -1,7 +1,8 @@
 [Unit]
 Description=Mavlink Router
 Wants=network.target
-After=syslog.target network-online.target
+Requires=sys-devices-platform-3550000.xudc-gadget-net-usb0.device
+After=sys-devices-platform-3550000.xudc-gadget-net-usb0.device syslog.target network-online.target
 
 [Service]
 Type=exec

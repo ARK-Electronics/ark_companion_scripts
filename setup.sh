@@ -28,12 +28,24 @@ sudo usermod -a -G dialout $USER
 
 sudo groupadd -f -r gpio
 sudo usermod -a -G gpio $USER
+sudo usermod -a -G i2c $USER
 
 sudo cp 99-gpio.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && sudo udevadm trigger
 
 # Install DDS agent
 sudo snap install micro-xrce-dds-agent --edge
+# sudo apt remove cmake -y
+# pip install cmake --upgrade
+# pushd .
+# git clone --recurse-submodules https://github.com/eProsima/Micro-XRCE-DDS-Agent.git ~/code/Micro-XRCE-DDS-Agent
+# cd ~/code/Micro-XRCE-DDS-Agent
+# mkdir build
+# cd build
+# cmake ..
+# make
+# sudo make install
+# popd
 
 # Build mavlink-router
 pushd .
