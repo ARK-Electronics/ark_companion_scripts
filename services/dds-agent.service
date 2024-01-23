@@ -2,7 +2,7 @@
 Description=Micro-XRCE-DDS-Agent
 Wants=network.target
 Requires=dev-ttyTHS0.device sys-devices-platform-3100000.serial-tty-ttyTHS0.device
-After=dev-ttyTHS0.device sys-devices-platform-3100000.serial-tty-ttyTHS0.device syslog.target network-online.target time-sync.target
+After=dev-ttyTHS0.device sys-devices-platform-3100000.serial-tty-ttyTHS0.device syslog.target network-online.target
 
 [Service]
 Type=simple
