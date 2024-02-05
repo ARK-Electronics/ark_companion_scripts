@@ -12,7 +12,7 @@ fi
 
 echo "Flashing firmware: $FW_PATH"
 
-systemctl stop mavlink-router
+sudo systemctl stop mavlink-router
 python3 /usr/bin/reset_fmu_wait_bl.py
 python3 /usr/bin/px_uploader.py --port /dev/ttyACM0 $FW_PATH
-systemctl start mavlink-router
+sudo systemctl start mavlink-router
