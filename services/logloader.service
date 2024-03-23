@@ -1,8 +1,9 @@
 [Unit]
 Description=Automatic ulog download and upload
 Wants=network.target
-Requires=mavlink-router.service
+BindsTo=mavlink-router.service
 After=syslog.target network.target mavlink-router.service
+PartOf=mavlink-router.service
 
 [Service]
 Type=simple
