@@ -5,6 +5,11 @@ FW_PATH=${1:-$DEFAULT_FW_PATH}
 
 echo "Flashing firmware: $FW_PATH"
 
+if [ ! -f "$FW_PATH" ]; then
+    echo "Firmware file does not exist, exiting"
+    exit 1
+fi
+
 SERIALDEVICE=$(ls -l /dev/serial/by-id/*ARK* | awk -F'/' '{print "/dev/"$NF}')
 
 if [ $? -ne 0 ]; then
