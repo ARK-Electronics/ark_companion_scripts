@@ -68,6 +68,7 @@ echo "alias mavshell=\"mavlink_shell.py udp:0.0.0.0:14569\"" >> ~/.bash_aliases
 if ! command -v mavlink-routerd &> /dev/null; then
 	echo "Installing mavlink-router"
 	pushd .
+	rm -rf ~/code/mavlink-router
 	git clone --recurse-submodules https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router
 	cd ~/code/mavlink-router
 	meson setup build .
@@ -123,6 +124,7 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 		sudo rm $file_name
 
 		pushd .
+		rm -rf ~/code/logloader
 		git clone --recurse-submodules https://github.com/ARK-Electronics/logloader.git ~/code/logloader
 		cd ~/code/logloader
 		./upgrade_openssl.sh
