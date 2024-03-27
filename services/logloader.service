@@ -1,9 +1,7 @@
 [Unit]
 Description=Automatic ulog download and upload
 Wants=network.target
-BindsTo=mavlink-router.service
 After=syslog.target network.target mavlink-router.service
-PartOf=mavlink-router.service
 
 [Service]
 Type=simple
@@ -13,7 +11,6 @@ Environment=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 ExecStart=/usr/local/bin/logloader
 Restart=always
 RestartSec=5
-KillMode=process
 
 [Install]
 WantedBy=multi-user.target
