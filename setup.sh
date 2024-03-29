@@ -60,7 +60,7 @@ sudo usermod -a -G gpio $USER
 sudo usermod -a -G i2c $USER
 
 if [ "$TARGET" = "jetson" ]; then
-	sudo cp 99-gpio.rules /etc/udev/rules.d/
+	sudo cp $TARGET/99-gpio.rules /etc/udev/rules.d/
 	sudo udevadm control --reload-rules && sudo udevadm trigger
 fi
 
@@ -90,6 +90,7 @@ sudo cp $TARGET/main.conf /etc/mavlink-router/
 
 # Install the service
 sudo cp $TARGET/services/mavlink-router.service /etc/systemd/system/
+sudo systemctl daemon-reload
 sudo systemctl enable mavlink-router.service
 sudo systemctl start mavlink-router.service
 
@@ -99,6 +100,7 @@ if [ "$INSTALL_DDS_AGENT" = "y" ]; then
 	sudo snap install micro-xrce-dds-agent --edge
 	# Install the service
 	sudo cp $TARGET/services/dds-agent.service /etc/systemd/system/
+	sudo systemctl daemon-reload
 	sudo systemctl enable dds-agent.service
 	sudo systemctl start dds-agent.service
 else
@@ -155,6 +157,7 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 
 	# Install the service
 	sudo cp $TARGET/services/logloader.service /etc/systemd/system/
+	sudo systemctl daemon-reload
 	sudo systemctl enable logloader.service
 	sudo systemctl start logloader.service
 fi
@@ -164,6 +167,7 @@ if [ "$TARGET" = "jetson" ]; then
 	echo "Installing Jetson services"
 	sudo cp $TARGET/services/jetson-can.service /etc/systemd/system/
 	sudo cp $TARGET/services/jetson-clocks.service /etc/systemd/system/
+	sudo systemctl daemon-reload
 	sudo systemctl enable jetson-can.service jetson-clocks.service
 	sudo systemctl start jetson-can.service jetson-clocks.service
 fi
