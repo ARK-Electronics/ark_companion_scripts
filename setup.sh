@@ -23,12 +23,8 @@ fi
 
 if uname -ar | grep jetson; then
 	TARGET=jetson
-	MAVLINK_ROUTER_SERVICE="services/jetson/mavlink-router.service"
-	DDS_AGENT_SERVICE="services/jetson/dds-agent.service"
 else
 	TARGET=pi
-	MAVLINK_ROUTER_SERVICE="services/pi/mavlink-router.service"
-	DDS_AGENT_SERVICE="services/pi/dds-agent.service"
 fi
 
 ########## install dependencies ##########
@@ -62,8 +58,11 @@ sudo usermod -a -G dialout $USER
 sudo groupadd -f -r gpio
 sudo usermod -a -G gpio $USER
 sudo usermod -a -G i2c $USER
-sudo cp 99-gpio.rules /etc/udev/rules.d/
-sudo udevadm control --reload-rules && sudo udevadm trigger
+
+if [ "$TARGET" = "jetson" ]; then
+	sudo cp 99-gpio.rules /etc/udev/rules.d/
+	sudo udevadm control --reload-rules && sudo udevadm trigger
+fi
 
 ########## scripts ##########
 echo "Installing scripts"
@@ -76,36 +75,30 @@ done
 echo "alias mavshell=\"mavlink_shell.py udp:0.0.0.0:14569\"" >> ~/.bash_aliases
 
 ########## mavlink-router ##########
-if ! command -v mavlink-routerd &> /dev/null; then
-	echo "Installing mavlink-router"
-	pushd .
-	sudo rm -rf ~/code/mavlink-router
-	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router
-	cd ~/code/mavlink-router
-	meson setup build .
-	ninja -C build
-	sudo ninja -C build install
-	popd
-	sudo mkdir -p /etc/mavlink-router
-	sudo cp main.conf /etc/mavlink-router/
+echo "Installing mavlink-router"
+sudo rm -rf ~/code/mavlink-router
+sudo rm /usr/bin/mavlink-routerd
+pushd .
+git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router
+cd ~/code/mavlink-router
+meson setup build .
+ninja -C build
+sudo ninja -C build install
+popd
+sudo mkdir -p /etc/mavlink-router
+sudo cp $TARGET/main.conf /etc/mavlink-router/
 
-	# Install the service
-	sudo cp $MAVLINK_ROUTER_SERVICE /etc/systemd/system/
-	sudo systemctl enable mavlink-router.service
-	sudo systemctl start mavlink-router.service
-else
-	echo "mavlink-router already installed"
-fi
+# Install the service
+sudo cp $TARGET/services/mavlink-router.service /etc/systemd/system/
+sudo systemctl enable mavlink-router.service
+sudo systemctl start mavlink-router.service
 
 ########## dds-agent ##########
 if [ "$INSTALL_DDS_AGENT" = "y" ]; then
-	if ! command -v micro-xrce-dds-agent &> /dev/null; then
-		echo "Installing micro-xrce-dds-agent"
-		sudo snap install micro-xrce-dds-agent --edge
-	fi
-
+	echo "Installing micro-xrce-dds-agent"
+	sudo snap install micro-xrce-dds-agent --edge
 	# Install the service
-	sudo cp $DDS_AGENT_SERVICE /etc/systemd/system/
+	sudo cp $TARGET/services/dds-agent.service /etc/systemd/system/
 	sudo systemctl enable dds-agent.service
 	sudo systemctl start dds-agent.service
 else
@@ -114,66 +107,65 @@ fi
 
 ########## logloader ##########
 if [ "$INSTALL_LOGLOADER" = "y" ]; then
-	if ! command -v logloader &> /dev/null; then
-		echo "Installing logloader"
-		echo "Downloading latest release of mavsdk"
-		release_info=$(curl -s https://api.github.com/repos/mavlink/MAVSDK/releases/latest)
-		# Assumes arm64
-		download_url=$(echo "$release_info" | grep "browser_download_url.*arm64.deb" | awk -F '"' '{print $4}')
-		file_name=$(echo "$release_info" | grep "name.*arm64.deb" | awk -F '"' '{print $4}')
+	echo "Installing logloader"
+	echo "Downloading the latest release of mavsdk"
+	release_info=$(curl -s https://api.github.com/repos/mavlink/MAVSDK/releases/latest)
+	# Assumes arm64
+	download_url=$(echo "$release_info" | grep "browser_download_url.*arm64.deb" | awk -F '"' '{print $4}')
+	file_name=$(echo "$release_info" | grep "name.*arm64.deb" | awk -F '"' '{print $4}')
 
-		if [ -z "$download_url" ]; then
-		    echo "Download URL not found for arm64.deb package"
-		    exit 1
-		fi
+	if [ -z "$download_url" ]; then
+	    echo "Download URL not found for arm64.deb package"
+	    exit 1
+	fi
 
-		echo "Downloading $download_url..."
-		curl -sSL "$download_url" -o $(basename "$download_url")
+	echo "Downloading $download_url..."
+	curl -sSL "$download_url" -o $(basename "$download_url")
 
-		echo "Installing $file_name"
-		sudo dpkg -i $file_name
-		sudo rm $file_name
+	echo "Installing $file_name"
+	sudo dpkg -i $file_name
+	sudo rm $file_name
 
-		pushd .
-		sudo rm -rf ~/code/logloader
-		git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/logloader.git ~/code/logloader
-		cd ~/code/logloader
-		./upgrade_openssl.sh
+	pushd .
+	sudo rm -rf ~/code/logloader
+	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/logloader.git ~/code/logloader
+	cd ~/code/logloader
+	./upgrade_openssl.sh
 
-		# Modify and install the config file
-		CONFIG_FILE=install.config.toml
-		cp config.toml $CONFIG_FILE
-		sed -i "s/^email = \".*\"/email = \"$USER_EMAIL\"/" "$CONFIG_FILE"
+	# Modify and install the config file
+	CONFIG_FILE=install.config.toml
+	cp config.toml $CONFIG_FILE
+	sed -i "s/^email = \".*\"/email = \"$USER_EMAIL\"/" "$CONFIG_FILE"
 
-		if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
-		    sed -i "s/^upload_enabled = .*/upload_enabled = true/" "$CONFIG_FILE"
-		else
-		    sed -i "s/^upload_enabled = .*/upload_enabled = false/" "$CONFIG_FILE"
-		fi
-
-		if [ "$PUBLIC_LOGS" = "y" ]; then
-		    sed -i "s/^public_logs = .*/public_logs = true/" "$CONFIG_FILE"
-		else
-		    sed -i "s/^public_logs = .*/public_logs = false/" "$CONFIG_FILE"
-		fi
-
-		make install
-
-		popd
-
-		# Install the service
-		sudo cp services/logloader.service /etc/systemd/system/
-		sudo systemctl enable logloader.service
-		sudo systemctl start logloader.service
+	if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
+	    sed -i "s/^upload_enabled = .*/upload_enabled = true/" "$CONFIG_FILE"
 	else
-		echo "logloader already installed"
+	    sed -i "s/^upload_enabled = .*/upload_enabled = false/" "$CONFIG_FILE"
+	fi
+
+	if [ "$PUBLIC_LOGS" = "y" ]; then
+	    sed -i "s/^public_logs = .*/public_logs = true/" "$CONFIG_FILE"
+	else
+	    sed -i "s/^public_logs = .*/public_logs = false/" "$CONFIG_FILE"
+	fi
+
+	make install
+
+	popd
+
+	# Install the service
+	sudo cp $TARGET/services/logloader.service /etc/systemd/system/
+	sudo systemctl enable logloader.service
+	sudo systemctl start logloader.service
+
 	fi
 fi
 
 # Install jetson specific services
 if [ "$TARGET" = "jetson" ]; then
-	sudo cp services/jetson-can.service /etc/systemd/system/
-	sudo cp services/jetson-clocks.service /etc/systemd/system/
+	echo "Installing Jetson services"
+	sudo cp $TARGET/services/jetson-can.service /etc/systemd/system/
+	sudo cp $TARGET/services/jetson-clocks.service /etc/systemd/system/
 	sudo systemctl enable jetson-can.service jetson-clocks.service
 	sudo systemctl start jetson-can.service jetson-clocks.service
 fi
