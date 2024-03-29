@@ -21,6 +21,16 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	fi
 fi
 
+if uname -ar | grep jetson; then
+	TARGET=jetson
+	MAVLINK_ROUTER_SERVICE="services/jetson/mavlink-router.service"
+	DDS_AGENT_SERVICE="services/jetson/dds-agent.service"
+else
+	TARGET=pi
+	MAVLINK_ROUTER_SERVICE="services/pi/mavlink-router.service"
+	DDS_AGENT_SERVICE="services/pi/dds-agent.service"
+fi
+
 ########## install dependencies ##########
 sudo apt update
 sudo apt install -y \
@@ -80,7 +90,7 @@ if ! command -v mavlink-routerd &> /dev/null; then
 	sudo cp main.conf /etc/mavlink-router/
 
 	# Install the service
-	sudo cp services/mavlink-router.service /etc/systemd/system/
+	sudo cp $MAVLINK_ROUTER_SERVICE /etc/systemd/system/
 	sudo systemctl enable mavlink-router.service
 	sudo systemctl start mavlink-router.service
 else
@@ -95,9 +105,9 @@ if [ "$INSTALL_DDS_AGENT" = "y" ]; then
 	fi
 
 	# Install the service
-	sudo cp services/mavlink-router.service /etc/systemd/system/
-	sudo systemctl enable mavlink-router.service
-	sudo systemctl start mavlink-router.service
+	sudo cp $DDS_AGENT_SERVICE /etc/systemd/system/
+	sudo systemctl enable dds-agent.service
+	sudo systemctl start dds-agent.service
 else
 	echo "micro-xrce-dds-agent already installed"
 fi
@@ -161,7 +171,7 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 fi
 
 # Install jetson specific services
-if uname -ar | grep jetson; then
+if [ "$TARGET" = "jetson" ]; then
 	sudo cp services/jetson-can.service /etc/systemd/system/
 	sudo cp services/jetson-clocks.service /etc/systemd/system/
 	sudo systemctl enable jetson-can.service jetson-clocks.service
