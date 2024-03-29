@@ -70,7 +70,7 @@ if ! command -v mavlink-routerd &> /dev/null; then
 	echo "Installing mavlink-router"
 	pushd .
 	rm -rf ~/code/mavlink-router
-	git clone --recurse-submodules --depth=1 https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router
+	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router
 	cd ~/code/mavlink-router
 	meson setup build .
 	ninja -C build
@@ -126,7 +126,7 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 
 		pushd .
 		rm -rf ~/code/logloader
-		git clone --recurse-submodules --depth=1 https://github.com/ARK-Electronics/logloader.git ~/code/logloader
+		git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/logloader.git ~/code/logloader
 		cd ~/code/logloader
 		./upgrade_openssl.sh
 
