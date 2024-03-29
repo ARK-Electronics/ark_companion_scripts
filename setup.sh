@@ -67,7 +67,7 @@ fi
 ########## scripts ##########
 echo "Installing scripts"
 # Copy scripts to /usr/bin
-for file in "scripts/"*; do
+for file in "${TARGET}/scripts/"*; do
 	sudo cp $file /usr/bin
 done
 
@@ -157,8 +157,6 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	sudo cp $TARGET/services/logloader.service /etc/systemd/system/
 	sudo systemctl enable logloader.service
 	sudo systemctl start logloader.service
-
-	fi
 fi
 
 # Install jetson specific services
