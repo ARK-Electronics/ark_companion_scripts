@@ -180,3 +180,5 @@ fi
 
 # Enable the time-sync service
 sudo systemctl enable systemd-time-wait-sync.service
+
+echo "Finished"
