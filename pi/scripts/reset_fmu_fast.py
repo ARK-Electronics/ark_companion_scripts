@@ -23,12 +23,12 @@ import RPi.GPIO as GPIO
 import time
 
 # Pin Definitions
-reset_pin = 33  # BCM pin 18, BOARD pin 12
-vbus_det_pin = 32
+reset_pin = 25
+vbus_det_pin = 27
 
 def main():
     # Pin Setup:
-    GPIO.setmode(GPIO.BOARD)  # BCM pin-numbering scheme from Raspberry Pi
+    GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
     # set pin as an output pin with optional initial state of HIGH
     GPIO.setup(reset_pin, GPIO.OUT, initial=GPIO.HIGH)
     GPIO.setup(vbus_det_pin, GPIO.OUT, initial=GPIO.LOW)
