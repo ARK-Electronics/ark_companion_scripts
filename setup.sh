@@ -46,6 +46,7 @@ sudo apt install -y \
 		curl \
 		jq \
 		snap \
+  		snapd \
 
 sudo pip3 install Jetson.GPIO meson pyserial pymavlink dronecan
 
