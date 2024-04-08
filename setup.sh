@@ -21,7 +21,7 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	fi
 fi
 
-if uname -ar | grep jetson; then
+if uname -ar | grep tegra; then
 	TARGET=jetson
 else
 	TARGET=pi
