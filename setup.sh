@@ -3,21 +3,70 @@
 # Prompt for sudo password at the start to cache it
 sudo true
 
-echo "Do you want to install micro-xrce-dds-agent? (y/n)"
-read -r INSTALL_DDS_AGENT
+INSTALL_DDS_AGENT="y"
+INSTALL_LOGLOADER="y"
+USER_EMAIL="logs@arkelectron.com"
+UPLOAD_TO_FLIGHT_REVIEW="n"
+PUBLIC_LOGS="n"
 
-echo "Do you want to install logloader? (y/n)"
-read -r INSTALL_LOGLOADER
+if [ "$#" -gt 0 ]; then
+	# Parse command line arguments
+	while [ "$#" -gt 0 ]; do
+		case "$1" in
+			-d | --install-dds-agent)
+				INSTALL_DDS_AGENT="y"
+				shift
+				;;
+			-l | --install-logloader)
+				INSTALL_LOGLOADER="y"
+				shift
+				;;
+			-e | --email)
+				USER_EMAIL="$2"
+				shift 2
+				;;
+			-u | --upload-to-flight-review)
+				UPLOAD_TO_FLIGHT_REVIEW="y"
+				shift
+				;;
+			-p | --public-logs)
+				PUBLIC_LOGS="y"
+				shift
+				;;
+			-h | --help)
+				echo "Usage: $0 [options]"
+				echo "Options:"
+				echo "  -d, --install-dds-agent    Install micro-xrce-dds-agent"
+				echo "  -l, --install-logloader    Install logloader"
+				echo "  -e, --email EMAIL          Email to use for logloader"
+				echo "  -u, --upload-to-flight-review  Auto upload logs to PX4 Flight Review"
+				echo "  -p, --public-logs          Make logs public on PX4 Flight Review"
+				echo "  -h, --help                 Display this help message"
+				exit 0
+				;;
+			*)
+				echo "Unknown argument: $1"
+				exit 1
+				;;
+		esac
+	done
+else
+	echo "Do you want to install micro-xrce-dds-agent? (y/n)"
+	read -r INSTALL_DDS_AGENT
 
-if [ "$INSTALL_LOGLOADER" = "y" ]; then
-    echo "Please enter your email: "
-    read -r USER_EMAIL
+	echo "Do you want to install logloader? (y/n)"
+	read -r INSTALL_LOGLOADER
 
-	echo "Do you want to auto upload to PX4 Flight Review? (y/n)"
-	read -r UPLOAD_TO_FLIGHT_REVIEW
-	if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
-		echo "Do you want your logs to be public? (y/n)"
-		read -r PUBLIC_LOGS
+	if [ "$INSTALL_LOGLOADER" = "y" ]; then
+		echo "Please enter your email: "
+		read -r USER_EMAIL
+
+		echo "Do you want to auto upload to PX4 Flight Review? (y/n)"
+		read -r UPLOAD_TO_FLIGHT_REVIEW
+		if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
+			echo "Do you want your logs to be public? (y/n)"
+			read -r PUBLIC_LOGS
+		fi
 	fi
 fi
 
