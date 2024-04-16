@@ -142,7 +142,7 @@ sudo cp $TARGET/main.conf /etc/mavlink-router/
 sudo cp $TARGET/services/mavlink-router.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable mavlink-router.service
-sudo systemctl start mavlink-router.service
+sudo systemctl restart mavlink-router.service
 
 ########## dds-agent ##########
 if [ "$INSTALL_DDS_AGENT" = "y" ]; then
@@ -152,7 +152,7 @@ if [ "$INSTALL_DDS_AGENT" = "y" ]; then
 	sudo cp $TARGET/services/dds-agent.service /etc/systemd/system/
 	sudo systemctl daemon-reload
 	sudo systemctl enable dds-agent.service
-	sudo systemctl start dds-agent.service
+	sudo systemctl restart dds-agent.service
 else
 	echo "micro-xrce-dds-agent already installed"
 fi
@@ -219,7 +219,7 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	sudo cp $TARGET/services/logloader.service /etc/systemd/system/
 	sudo systemctl daemon-reload
 	sudo systemctl enable logloader.service
-	sudo systemctl start logloader.service
+	sudo systemctl restart logloader.service
 fi
 
 # Install jetson specific services
@@ -229,7 +229,7 @@ if [ "$TARGET" = "jetson" ]; then
 	sudo cp $TARGET/services/jetson-clocks.service /etc/systemd/system/
 	sudo systemctl daemon-reload
 	sudo systemctl enable jetson-can.service jetson-clocks.service
-	sudo systemctl start jetson-can.service jetson-clocks.service
+	sudo systemctl restart jetson-can.service jetson-clocks.service
 fi
 
 # Enable the time-sync service
