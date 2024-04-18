@@ -5,6 +5,8 @@ sudo true
 
 INSTALL_DDS_AGENT="y"
 INSTALL_LOGLOADER="y"
+INSTALL_POLARIS="y"
+POLARIS_API_KEY=""
 USER_EMAIL="logs@arkelectron.com"
 UPLOAD_TO_FLIGHT_REVIEW="n"
 PUBLIC_LOGS="n"
@@ -19,6 +21,10 @@ if [ "$#" -gt 0 ]; then
 				;;
 			-l | --install-logloader)
 				INSTALL_LOGLOADER="y"
+				shift
+				;;
+			-l | --install-polaris)
+				INSTALL_POLARIS="y"
 				shift
 				;;
 			-e | --email)
@@ -68,6 +74,14 @@ else
 			read -r PUBLIC_LOGS
 		fi
 	fi
+
+	echo "Do you want to install the polaris-client-mavlink? (y/n)"
+	read -r INSTALL_POLARIS
+	if [ "$INSTALL_POLARIS" = "y" ]; then
+		echo "Enter API key: "
+		read -r POLARIS_API_KEY
+	fi
+
 fi
 
 if uname -ar | grep tegra; then
@@ -221,6 +235,30 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	sudo systemctl enable logloader.service
 	sudo systemctl restart logloader.service
 fi
+
+########## polaris-client-mavlink ##########
+if [ "$INSTALL_LOGLOADER" = "y" ]; then
+	echo "Installing polaris-client-mavlink"
+	pushd .
+	sudo rm -rf ~/code/polaris-client-mavlink
+	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/polaris-client-mavlink.git ~/code/polaris-client-mavlink
+	cd ~/code/polaris-client-mavlink
+
+	# Modify and install the config file
+	CONFIG_FILE=install.config.toml
+	cp config.toml $CONFIG_FILE
+	sed -i "s/^polaris_api_key = \".*\"/polaris_api_key = \"$POLARIS_API_KEY\"/" "$CONFIG_FILE"
+
+	make install
+
+	popd
+	# Install the service
+	sudo cp $TARGET/services/polaris-client-mavlink.service /etc/systemd/system/
+	sudo systemctl daemon-reload
+	sudo systemctl enable polaris-client-mavlink.service
+	sudo systemctl restart polaris-client-mavlink.service
+fi
+
 
 # Install jetson specific services
 if [ "$TARGET" = "jetson" ]; then
