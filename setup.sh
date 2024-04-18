@@ -237,7 +237,7 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 fi
 
 ########## polaris-client-mavlink ##########
-if [ "$INSTALL_LOGLOADER" = "y" ]; then
+if [ "$INSTALL_POLARIS" = "y" ]; then
 	echo "Installing polaris-client-mavlink"
 	pushd .
 	sudo rm -rf ~/code/polaris-client-mavlink
