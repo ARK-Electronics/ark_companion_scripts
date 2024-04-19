@@ -23,8 +23,12 @@ if [ "$#" -gt 0 ]; then
 				INSTALL_LOGLOADER="y"
 				shift
 				;;
-			-l | --install-polaris)
+			-k | --install-polaris)
 				INSTALL_POLARIS="y"
+				shift
+				;;
+			-a | --polaris-api-key)
+				POLARIS_API_KEY="$2"
 				shift
 				;;
 			-e | --email)
@@ -189,6 +193,7 @@ curl -sSL "$download_url" -o $(basename "$download_url")
 echo "Installing $file_name"
 sudo dpkg -i $file_name
 sudo rm $file_name
+sudo ldconfig
 
 ########## mavsdk-ftp-client ##########
 echo "Installing mavsdk-ftp-client"
@@ -254,6 +259,8 @@ if [ "$INSTALL_POLARIS" = "y" ]; then
 
 	make install
 
+	sudo ldconfig
+
 	popd
 	# Install the service
 	sudo cp $TARGET/services/polaris-client-mavlink.service /etc/systemd/system/
@@ -261,7 +268,6 @@ if [ "$INSTALL_POLARIS" = "y" ]; then
 	sudo systemctl enable polaris-client-mavlink.service
 	sudo systemctl restart polaris-client-mavlink.service
 fi
-
 
 # Install jetson specific services
 if [ "$TARGET" = "jetson" ]; then
