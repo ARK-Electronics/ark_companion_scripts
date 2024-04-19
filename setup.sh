@@ -239,6 +239,9 @@ fi
 ########## polaris-client-mavlink ##########
 if [ "$INSTALL_POLARIS" = "y" ]; then
 	echo "Installing polaris-client-mavlink"
+
+	sudo apt install libssl-dev libgflags-dev libgoogle-glog-dev libboost-all-dev
+
 	pushd .
 	sudo rm -rf ~/code/polaris-client-mavlink
 	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/polaris-client-mavlink.git ~/code/polaris-client-mavlink
