@@ -113,14 +113,22 @@ sudo apt install -y \
 		curl \
 		jq \
 		snap \
-  		snapd \
+  		snapd
 
-sudo pip3 install Jetson.GPIO meson pyserial pymavlink dronecan
+if [ "$TARGET" = "jetson" ]; then
+	sudo -H pip3 install Jetson.GPIO
+elif [ "$TARGET" = "pi" ]; then
+	sudo -H pip3 install RPi.GPIO
+fi
+
+sudo -H pip3 install meson pyserial pymavlink dronecan
 
 ########## configure environment ##########
 echo "Configuring environment"
-sudo systemctl stop nvgetty
-sudo systemctl disable nvgetty
+if [ "$TARGET" = "jetson" ]; then
+	sudo systemctl stop nvgetty
+	sudo systemctl disable nvgetty
+fi
 sudo apt remove modemmanager -y
 sudo usermod -a -G dialout $USER
 sudo groupadd -f -r gpio
