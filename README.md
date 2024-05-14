@@ -1,5 +1,5 @@
 ## Getting started
-Please run the **setup.sh** script to install the scripts and services. You can safely run this script as many times as needed.
+This repository contains scripts and services for use with the ARK Jetson Carrier or the ARK Pi6X Flow. Use the **setup.sh** script to install the scripts and services. You can safely run this script as many times as needed.
 
 ## Services
 
@@ -13,6 +13,9 @@ This service starts the DDS agent which connects with the PX4 uXRCE-DDS-Client. 
 This service downloads log files from the SD card of the flight controller and uploads them to PX4 Flight Review
 <br> https://github.com/ARK-Electronics/logloader/blob/main/README.md
 
+**polaris-client-mavlink.service** <br>
+This service receives RTCM corrections from the PointOne GNSS Corrections service.
+
 **jetson-can.service** <br>
 This service enables the Jetson CAN interface.
 
@@ -21,4 +24,4 @@ This service sets the Jetson clocks to their maximum rate.
 
 
 ## Scripts
-The files in the scripts directory get installed directly to **/usr/bin** on the Jetson.
+The files in the scripts directory get installed at **/usr/bin**.
