@@ -68,12 +68,11 @@ else
 	read -r INSTALL_LOGLOADER
 
 	if [ "$INSTALL_LOGLOADER" = "y" ]; then
-		echo "Please enter your email: "
-		read -r USER_EMAIL
-
 		echo "Do you want to auto upload to PX4 Flight Review? (y/n)"
 		read -r UPLOAD_TO_FLIGHT_REVIEW
 		if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
+			echo "Please enter your email: "
+			read -r USER_EMAIL
 			echo "Do you want your logs to be public? (y/n)"
 			read -r PUBLIC_LOGS
 		fi
