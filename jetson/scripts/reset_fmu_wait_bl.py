@@ -31,10 +31,7 @@ def main():
     GPIO.setmode(GPIO.BOARD)  # BCM pin-numbering scheme from Raspberry Pi
     # set pin as an output pin with optional initial state of HIGH
     GPIO.setup(reset_pin, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(vbus_det_pin, GPIO.OUT, initial=GPIO.LOW)
-
-    # Disable vbus detect for a faster reset
-    GPIO.output(vbus_det_pin, GPIO.LOW)
+    GPIO.setup(vbus_det_pin, GPIO.OUT, initial=GPIO.HIGH)
 
     print("Resetting Flight Controller!")
 
@@ -44,6 +41,8 @@ def main():
 
     # Enable VBUS immediatly to catch bootloader and wait
     GPIO.output(vbus_det_pin, GPIO.HIGH)
+
+    time.sleep(1)
 
 if __name__ == '__main__':
     main()

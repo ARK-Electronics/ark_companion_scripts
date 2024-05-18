@@ -32,7 +32,7 @@ def main():
     GPIO.setmode(GPIO.BCM)  # BCM pin-numbering scheme from Raspberry Pi
     # set pin as an output pin with optional initial state of HIGH
     GPIO.setup(reset_pin, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(vbus_det_pin, GPIO.OUT, initial=GPIO.LOW)
+    GPIO.setup(vbus_det_pin, GPIO.OUT, initial=GPIO.HIGH)
 
     # Disable vbus detect for a faster reset
     GPIO.output(vbus_det_pin, GPIO.LOW)
