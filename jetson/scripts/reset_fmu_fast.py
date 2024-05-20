@@ -26,9 +26,9 @@ import time
 reset_pin = 33  # BCM pin 18, BOARD pin 12
 vbus_det_pin = 32
 
-jetpack_6 = False
-
 def main():
+    jetpack_6 = False
+
     # Check Jetpack version. R36 can't use VBUS Enable
     with open("/etc/nv_tegra_release") as f:
         jetpack_version = f.read()
