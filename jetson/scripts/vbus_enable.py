@@ -26,6 +26,13 @@ import time
 vbus_det_pin = 32
 
 def main():
+    # Check Jetpack version. R36 can't use VBUS Enable
+    with open("/etc/nv_tegra_release") as f:
+        jetpack_version = f.read()
+    if "R36" in jetpack_version:
+        print("Jetpack version is R36, skipping VBUS Enable")
+        return
+
     # Pin Setup:
     GPIO.setmode(GPIO.BOARD)  # BCM pin-numbering scheme from Raspberry Pi
     # set pin as an output pin with optional initial state of HIGH

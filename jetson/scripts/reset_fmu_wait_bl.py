@@ -26,12 +26,23 @@ import time
 reset_pin = 33  # BCM pin 18, BOARD pin 12
 vbus_det_pin = 32
 
+jetpack_6 = False
+
 def main():
+    # Check Jetpack version. R36 can't use VBUS Enable
+    with open("/etc/nv_tegra_release") as f:
+        jetpack_version = f.read()
+    if "R36" in jetpack_version:
+        print("Jetpack version is R36, skipping VBUS Control")
+        jetpack_6 = True
+
     # Pin Setup:
     GPIO.setmode(GPIO.BOARD)  # BCM pin-numbering scheme from Raspberry Pi
     # set pin as an output pin with optional initial state of HIGH
     GPIO.setup(reset_pin, GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(vbus_det_pin, GPIO.OUT, initial=GPIO.HIGH)
+
+    if not jetpack_6:
+        GPIO.setup(vbus_det_pin, GPIO.OUT, initial=GPIO.HIGH)
 
     print("Resetting Flight Controller!")
 
@@ -39,10 +50,9 @@ def main():
     time.sleep(0.1)
     GPIO.output(reset_pin, GPIO.LOW)
 
-    # Enable VBUS immediatly to catch bootloader and wait
-    GPIO.output(vbus_det_pin, GPIO.HIGH)
-
-    time.sleep(1)
+    if not jetpack_6:
+        # Enable VBUS immediatly to catch bootloader and wait
+        GPIO.output(vbus_det_pin, GPIO.HIGH)
 
 if __name__ == '__main__':
     main()
