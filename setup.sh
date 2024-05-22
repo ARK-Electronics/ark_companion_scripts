@@ -373,13 +373,12 @@ if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 	sudo systemctl restart rtsp-server.service
 fi
 
-if [ "$INSTALL_LOCAL_UI" = "y" ]; then
-	# sudo apt install -y hostapd dnsmasq
-	# sudo systemctl stop hostapd
-	# sudo systemctl stop dnsmasq
-	# sudo cp $TARGET/hostapd.conf /etc/hostapd/
-fi
-
+# if [ "$INSTALL_LOCAL_UI" = "y" ]; then
+# 	sudo apt install -y hostapd dnsmasq
+# 	sudo systemctl stop hostapd
+# 	sudo systemctl stop dnsmasq
+# 	sudo cp $TARGET/hostapd.conf /etc/hostapd/
+# fi
 
 # Install jetson specific services
 if [ "$TARGET" = "jetson" ]; then
