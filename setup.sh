@@ -1,5 +1,26 @@
 #!/bin/bash
 
+function check_and_add_alias() {
+    local name="$1"
+    local command="$2"
+    local file="$HOME/.bash_aliases"
+
+    # Check if the alias file exists, create if not
+    [ -f "$file" ] || touch "$file"
+
+    # Check if the alias already exists
+    if grep -q "^alias $name=" "$file"; then
+        echo "Alias '$name' already exists."
+    else
+        # Add the new alias
+        echo "alias $name='$command'" >> "$file"
+        echo "Alias '$name' added."
+    fi
+
+    # Source the aliases file
+    source "$file"
+}
+
 # Prompt for sudo password at the start to cache it
 sudo true
 
@@ -116,8 +137,20 @@ sudo apt install -y \
 
 if [ "$TARGET" = "jetson" ]; then
 	sudo -H pip3 install Jetson.GPIO
+
 elif [ "$TARGET" = "pi" ]; then
 	sudo -H pip3 install RPi.GPIO
+
+	sudo apt-get install -y  \
+		libgstreamer1.0-dev \
+		libgstreamer-plugins-base1.0-dev \
+		libgstreamer-plugins-bad1.0-dev \
+		gstreamer1.0-plugins-ugly \
+		gstreamer1.0-tools \
+		gstreamer1.0-gl \
+		gstreamer1.0-gtk3 \
+		gstreamer1.0-libcamera \
+		gstreamer1.0-rtsp
 fi
 
 sudo -H pip3 install meson pyserial pymavlink dronecan
@@ -146,8 +179,18 @@ for file in "${TARGET}/scripts/"*; do
 	sudo cp $file /usr/bin
 done
 
-# Add some helpful aliases
-echo "alias mavshell=\"mavlink_shell.py udp:0.0.0.0:14569\"" >> ~/.bash_aliases
+
+########## bash aliases ##########
+echo "Adding aliases"
+declare -A aliases
+aliases[mavshell]="mavlink_shell.py udp:0.0.0.0:14569"
+aliases[ll]="ls -alF"
+
+# Iterate over the associative array and add each alias if it does not exist
+for alias_name in "${!aliases[@]}"; do
+    check_and_add_alias "$alias_name" "${aliases[$alias_name]}"
+done
+
 
 ########## mavlink-router ##########
 echo "Installing mavlink-router"
