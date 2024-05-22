@@ -1,24 +1,24 @@
 #!/bin/bash
 
 function check_and_add_alias() {
-    local name="$1"
-    local command="$2"
-    local file="$HOME/.bash_aliases"
+	local name="$1"
+	local command="$2"
+	local file="$HOME/.bash_aliases"
 
-    # Check if the alias file exists, create if not
-    [ -f "$file" ] || touch "$file"
+	# Check if the alias file exists, create if not
+	[ -f "$file" ] || touch "$file"
 
-    # Check if the alias already exists
-    if grep -q "^alias $name=" "$file"; then
-        echo "Alias '$name' already exists."
-    else
-        # Add the new alias
-        echo "alias $name='$command'" >> "$file"
-        echo "Alias '$name' added."
-    fi
+	# Check if the alias already exists
+	if grep -q "^alias $name=" "$file"; then
+		echo "Alias '$name' already exists."
+	else
+		# Add the new alias
+		echo "alias $name='$command'" >> "$file"
+		echo "Alias '$name' added."
+	fi
 
-    # Source the aliases file
-    source "$file"
+	# Source the aliases file
+	source "$file"
 }
 
 # Prompt for sudo password at the start to cache it
@@ -133,7 +133,8 @@ sudo apt install -y \
 		curl \
 		jq \
 		snap \
-  		snapd
+		snapd \
+		avahi-daemon
 
 if [ "$TARGET" = "jetson" ]; then
 	sudo -H pip3 install Jetson.GPIO
@@ -188,7 +189,7 @@ aliases[ll]="ls -alF"
 
 # Iterate over the associative array and add each alias if it does not exist
 for alias_name in "${!aliases[@]}"; do
-    check_and_add_alias "$alias_name" "${aliases[$alias_name]}"
+	check_and_add_alias "$alias_name" "${aliases[$alias_name]}"
 done
 
 
@@ -233,8 +234,8 @@ download_url=$(echo "$release_info" | grep "browser_download_url.*arm64.deb" | a
 file_name=$(echo "$release_info" | grep "name.*arm64.deb" | awk -F '"' '{print $4}')
 
 if [ -z "$download_url" ]; then
-    echo "Download URL not found for arm64.deb package"
-    exit 1
+	echo "Download URL not found for arm64.deb package"
+	exit 1
 fi
 
 echo "Downloading $download_url..."
@@ -269,15 +270,15 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	sed -i "s/^email = \".*\"/email = \"$USER_EMAIL\"/" "$CONFIG_FILE"
 
 	if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
-	    sed -i "s/^upload_enabled = .*/upload_enabled = true/" "$CONFIG_FILE"
+		sed -i "s/^upload_enabled = .*/upload_enabled = true/" "$CONFIG_FILE"
 	else
-	    sed -i "s/^upload_enabled = .*/upload_enabled = false/" "$CONFIG_FILE"
+		sed -i "s/^upload_enabled = .*/upload_enabled = false/" "$CONFIG_FILE"
 	fi
 
 	if [ "$PUBLIC_LOGS" = "y" ]; then
-	    sed -i "s/^public_logs = .*/public_logs = true/" "$CONFIG_FILE"
+		sed -i "s/^public_logs = .*/public_logs = true/" "$CONFIG_FILE"
 	else
-	    sed -i "s/^public_logs = .*/public_logs = false/" "$CONFIG_FILE"
+		sed -i "s/^public_logs = .*/public_logs = false/" "$CONFIG_FILE"
 	fi
 
 	make install
