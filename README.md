@@ -1,6 +1,11 @@
 ## Getting started
 This repository contains scripts and services for use with the ARK Jetson Carrier or the ARK Pi6X Flow. Use the **setup.sh** script to install the scripts and services. You can safely run this script as many times as needed.
 
+### Connecting
+```
+ssh pi@ARK-Pi6X.local
+```
+
 ## Services
 
 **mavlink-router.service** <br>

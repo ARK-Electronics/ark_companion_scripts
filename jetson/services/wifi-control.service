@@ -1,0 +1,11 @@
+[Unit]
+Description=Automatic wifi control between AP and Station
+Wants=network-online.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/wifi_control.sh
+
+[Install]
+WantedBy=default.target

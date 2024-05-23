@@ -37,7 +37,7 @@ INSTALL_DDS_AGENT="y"
 INSTALL_RTSP_SERVER="y"
 INSTALL_LOGLOADER="y"
 INSTALL_POLARIS="y"
-INSTALL_LOCAL_UI="y"
+INSTALL_PILOT_PORTAL="y"
 
 POLARIS_API_KEY=""
 USER_EMAIL="logs@arkelectron.com"
@@ -63,8 +63,8 @@ if [ "$#" -gt 0 ]; then
 				POLARIS_API_KEY="$2"
 				shift
 				;;
-			-c | --install-local-ui)
-				INSTALL_LOCAL_UI="y"
+			-c | --install-pilot-portal)
+				INSTALL_PILOT_PORTAL="y"
 				shift
 				;;
 			-l | --install-logloader)
@@ -86,16 +86,16 @@ if [ "$#" -gt 0 ]; then
 			-h | --help)
 				echo "Usage: $0 [options]"
 				echo "Options:"
-				echo "  -d, --install-dds-agent    Install micro-xrce-dds-agent"
-				echo "  -r, --install-rtsp-server  Install rtsp-server"
-				echo "  -k, --install-polaris      Install polaris-client-mavlink"
-				echo "  -a, --polaris-api-key      Polaris API key"
-				echo "  -c, --install-local-ui     Install UI interface at $TARGET.local"
-				echo "  -l, --install-logloader    Install logloader"
-				echo "  -e, --email EMAIL          Email to use for logloader"
-				echo "  -u, --auto-upload          Auto upload logs to PX4 Flight Review"
-				echo "  -p, --public-logs          Make logs public on PX4 Flight Review"
-				echo "  -h, --help                 Display this help message"
+				echo "  -d, --install-dds-agent      Install micro-xrce-dds-agent"
+				echo "  -r, --install-rtsp-server    Install rtsp-server"
+				echo "  -k, --install-polaris        Install polaris-client-mavlink"
+				echo "  -a, --polaris-api-key        Polaris API key"
+				echo "  -c, --install-pilot-portal   Install UI interface at $TARGET.local"
+				echo "  -l, --install-logloader      Install logloader"
+				echo "  -e, --email EMAIL            Email to use for logloader"
+				echo "  -u, --auto-upload            Auto upload logs to PX4 Flight Review"
+				echo "  -p, --public-logs            Make logs public on PX4 Flight Review"
+				echo "  -h, --help                   Display this help message"
 				exit 0
 				;;
 			*)
@@ -125,8 +125,8 @@ else
 	echo "Do you want to install rtsp-server? (y/n)"
 	read -r INSTALL_RTSP_SERVER
 
-	echo "Do you want to install the local UI? (y/n)"
-	read -r INSTALL_LOCAL_UI
+	echo "Do you want to install pilot-portal? (y/n)"
+	read -r INSTALL_PILOT_PORTAL
 
 	echo "Do you want to install the polaris-client-mavlink? (y/n)"
 	read -r INSTALL_POLARIS
@@ -192,13 +192,18 @@ if [ "$TARGET" = "jetson" ]; then
 	sudo udevadm control --reload-rules && sudo udevadm trigger
 fi
 
+########## ark environment file ##########
+sudo cp env/ark.env /etc/ark.env
+sudo cp env/ark_env.sh /etc/profile.d/
+sudo chown $USER:$USER /etc/ark.env
+sudo chmod 664 /etc/ark.env
+
 ########## scripts ##########
 echo "Installing scripts"
 # Copy scripts to /usr/bin
 for file in "${TARGET}/scripts/"*; do
 	sudo cp $file /usr/bin
 done
-
 
 ########## bash aliases ##########
 echo "Adding aliases"
@@ -210,7 +215,6 @@ aliases[ll]="ls -alF"
 for alias_name in "${!aliases[@]}"; do
 	check_and_add_alias "$alias_name" "${aliases[$alias_name]}"
 done
-
 
 ########## mavlink-router ##########
 echo "Installing mavlink-router"
@@ -373,12 +377,17 @@ if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 	sudo systemctl restart rtsp-server.service
 fi
 
-# if [ "$INSTALL_LOCAL_UI" = "y" ]; then
-# 	sudo apt install -y hostapd dnsmasq
-# 	sudo systemctl stop hostapd
-# 	sudo systemctl stop dnsmasq
-# 	sudo cp $TARGET/hostapd.conf /etc/hostapd/
-# fi
+if [ "$INSTALL_PILOT_PORTAL" = "y" ]; then
+	sudo apt install -y jq
+	sudo adduser $USER netdev
+	sudo cp wifi/99-network.pkla /etc/polkit-1/localauthority/90-mandatory.d/
+	mkdir -p ~/.config/systemd/user/
+	cp pi/services/wifi-control.service ~/.config/systemd/user/
+	systemctl --user daemon-reload
+	systemctl --user enable wifi-control.service
+	systemctl --user start wifi-control.service
+	cp wifi/wif_control.sh /usr/local/bin
+fi
 
 # Install jetson specific services
 if [ "$TARGET" = "jetson" ]; then
