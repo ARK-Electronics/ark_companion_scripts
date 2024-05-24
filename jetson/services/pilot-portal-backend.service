@@ -1,0 +1,13 @@
+[Unit]
+Description=Pilot Portal Backend Service
+Wants=network-online.target
+After=syslog.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/npm start
+WorkingDirectory=/your/mom
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

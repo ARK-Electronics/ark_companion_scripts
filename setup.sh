@@ -193,9 +193,9 @@ if [ "$TARGET" = "jetson" ]; then
 fi
 
 ########## ark environment file ##########
+sudo chown $USER:$USER env/ark.env
 sudo cp env/ark.env /etc/ark.env
 sudo cp env/ark_env.sh /etc/profile.d/
-sudo chown $USER:$USER /etc/ark.env
 sudo chmod 664 /etc/ark.env
 
 ########## scripts ##########
@@ -378,15 +378,54 @@ if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 fi
 
 if [ "$INSTALL_PILOT_PORTAL" = "y" ]; then
-	sudo apt install -y jq
+	# TODO: move this to an install script in tree
+
+	# dependencies
+	sudo apt install -y jq nodejs npm nginx
+	sudo npm install -g @vue/cli
+
+	# Clone and build repo
+	sudo rm -rf ~/code/pilot-portal
+	git clone --depth=1 https://github.com/ARK-Electronics/pilot-portal.git ~/code/pilot-portal
+	pushd .
+	cd ~/code/pilot-portal
+	cd pilot-portal
+	DIST_DIR="$PWD/dist"
+	npm install
+	npm run build
+	cd ..
+	NGINX_CONFIG_FILE="$PWD/pilot-portal.nginx"
+	sed -i "s|/path/to/your/dist|$DIST_DIR|g" $NGINX_CONFIG_FILE
+	sed -i "s/^WorkingDirectory=.*/WorkingDirectory=$PWD/backend/" "$TARGET/scripts/pilot-portal-backend.service"
+
+	sudo cp $NGINX_CONFIG_FILE /etc/nginx/sites-available/pilot-portal
+	if [ ! -L /etc/nginx/sites-enabled/pilot-portal ]; then
+	  sudo ln -s /etc/nginx/sites-available/pilot-portal /etc/nginx/sites-enabled/
+	fi
+	sudo nginx -t  # Test the configuration
+	sudo systemctl restart nginx
+	popd
+
+	# scripts
+	cp wifi/wif_control.sh /usr/local/bin
+	cp wifi/get_wifi_config.sh /usr/local/bin
+	cp wifi/set_wifi_config.sh /usr/local/bin
+
+	# Add user to netdev and allow networkmanager control
 	sudo adduser $USER netdev
 	sudo cp wifi/99-network.pkla /etc/polkit-1/localauthority/90-mandatory.d/
+
+	# Install services as user
 	mkdir -p ~/.config/systemd/user/
-	cp pi/services/wifi-control.service ~/.config/systemd/user/
+	cp $TARGET/services/pilot-portal-backend.service ~/.config/systemd/user/
+	cp $TARGET/services/wifi-control.service ~/.config/systemd/user/
 	systemctl --user daemon-reload
+	systemctl --user enable pilot-portal-backend.service
+	# TODO: rename to wifi-boot-setup?
 	systemctl --user enable wifi-control.service
-	systemctl --user start wifi-control.service
-	cp wifi/wif_control.sh /usr/local/bin
+	systemctl --user start pilot-portal-backend.service
+	# TODO: enabling it will cause it to start at next boot right?
+	# systemctl --user start wifi-control.service
 fi
 
 # Install jetson specific services
