@@ -192,12 +192,6 @@ if [ "$TARGET" = "jetson" ]; then
 	sudo udevadm control --reload-rules && sudo udevadm trigger
 fi
 
-########## ark environment file ##########
-sudo chown $USER:$USER env/ark.env
-sudo cp env/ark.env /etc/ark.env
-sudo cp env/ark_env.sh /etc/profile.d/
-sudo chmod 664 /etc/ark.env
-
 ########## scripts ##########
 echo "Installing scripts"
 # Copy scripts to /usr/bin
@@ -382,7 +376,7 @@ if [ "$INSTALL_PILOT_PORTAL" = "y" ]; then
 
 	# dependencies
 	sudo apt install -y jq nodejs npm nginx
-	sudo npm install -g @vue/cli
+	sudo npm install -g @vue/cli axios
 
 	# Clone and build repo
 	sudo rm -rf ~/code/pilot-portal
@@ -407,9 +401,7 @@ if [ "$INSTALL_PILOT_PORTAL" = "y" ]; then
 	popd
 
 	# scripts
-	cp wifi/wif_control.sh /usr/local/bin
-	cp wifi/get_wifi_config.sh /usr/local/bin
-	cp wifi/set_wifi_config.sh /usr/local/bin
+	sudo cp wifi/*.sh /usr/local/bin
 
 	# Add user to netdev and allow networkmanager control
 	sudo adduser $USER netdev
@@ -418,14 +410,13 @@ if [ "$INSTALL_PILOT_PORTAL" = "y" ]; then
 	# Install services as user
 	mkdir -p ~/.config/systemd/user/
 	cp $TARGET/services/pilot-portal-backend.service ~/.config/systemd/user/
-	cp $TARGET/services/wifi-control.service ~/.config/systemd/user/
+	cp $TARGET/services/hotspot-control.service ~/.config/systemd/user/
 	systemctl --user daemon-reload
 	systemctl --user enable pilot-portal-backend.service
 	# TODO: rename to wifi-boot-setup?
-	systemctl --user enable wifi-control.service
+	systemctl --user enable hotspot-control.service
 	systemctl --user start pilot-portal-backend.service
-	# TODO: enabling it will cause it to start at next boot right?
-	# systemctl --user start wifi-control.service
+
 fi
 
 # Install jetson specific services

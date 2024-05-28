@@ -1,11 +1,11 @@
 [Unit]
-Description=Automatic wifi control between AP and Station
+Description=Creates WiFi hotspot if no networks are found
 Wants=network-online.target
 After=syslog.target network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/wifi_control.sh
+ExecStart=/usr/local/bin/hotspot_fallback.sh
 
 [Install]
 WantedBy=default.target
