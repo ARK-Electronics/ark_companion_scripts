@@ -70,6 +70,6 @@ cp $TARGET/services/hotspot-control.service ~/.config/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable pilot-portal-backend.service
 systemctl --user enable hotspot-control.service
-systemctl --user start pilot-portal-backend.service
+systemctl --user restart pilot-portal-backend.service
 
 echo "Finished"
