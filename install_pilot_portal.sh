@@ -33,8 +33,8 @@ sudo mkdir -p $DEPLOY_PATH/html  # Frontend files
 sudo mkdir -p $DEPLOY_PATH/api   # Backend files
 
 # Copy frontend and backend files to deployment path
-cp -r $PILOT_PORTAL_DIR/pilot-portal/dist/* $DEPLOY_PATH/html/
-cp -r $PILOT_PORTAL_DIR/backend/* $DEPLOY_PATH/api/
+sudo cp -r $PILOT_PORTAL_DIR/pilot-portal/dist/* $DEPLOY_PATH/html/
+sudo cp -r $PILOT_PORTAL_DIR/backend/* $DEPLOY_PATH/api/
 
 # Set permissions
 sudo chown -R www-data:www-data $DEPLOY_PATH
@@ -56,6 +56,11 @@ sudo cp wifi/*.sh /usr/local/bin
 # Add user to netdev and allow networkmanager control
 sudo adduser $USER netdev
 sudo cp wifi/99-network.pkla /etc/polkit-1/localauthority/90-mandatory.d/
+
+# If your system uses the newer JavaScript-based .rules method (common in many recent Linux distributions), you should add a .rules file instead:
+sudo mkdir -p /etc/polkit-1/rules.d/
+sudo cp wifi/02-network-manager.rules /etc/polkit-1/rules.d/
+
 sudo systemctl restart polkit
 
 # Install services as user
