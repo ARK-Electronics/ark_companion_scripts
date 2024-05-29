@@ -67,3 +67,8 @@ else
 fi
 
 echo "{\"status\": \"success\", \"ssid\": \"${SSID}\", \"mode\": \"ap\"}"
+
+
+# nmcli con add type wifi ifname '*' con-name JakesDexiDrone autoconnect no ssid JakesDexiDrone 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
+# nmcli con modify JakesDexiDrone wifi-sec.key-mgmt wpa-psk wifi-sec.psk password 802-11-wireless-security.pmf disable
+# nmcli con up JakesDexiDrone
