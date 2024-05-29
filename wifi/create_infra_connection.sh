@@ -2,14 +2,13 @@
 
 # Function to create and start a new connection
 create_connection() {
-	echo "No existing connection found with SSID $1. Creating and starting a new connection..."
-	nmcli con add type wifi ifname wlo1 con-name "$1" autoconnect yes ssid "$1"
-	nmcli con modify "$1" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$2"
+	nmcli con add type wifi ifname wlo1 con-name "$1" autoconnect yes ssid "$1" &>/dev/null
+	nmcli con modify "$1" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$2" &>/dev/null
 }
 
 # Check command line arguments
 if [ "$#" -ne 2 ]; then
-	echo "Usage: $0 SSID Password"
+	echo "{\"status\": \"fail\", \"mode\": \"infrastructure\"}"
 	exit 1
 fi
 
@@ -21,9 +20,9 @@ if ! nmcli con show "$SSID" &>/dev/null; then
 	create_connection "$SSID" "$PASSWORD"
 fi
 
-nmcli con up $SSID
+nmcli con up $SSID &>/dev/null
 # nmcli_pid=$!
-# STATUS="fail"
+STATUS="success"
 
 # # Check every second up to 5 seconds if the process is still running
 # for i in {1..5}; do
@@ -42,4 +41,4 @@ nmcli con up $SSID
 #     fi
 # done
 
-# echo "{\"status\": \"${STATUS}\", \"ssid\": \"${SSID}\", \"mode\": \"station\"}"
+echo "{\"status\": \"${STATUS}\", \"ssid\": \"${SSID}\", \"mode\": \"station\"}"

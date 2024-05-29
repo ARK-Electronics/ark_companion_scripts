@@ -2,30 +2,26 @@
 
 # Function to start the connection
 start_ap() {
-  echo "Starting the access point: $1"
-  nmcli con up "$1"
+  nmcli con up "$1" &>/dev/null
 }
 
 # Function to modify an existing AP connection
 update_ap_password() {
-	echo "Updating password: $1"
-	nmcli con modify "$1" wifi-sec.psk "$2"
+	nmcli con modify "$1" wifi-sec.psk "$2" &>/dev/null
 	nmcli con up "$1"
 }
 
 # Function to delete and create a new AP connection
 replace_ap() {
-	echo "Replacing $1 with $2"
-	nmcli con delete "$1"
+	nmcli con delete "$1" &>/dev/null
 	create_ap "$2" "$3"
 }
 
 # Function to create a new AP connection
 create_ap() {
-	echo "Creating and starting a new access point: $1"
-	nmcli con add type wifi ifname wlo1 con-name "$1" autoconnect no ssid "$1" 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
-	nmcli con modify "$1" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$2" 802-11-wireless-security.pmf disable
-	nmcli con up "$1"
+	nmcli con add type wifi ifname wlo1 con-name "$1" autoconnect no ssid "$1" 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared &>/dev/null
+	nmcli con modify "$1" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$2" 802-11-wireless-security.pmf disable &>/dev/null
+	nmcli con up "$1" &>/dev/null
 }
 
 # Function to find an existing AP
@@ -70,5 +66,4 @@ else
 	create_ap "$SSID" "$PASSWORD"
 fi
 
-echo "Operation completed."
 echo "{\"status\": \"success\", \"ssid\": \"${SSID}\", \"mode\": \"ap\"}"

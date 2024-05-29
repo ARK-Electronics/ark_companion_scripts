@@ -16,7 +16,8 @@ active_connection=$(nmcli -t -f NAME,TYPE con show --active | grep 802-11-wirele
 
 # Check if there is an active wifi connection
 if [ -z "$active_connection" ]; then
-	echo "No active WiFi connection found."
+	message="No active WiFi connection found."
+	echo "{\"status\": \"fail\", \"mode\": \"ap\", \"message\": \"$message\"}"
 else
 	# Get details of the active connection
 	get_connection_details "$active_connection"
