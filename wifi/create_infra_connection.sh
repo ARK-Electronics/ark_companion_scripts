@@ -2,7 +2,7 @@
 
 # Function to create and start a new connection
 create_connection() {
-	nmcli con add type wifi ifname wlo1 con-name "$1" autoconnect yes ssid "$1" &>/dev/null
+	nmcli con add type wifi ifname '*' con-name "$1" autoconnect yes ssid "$1" &>/dev/null
 	nmcli con modify "$1" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$2" &>/dev/null
 }
 

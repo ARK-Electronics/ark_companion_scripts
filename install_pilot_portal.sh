@@ -17,7 +17,9 @@ git clone --depth=1 https://github.com/ARK-Electronics/pilot-portal.git ~/code/p
 pushd .
 cd ~/code/pilot-portal
 PILOT_PORTAL_DIR=$PWD
-cd pilot-portal
+cd backend
+npm install
+cd ..
 npm install
 npm run build
 popd
@@ -31,6 +33,17 @@ sudo cp $NGINX_CONFIG_FILE /etc/nginx/sites-available/pilot-portal
 if [ ! -L /etc/nginx/sites-enabled/pilot-portal ]; then
   sudo ln -s /etc/nginx/sites-available/pilot-portal /etc/nginx/sites-enabled/
 fi
+
+sudo gpasswd -a www-data $TARGET
+sudo chmod +x /home/
+sudo chmod +x /home/$TARGET
+sudo chmod +x /home/$TARGET/code/pilot-portal/pilot-portal/dist
+sudo chown -R www-data:www-data /home/pi/code/pilot-portal/pilot-portal/dist
+sudo chmod -R 755 /home/$TARGET/code/pilot-portal/pilot-portal/dist
+
+# To check that it can run
+sudo -u www-data stat /home/pi/code/
+
 sudo nginx -t  # Test the configuration
 sudo systemctl restart nginx
 

@@ -19,7 +19,7 @@ replace_ap() {
 
 # Function to create a new AP connection
 create_ap() {
-	nmcli con add type wifi ifname wlo1 con-name "$1" autoconnect no ssid "$1" 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared &>/dev/null
+	nmcli con add type wifi ifname '*' con-name "$1" autoconnect no ssid "$1" 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared &>/dev/null
 	nmcli con modify "$1" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$2" 802-11-wireless-security.pmf disable &>/dev/null
 	nmcli con up "$1" &>/dev/null
 }

@@ -32,7 +32,7 @@ if [ -n "$AP_SSID" ]; then
 	# Create default hotspot
 	AP_SSID="ARK_Hotspot"
 	AP_PASSWORD="password"
-	nmcli con add type wifi ifname wlo1 con-name $AP_SSID autoconnect no ssid $AP_SSID 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
+	nmcli con add type wifi ifname '*' con-name $AP_SSID autoconnect no ssid $AP_SSID 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
 	nmcli con modify $AP_SSID wifi-sec.key-mgmt wpa-psk wifi-sec.psk $AP_PASSWORD 802-11-wireless-security.pmf disable
 	nmcli con up $AP_SSID
 fi
