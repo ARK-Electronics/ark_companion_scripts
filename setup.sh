@@ -372,7 +372,7 @@ if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 fi
 
 if [ "$INSTALL_PILOT_PORTAL" = "y" ]; then
-	sudo install_pilot_portal.sh
+	./install_pilot_portal.sh
 fi
 
 # Install jetson specific services
