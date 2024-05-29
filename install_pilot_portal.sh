@@ -33,8 +33,8 @@ sudo mkdir -p $DEPLOY_PATH/html  # Frontend files
 sudo mkdir -p $DEPLOY_PATH/api   # Backend files
 
 # Copy frontend and backend files to deployment path
-cp -r $PILOT_PORTAL_DIR/pilot-portal/dist/ $DEPLOY_PATH/html/
-cp -r $PILOT_PORTAL_DIR/backend/ $DEPLOY_PATH/api/
+cp -r $PILOT_PORTAL_DIR/pilot-portal/dist/* $DEPLOY_PATH/html/
+cp -r $PILOT_PORTAL_DIR/backend/* $DEPLOY_PATH/api/
 
 # Set permissions
 sudo chown -R www-data:www-data $DEPLOY_PATH

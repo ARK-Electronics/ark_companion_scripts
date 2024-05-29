@@ -6,7 +6,7 @@ After=syslog.target network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/npm start
-WorkingDirectory=/your/mom
+WorkingDirectory=/var/www/pilot-portal/api
 Restart=on-failure
 
 [Install]
