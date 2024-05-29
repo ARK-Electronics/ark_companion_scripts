@@ -20,12 +20,13 @@ PILOT_PORTAL_DIR=$PWD
 cd backend
 npm install
 cd ..
+cd pilot-portal
 npm install
 npm run build
 popd
 
 # nginx config
-NGINX_CONFIG_FILE_PATH="/etc/nginx/sites-available/pilot-portal/pilot-portal.nginx"
+NGINX_CONFIG_FILE_PATH="/etc/nginx/sites-available/pilot-portal"
 sudo cp "$PILOT_PORTAL_DIR/pilot-portal.nginx" $NGINX_CONFIG_FILE_PATH
 DEPLOY_PATH="/var/www/pilot-portal"
 sudo mkdir -p $DEPLOY_PATH/html  # Frontend files
