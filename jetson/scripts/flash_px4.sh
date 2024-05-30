@@ -19,6 +19,6 @@ fi
 echo $SERIALDEVICE
 
 sudo systemctl stop mavlink-router
-python3 /usr/bin/reset_fmu_wait_bl.py
-python3 /usr/bin/px_uploader.py --port $SERIALDEVICE $FW_PATH
+python3 /usr/local/bin/reset_fmu_wait_bl.py
+python3 /usr/local/bin/px_uploader.py --port $SERIALDEVICE $FW_PATH
 sudo systemctl start mavlink-router logloader.service

@@ -6,7 +6,7 @@ After=sys-devices-platform-3550000.xudc-gadget-net-usb0.device syslog.target net
 
 [Service]
 Type=exec
-ExecStart=/usr/bin/start_mavlink_router.sh
+ExecStart=/usr/local/bin/start_mavlink_router.sh
 Restart=on-failure
 RestartSec=5
 

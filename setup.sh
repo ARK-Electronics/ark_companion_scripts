@@ -194,9 +194,8 @@ fi
 
 ########## scripts ##########
 echo "Installing scripts"
-# Copy scripts to /usr/bin
 for file in "${TARGET}/scripts/"*; do
-	sudo cp $file /usr/bin
+	sudo cp $file /usr/local/bin
 done
 
 ########## bash aliases ##########

@@ -29,4 +29,4 @@ This service sets the Jetson clocks to their maximum rate.
 
 
 ## Scripts
-The files in the scripts directory get installed at **/usr/bin**.
+The files in the scripts directory get installed at **/usr/local/bin**.
