@@ -1,15 +1,18 @@
 #!/bin/bash
 
 find_existing_ap() {
-	local connections=$(nmcli -t -f NAME,TYPE con show | grep "802-11-wireless" | cut -d ':' -f1)
-	for connection in $connections; do
-		local mode=$(nmcli -t -f 802-11-wireless.mode con show "$connection")
-		if [[ $mode == "802-11-wireless.mode:ap" ]]; then
-			echo "$connection"
-			return
-		fi
-	done
-  echo ""
+    local IFS=$'\n'  # Change the Internal Field Separator to new line, so 'read' reads one line at a time
+    local connections=$(nmcli -t -f NAME,TYPE con show | grep "802-11-wireless")
+
+    echo "$connections" | while read -r connection; do
+        local name=$(echo "$connection" | cut -d ':' -f1)
+        local mode=$(nmcli -t -f 802-11-wireless.mode con show "$name")
+        if [[ $mode == "802-11-wireless.mode:ap" ]]; then
+            echo "$name"
+            return
+        fi
+    done
+    echo ""
 }
 
 # sleep for 30 seconds
@@ -22,11 +25,11 @@ if [ -n "$wifi_connected" ]; then
 	exit 0
 fi
 
-AP_SSID=$(find_existing_ap)
+AP_SSID="$(find_existing_ap)"
 
 if [ -n "$AP_SSID" ]; then
 	# Access point exists, start it
-	nmcli con up $AP_SSID
+	nmcli con up "$AP_SSID"
  else
  	echo "Creating new hotspot"
 	# Create default hotspot
