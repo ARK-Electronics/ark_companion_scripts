@@ -19,7 +19,8 @@ if [ -z "$SERIALDEVICE" ]; then
     exit 1
 fi
 
-systemctl --user stop mavlink-router logloader.service polaris.service2>/dev/null
+# systemctl --user stop mavlink-router logloader.service polaris.service 2>/dev/null
+systemctl --user stop mavlink-router
 
 python3 /usr/local/bin/reset_fmu_wait_bl.py
 
@@ -29,4 +30,5 @@ do
     echo "$line" | jq -c 'select(type == "object")' 2>/dev/null || :
 done
 
-systemctl --user start mavlink-router logloader.service polaris.service2>/dev/null
+# systemctl --user start mavlink-router logloader.service polaris.service 2>/dev/null
+systemctl --user start mavlink-router
