@@ -9,7 +9,7 @@ fi
 
 # dependencies
 sudo apt install -y jq nodejs npm nginx
-sudo npm install -g @vue/cli axios vue-router@4 express-fileupload cors
+sudo npm install -g @vue/cli axios vue-router@4 express-fileupload cors socket.io socket.io-client
 
 # Clone and build repo
 sudo rm -rf ~/code/pilot-portal

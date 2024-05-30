@@ -6,7 +6,7 @@ FW_PATH=${1:-$DEFAULT_FW_PATH}
 # Check if the firmware file exists
 if [ ! -f "$FW_PATH" ]; then
     jq -n --arg msg "Firmware file does not exist" \
-          '{status: "failed", message: $msg, progress: 0}'
+          '{status: "failed", message: $msg, percent: 0}'
     exit 1
 fi
 
@@ -15,7 +15,7 @@ SERIALDEVICE=$(ls -l /dev/serial/by-id/*ARK* 2>/dev/null | awk -F'/' '{print "/d
 
 if [ -z "$SERIALDEVICE" ]; then
     jq -n --arg msg "ARKV6X not found" \
-          '{status: "failed", message: $msg, progress: 0}'
+          '{status: "failed", message: $msg, percent: 0}'
     exit 1
 fi
 
@@ -24,7 +24,7 @@ sudo systemctl stop mavlink-router 2>/dev/null
 python3 /usr/local/bin/reset_fmu_wait_bl.py
 
 # If the device is found and file exists, run the uploader script and filter JSON output
-python3 -u pi/scripts/px_uploader.py --json-progress --port $SERIALDEVICE $FW_PATH 2>&1 | while IFS= read -r line
+python3 -u /usr/local/bin/px_uploader.py --json-progress --port $SERIALDEVICE $FW_PATH 2>&1 | while IFS= read -r line
 do
     echo "$line" | jq -c 'select(type == "object")' 2>/dev/null || :
 done
