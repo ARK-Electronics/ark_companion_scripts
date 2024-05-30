@@ -12,7 +12,7 @@ COMMON_DIR="$PWD/platform/common"
 # TODO: move this to an install script in tree
 
 # dependencies
-sudo apt install -y jq nodejs npm nginx
+sudo apt-get install -y jq nodejs npm nginx
 sudo npm install -g @vue/cli
 
 # Clone and build repo

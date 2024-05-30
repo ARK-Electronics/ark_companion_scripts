@@ -147,7 +147,7 @@ fi
 ########## install dependencies ##########
 echo "Installing dependencies"
 sudo apt update
-sudo apt install -y \
+sudo apt-get install -y \
 		apt-utils \
 		gcc-arm-none-eabi \
 		python3-pip \
@@ -187,6 +187,7 @@ sudo usermod -a -G dialout $USER
 sudo groupadd -f -r gpio
 sudo usermod -a -G gpio $USER
 sudo usermod -a -G i2c $USER
+mkdir -p ~/.config/systemd/user/
 
 if [ "$TARGET" = "jetson" ]; then
 	sudo systemctl stop nvgetty
@@ -315,7 +316,7 @@ fi
 if [ "$INSTALL_POLARIS" = "y" ]; then
 	echo "Installing polaris-client-mavlink"
 
-	sudo apt install libssl-dev libgflags-dev libgoogle-glog-dev libboost-all-dev
+	sudo apt-get install -y libssl-dev libgflags-dev libgoogle-glog-dev libboost-all-dev
 
 	pushd .
 	sudo rm -rf ~/code/polaris-client-mavlink
