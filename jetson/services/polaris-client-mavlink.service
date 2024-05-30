@@ -5,8 +5,6 @@ After=syslog.target network.target mavlink-router.service
 
 [Service]
 Type=simple
-User=jetson
-Group=jetson
 ExecStart=/usr/local/bin/polaris-client-mavlink
 Restart=always
 RestartSec=5
