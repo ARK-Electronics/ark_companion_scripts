@@ -20,7 +20,7 @@ if ! nmcli con show "$SSID" &>/dev/null; then
 	create_connection "$SSID" "$PASSWORD"
 fi
 
-nmcli con up $SSID &>/dev/null
+nmcli con up "$SSID" &>/dev/null
 # nmcli_pid=$!
 STATUS="success"
 
