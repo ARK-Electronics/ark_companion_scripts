@@ -23,9 +23,7 @@ cd ~/code/pilot-portal
 PILOT_PORTAL_DIR=$PWD
 cd backend
 npm install
-cd ..
-cd pilot-portal
-# npm install axios vue-router@4 express-fileupload cors socket.io socket.io-client
+cd ../pilot-portal
 npm install
 npm run build
 popd
@@ -34,14 +32,14 @@ popd
 NGINX_CONFIG_FILE_PATH="/etc/nginx/sites-available/pilot-portal"
 sudo cp "$PILOT_PORTAL_DIR/pilot-portal.nginx" $NGINX_CONFIG_FILE_PATH
 DEPLOY_PATH="/var/www/pilot-portal"
-sudo mkdir -p $DEPLOY_PATH/html  # Frontend files
-sudo mkdir -p $DEPLOY_PATH/api   # Backend files
+sudo mkdir -p $DEPLOY_PATH/html
+sudo mkdir -p $DEPLOY_PATH/api
 
 # Copy frontend and backend files to deployment path
 sudo cp -r $PILOT_PORTAL_DIR/pilot-portal/dist/* $DEPLOY_PATH/html/
 sudo cp -r $PILOT_PORTAL_DIR/backend/* $DEPLOY_PATH/api/
 
-# Set permissions
+# Set permissions: www-data owns the path and has read/write permissions
 sudo chown -R www-data:www-data $DEPLOY_PATH
 sudo chmod -R 755 $DEPLOY_PATH
 
@@ -52,7 +50,8 @@ fi
 # To check that it can run
 sudo -u www-data stat $DEPLOY_PATH
 
-sudo nginx -t  # Test the configuration
+# Test the configuration and restart
+sudo nginx -t
 sudo systemctl restart nginx
 
 # scripts
@@ -77,4 +76,4 @@ systemctl --user enable pilot-portal-backend.service
 systemctl --user enable hotspot-control.service
 systemctl --user restart pilot-portal-backend.service
 
-echo "Finished"
+echo "Finished $(basename $BASH_SOURCE)"
