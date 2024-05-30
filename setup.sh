@@ -228,9 +228,9 @@ sudo cp $TARGET_DIR/main.conf /etc/mavlink-router/
 
 # Install the service
 sudo cp $TARGET_DIR/services/mavlink-router.service ~/.config/systemd/user/
-sudo systemctl --user daemon-reload
-sudo systemctl --user enable mavlink-router.service
-sudo systemctl --user restart mavlink-router.service
+systemctl --user daemon-reload
+systemctl --user enable mavlink-router.service
+systemctl --user restart mavlink-router.service
 
 ########## dds-agent ##########
 if [ "$INSTALL_DDS_AGENT" = "y" ]; then
@@ -238,9 +238,9 @@ if [ "$INSTALL_DDS_AGENT" = "y" ]; then
 	sudo snap install micro-xrce-dds-agent --edge
 	# Install the service
 	sudo cp $TARGET_DIR/services/dds-agent.service ~/.config/systemd/user/
-	sudo systemctl --user daemon-reload
-	sudo systemctl --user enable dds-agent.service
-	sudo systemctl --user restart dds-agent.service
+	systemctl --user daemon-reload
+	systemctl --user enable dds-agent.service
+	systemctl --user restart dds-agent.service
 else
 	echo "micro-xrce-dds-agent already installed"
 fi
@@ -307,9 +307,9 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 
 	# Install the service
 	sudo cp $COMMON_DIR/services/logloader.service ~/.config/systemd/user/
-	sudo systemctl --user daemon-reload
-	sudo systemctl --user enable logloader.service
-	sudo systemctl --user restart logloader.service
+	systemctl --user daemon-reload
+	systemctl --user enable logloader.service
+	systemctl --user restart logloader.service
 fi
 
 ########## polaris-client-mavlink ##########
@@ -332,9 +332,9 @@ if [ "$INSTALL_POLARIS" = "y" ]; then
 
 	# Install the service
 	sudo cp $COMMON_DIR/services/polaris.service ~/.config/systemd/user/
-	sudo systemctl --user daemon-reload
-	sudo systemctl --user enable polaris.service
-	sudo systemctl --user restart polaris.service
+	systemctl --user daemon-reload
+	systemctl --user enable polaris.service
+	systemctl --user restart polaris.service
 fi
 
 if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
@@ -344,6 +344,7 @@ if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 		libgstreamer1.0-dev \
 		libgstreamer-plugins-base1.0-dev \
 		libgstreamer-plugins-bad1.0-dev \
+		libgstrtspserver-1.0-dev \
 		gstreamer1.0-plugins-ugly \
 		gstreamer1.0-tools \
 		gstreamer1.0-gl \
@@ -368,9 +369,9 @@ if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 
 	# Install the service
 	sudo cp $COMMON_DIR/services/rtsp-server.service ~/.config/systemd/user/
-	sudo systemctl --user daemon-reload
-	sudo systemctl --user enable rtsp-server.service
-	sudo systemctl --user restart rtsp-server.service
+	systemctl --user daemon-reload
+	systemctl --user enable rtsp-server.service
+	systemctl --user restart rtsp-server.service
 fi
 
 if [ "$INSTALL_PILOT_PORTAL" = "y" ]; then
