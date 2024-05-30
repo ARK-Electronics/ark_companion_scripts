@@ -18,8 +18,8 @@ This service starts the DDS agent which connects with the PX4 uXRCE-DDS-Client. 
 This service downloads log files from the SD card of the flight controller and uploads them to PX4 Flight Review
 <br> https://github.com/ARK-Electronics/logloader/blob/main/README.md
 
-**polaris-client-mavlink.service** <br>
-This service receives RTCM corrections from the PointOne GNSS Corrections service.
+**polaris.service** <br>
+This service receives RTCM corrections from the PointOne GNSS Corrections service and publishes them via MAVLink.
 
 **jetson-can.service** <br>
 This service enables the Jetson CAN interface.

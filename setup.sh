@@ -33,6 +33,9 @@ else
 	TARGET=pi
 fi
 
+TARGET_DIR="$PWD/platform/$TARGET"
+COMMON_DIR="$PWD/platform/common"
+
 INSTALL_DDS_AGENT="y"
 INSTALL_RTSP_SERVER="y"
 INSTALL_LOGLOADER="y"
@@ -188,13 +191,14 @@ sudo usermod -a -G i2c $USER
 if [ "$TARGET" = "jetson" ]; then
 	sudo systemctl stop nvgetty
 	sudo systemctl disable nvgetty
-	sudo cp $TARGET/99-gpio.rules /etc/udev/rules.d/
+	sudo cp $TARGET_DIR/99-gpio.rules /etc/udev/rules.d/
 	sudo udevadm control --reload-rules && sudo udevadm trigger
 fi
 
 ########## scripts ##########
 echo "Installing scripts"
-sudo cp $TARGET/scripts/* /usr/local/bin
+sudo cp $TARGET_DIR/scripts/* /usr/local/bin
+sudo cp $COMMON_DIR/scripts/* /usr/local/bin
 
 ########## bash aliases ##########
 echo "Adding aliases"
@@ -219,23 +223,23 @@ ninja -C build
 sudo ninja -C build install
 popd
 sudo mkdir -p /etc/mavlink-router
-sudo cp $TARGET/main.conf /etc/mavlink-router/
+sudo cp $TARGET_DIR/main.conf /etc/mavlink-router/
 
 # Install the service
-sudo cp $TARGET/services/mavlink-router.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable mavlink-router.service
-sudo systemctl restart mavlink-router.service
+sudo cp $TARGET_DIR/services/mavlink-router.service ~/.config/systemd/user/
+sudo systemctl --user daemon-reload
+sudo systemctl --user enable mavlink-router.service
+sudo systemctl --user restart mavlink-router.service
 
 ########## dds-agent ##########
 if [ "$INSTALL_DDS_AGENT" = "y" ]; then
 	echo "Installing micro-xrce-dds-agent"
 	sudo snap install micro-xrce-dds-agent --edge
 	# Install the service
-	sudo cp $TARGET/services/dds-agent.service /etc/systemd/system/
-	sudo systemctl daemon-reload
-	sudo systemctl enable dds-agent.service
-	sudo systemctl restart dds-agent.service
+	sudo cp $TARGET_DIR/services/dds-agent.service ~/.config/systemd/user/
+	sudo systemctl --user daemon-reload
+	sudo systemctl --user enable dds-agent.service
+	sudo systemctl --user restart dds-agent.service
 else
 	echo "micro-xrce-dds-agent already installed"
 fi
@@ -301,10 +305,10 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	popd
 
 	# Install the service
-	sudo cp $TARGET/services/logloader.service /etc/systemd/system/
-	sudo systemctl daemon-reload
-	sudo systemctl enable logloader.service
-	sudo systemctl restart logloader.service
+	sudo cp $COMMON_DIR/services/logloader.service ~/.config/systemd/user/
+	sudo systemctl --user daemon-reload
+	sudo systemctl --user enable logloader.service
+	sudo systemctl --user restart logloader.service
 fi
 
 ########## polaris-client-mavlink ##########
@@ -326,10 +330,10 @@ if [ "$INSTALL_POLARIS" = "y" ]; then
 	popd
 
 	# Install the service
-	sudo cp $TARGET/services/polaris-client-mavlink.service /etc/systemd/system/
-	sudo systemctl daemon-reload
-	sudo systemctl enable polaris-client-mavlink.service
-	sudo systemctl restart polaris-client-mavlink.service
+	sudo cp $COMMON_DIR/services/polaris.service ~/.config/systemd/user/
+	sudo systemctl --user daemon-reload
+	sudo systemctl --user enable polaris.service
+	sudo systemctl --user restart polaris.service
 fi
 
 if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
@@ -362,21 +366,21 @@ if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 	popd
 
 	# Install the service
-	sudo cp $TARGET/services/rtsp-server.service /etc/systemd/system/
-	sudo systemctl daemon-reload
-	sudo systemctl enable rtsp-server.service
-	sudo systemctl restart rtsp-server.service
+	sudo cp $COMMON_DIR/services/rtsp-server.service ~/.config/systemd/user/
+	sudo systemctl --user daemon-reload
+	sudo systemctl --user enable rtsp-server.service
+	sudo systemctl --user restart rtsp-server.service
 fi
 
 if [ "$INSTALL_PILOT_PORTAL" = "y" ]; then
 	./install_pilot_portal.sh
 fi
 
-# Install jetson specific services
+# Install jetson specific services -- these services run as root
 if [ "$TARGET" = "jetson" ]; then
 	echo "Installing Jetson services"
-	sudo cp $TARGET/services/jetson-can.service /etc/systemd/system/
-	sudo cp $TARGET/services/jetson-clocks.service /etc/systemd/system/
+	sudo cp $TARGET_DIR/services/jetson-can.service /etc/systemd/system/
+	sudo cp $TARGET_DIR/services/jetson-clocks.service /etc/systemd/system/
 	sudo systemctl daemon-reload
 	sudo systemctl enable jetson-can.service jetson-clocks.service
 	sudo systemctl restart jetson-can.service jetson-clocks.service

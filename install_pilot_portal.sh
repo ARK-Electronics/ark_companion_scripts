@@ -5,11 +5,15 @@ if uname -ar | grep tegra; then
 else
 	TARGET=pi
 fi
+
+TARGET_DIR="$PWD/platform/$TARGET"
+COMMON_DIR="$PWD/platform/common"
+
 # TODO: move this to an install script in tree
 
 # dependencies
 sudo apt install -y jq nodejs npm nginx
-sudo npm install -g @vue/cli axios vue-router@4 express-fileupload cors socket.io socket.io-client
+sudo npm install -g @vue/cli
 
 # Clone and build repo
 sudo rm -rf ~/code/pilot-portal
@@ -21,6 +25,7 @@ cd backend
 npm install
 cd ..
 cd pilot-portal
+# npm install axios vue-router@4 express-fileupload cors socket.io socket.io-client
 npm install
 npm run build
 popd
@@ -51,22 +56,22 @@ sudo nginx -t  # Test the configuration
 sudo systemctl restart nginx
 
 # scripts
-sudo cp wifi/*.sh /usr/local/bin
+sudo cp $COMMON_DIR/wifi/*.sh /usr/local/bin
 
 # Add user to netdev and allow networkmanager control
 sudo adduser $USER netdev
-sudo cp wifi/99-network.pkla /etc/polkit-1/localauthority/90-mandatory.d/
+sudo cp $COMMON_DIR/wifi/99-network.pkla /etc/polkit-1/localauthority/90-mandatory.d/
 
 # If your system uses the newer JavaScript-based .rules method (common in many recent Linux distributions), you should add a .rules file instead:
 sudo mkdir -p /etc/polkit-1/rules.d/
-sudo cp wifi/02-network-manager.rules /etc/polkit-1/rules.d/
+sudo cp $COMMON_DIR/wifi/02-network-manager.rules /etc/polkit-1/rules.d/
 
 sudo systemctl restart polkit
 
 # Install services as user
 mkdir -p ~/.config/systemd/user/
-cp $TARGET/services/pilot-portal-backend.service ~/.config/systemd/user/
-cp $TARGET/services/hotspot-control.service ~/.config/systemd/user/
+cp $COMMON_DIR/services/pilot-portal-backend.service ~/.config/systemd/user/
+cp $COMMON_DIR/services/hotspot-control.service ~/.config/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable pilot-portal-backend.service
 systemctl --user enable hotspot-control.service
