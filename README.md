@@ -1,10 +1,8 @@
-## Getting started
-This repository contains scripts and services for use with the ARK Jetson Carrier or the ARK Pi6X Flow. Use the **setup.sh** script to install the scripts and services. You can safely run this script as many times as needed.
+# Getting started
+This repository contains scripts and services for use with the ARK Jetson Carrier or the ARK Pi6X Flow. Use the **setup.sh** script to install the scripts and services. You can safely run this script multiple times.
 
-### Connecting
-```
-ssh pi@ARK-Pi6X.local
-```
+## Scripts
+All installed scripts are placed at **/usr/local/bin**.
 
 ## Services
 
@@ -15,18 +13,23 @@ This service enables mavlink-router to route mavlink packets between endpoints. 
 This service starts the DDS agent which connects with the PX4 uXRCE-DDS-Client. `Telem1` on the flight controller is connected directly to the Jetson UART `/dev/ttyTHS0`. This service depends on the `systemd-timesyncd` service to synchronize system time with an accurate remote reference time source.
 
 **logloader.service** <br>
-This service downloads log files from the SD card of the flight controller and uploads them to PX4 Flight Review
-<br> https://github.com/ARK-Electronics/logloader/blob/main/README.md
+This service downloads log files from the SD card of the flight controller via MAVLink and uploads them to PX4 Flight Review <br>
+
+**rtsp-server.service** <br>
+This service provides an RTSP server via gstreamer using a Pi cam at **rtsp://pi6x.local:8554/fpv** <br>
 
 **polaris.service** <br>
 This service receives RTCM corrections from the PointOne GNSS Corrections service and publishes them via MAVLink.
 
+**pilot-portal-backend.service** <br>
+This service provides an express backend for the pilot-portal configuration UI.
+
+**hotspot-control.service** <br>
+This service creates a hotspot after booting if the device is unable to auto connect to a network. You can then use the pilot-portal configuration UI to configure your network.
+
+### Jetson only
 **jetson-can.service** <br>
 This service enables the Jetson CAN interface.
 
 **jetson-clocks.service** <br>
 This service sets the Jetson clocks to their maximum rate.
-
-
-## Scripts
-The files in the scripts directory get installed at **/usr/local/bin**.
