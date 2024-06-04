@@ -20,7 +20,7 @@ sudo rm -rf ~/code/pilot-portal
 git clone --depth=1 https://github.com/ARK-Electronics/pilot-portal.git ~/code/pilot-portal
 pushd .
 cd ~/code/pilot-portal
-PILOT_PORTAL_DIR=$PWD
+PILOT_PORTAL_SRC_DIR=$PWD
 cd backend
 npm install
 cd ../pilot-portal
@@ -30,22 +30,25 @@ popd
 
 # nginx config
 NGINX_CONFIG_FILE_PATH="/etc/nginx/sites-available/pilot-portal"
-sudo cp "$PILOT_PORTAL_DIR/pilot-portal.nginx" $NGINX_CONFIG_FILE_PATH
+sudo cp "$PILOT_PORTAL_SRC_DIR/pilot-portal.nginx" $NGINX_CONFIG_FILE_PATH
 DEPLOY_PATH="/var/www/pilot-portal"
 sudo mkdir -p $DEPLOY_PATH/html
 sudo mkdir -p $DEPLOY_PATH/api
 
 # Copy frontend and backend files to deployment path
-sudo cp -r $PILOT_PORTAL_DIR/pilot-portal/dist/* $DEPLOY_PATH/html/
-sudo cp -r $PILOT_PORTAL_DIR/backend/* $DEPLOY_PATH/api/
+sudo cp -r $PILOT_PORTAL_SRC_DIR/pilot-portal/dist/* $DEPLOY_PATH/html/
+sudo cp -r $PILOT_PORTAL_SRC_DIR/backend/* $DEPLOY_PATH/api/
 
 # Set permissions: www-data owns the path and has read/write permissions
 sudo chown -R www-data:www-data $DEPLOY_PATH
 sudo chmod -R 755 $DEPLOY_PATH
 
 if [ ! -L /etc/nginx/sites-enabled/pilot-portal ]; then
-  sudo ln -s /etc/nginx/sites-available/pilot-portal /etc/nginx/sites-enabled/
+  sudo ln -s $NGINX_CONFIG_FILE_PATH /etc/nginx/sites-enabled/pilot-portal
 fi
+
+# Remove default configuration
+sudo rm /etc/nginx/sites-enabled/default
 
 # To check that it can run
 sudo -u www-data stat $DEPLOY_PATH
@@ -75,5 +78,6 @@ systemctl --user daemon-reload
 systemctl --user enable pilot-portal-backend.service
 systemctl --user enable hotspot-control.service
 systemctl --user restart pilot-portal-backend.service
+systemctl --user restart hotspot-control.service
 
 echo "Finished $(basename $BASH_SOURCE)"
