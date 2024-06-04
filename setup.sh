@@ -191,7 +191,7 @@ if [ "$(lsb_release -cs)" = "focal" ]; then
 	# Assumes arm64
 	download_url=$(echo "$release_info" | grep "browser_download_url.*debian11_arm64.deb" | awk -F '"' '{print $4}')
 	file_name=$(echo "$release_info" | grep "name.*arm64.deb" | awk -F '"' '{print $4}')
-else [ "$(lsb_release -cs)" = "jammy" ]; then
+elif [ "$(lsb_release -cs)" = "jammy" ]; then
 	echo "Ubuntu 22.04 detected"
 	# Assumes arm64
 	download_url=$(echo "$release_info" | grep "browser_download_url.*debian12_arm64.deb" | awk -F '"' '{print $4}')
