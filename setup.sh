@@ -185,9 +185,20 @@ fi
 ########## Always install MAVSDK ##########
 echo "Downloading the latest release of mavsdk"
 release_info=$(curl -s https://api.github.com/repos/mavlink/MAVSDK/releases/latest)
-# Assumes arm64
-download_url=$(echo "$release_info" | grep "browser_download_url.*arm64.deb" | awk -F '"' '{print $4}')
-file_name=$(echo "$release_info" | grep "name.*arm64.deb" | awk -F '"' '{print $4}')
+# Check if we are on 20.04 or 22.04
+if [ "$(lsb_release -cs)" = "focal" ]; then
+	echo "Ubuntu 20.04 detected"
+	# Assumes arm64
+	download_url=$(echo "$release_info" | grep "browser_download_url.*debian11_arm64.deb" | awk -F '"' '{print $4}')
+	file_name=$(echo "$release_info" | grep "name.*arm64.deb" | awk -F '"' '{print $4}')
+else [ "$(lsb_release -cs)" = "jammy" ]; then
+	echo "Ubuntu 22.04 detected"
+	# Assumes arm64
+	download_url=$(echo "$release_info" | grep "browser_download_url.*debian12_arm64.deb" | awk -F '"' '{print $4}')
+	file_name=$(echo "$release_info" | grep "name.*arm64.deb" | awk -F '"' '{print $4}')
+else
+	echo "Unsupported Ubuntu version"
+fi
 
 if [ -z "$download_url" ]; then
     echo "Download URL not found for arm64.deb package"
