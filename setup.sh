@@ -255,6 +255,8 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 
 	make install
 
+	sudo cp build/logloader /usr/local/bin/logloader
+
 	popd
 
 	# Install the service
