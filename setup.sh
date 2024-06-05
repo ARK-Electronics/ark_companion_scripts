@@ -191,7 +191,7 @@ if [ "$(lsb_release -cs)" = "focal" ]; then
 	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/mavlink/MAVSDK.git ~/code/MAVSDK
 	cd ~/code/MAVSDK
 	cmake -Bbuild/default -DCMAKE_BUILD_TYPE=Release -H.
-	cmake --build build/default -j8
+	cmake --build build/default -j$(nproc)
 	sudo cmake --build build/default --target install
         sudo ldconfig
 	popd
