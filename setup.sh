@@ -193,6 +193,7 @@ if [ "$(lsb_release -cs)" = "focal" ]; then
 	cmake -Bbuild/default -DCMAKE_BUILD_TYPE=Release -H.
 	cmake --build build/default -j8
 	sudo cmake --build build/default --target install
+        sudo ldconfig
 	popd
 elif [ "$(lsb_release -cs)" = "jammy" ]; then
 	echo "Ubuntu 22.04 detected, Downloading the latest release of mavsdk"
