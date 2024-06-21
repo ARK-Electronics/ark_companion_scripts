@@ -9,23 +9,13 @@ fi
 TARGET_DIR="$PWD/platform/$TARGET"
 COMMON_DIR="$PWD/platform/common"
 
-# TODO: move this to an install script in tree
-
-# dependencies
-sudo apt-get install -y jq nodejs npm nginx
-sudo npm install -g @vue/cli
-
 # Clone and build repo
-sudo rm -rf ~/code/pilot-portal
-git clone --depth=1 https://github.com/ARK-Electronics/pilot-portal.git ~/code/pilot-portal
+PILOT_PORTAL_SRC_DIR="~/code/pilot-portal"
+sudo rm -rf $PILOT_PORTAL_SRC_DIR
+git clone --depth=1 https://github.com/ARK-Electronics/pilot-portal.git $PILOT_PORTAL_SRC_DIR
 pushd .
-cd ~/code/pilot-portal
-PILOT_PORTAL_SRC_DIR=$PWD
-cd backend
-npm install
-cd ../pilot-portal
-npm install
-npm run build
+cd $PILOT_PORTAL_SRC_DIR
+./install.sh
 popd
 
 # nginx config
