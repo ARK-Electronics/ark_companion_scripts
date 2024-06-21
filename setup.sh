@@ -206,6 +206,7 @@ echo "Adding aliases"
 declare -A aliases
 aliases[mavshell]="mavlink_shell.py udp:0.0.0.0:14569"
 aliases[ll]="ls -alF"
+aliases[submodupdate]="git submodule update --init --recursive"
 
 # Iterate over the associative array and add each alias if it does not exist
 for alias_name in "${!aliases[@]}"; do
@@ -249,9 +250,8 @@ fi
 # TODO: build from source?
 echo "Downloading the latest release of mavsdk"
 release_info=$(curl -s https://api.github.com/repos/mavlink/MAVSDK/releases/latest)
-# Assumes arm64
-download_url=$(echo "$release_info" | grep "browser_download_url.*arm64.deb" | awk -F '"' '{print $4}')
-file_name=$(echo "$release_info" | grep "name.*arm64.deb" | awk -F '"' '{print $4}')
+download_url=$(echo "$release_info" | grep "browser_download_url.*debian12_arm64.deb" | awk -F '"' '{print $4}')
+file_name=$(echo "$release_info" | grep "name.*debian12_arm64.deb" | awk -F '"' '{print $4}')
 
 if [ -z "$download_url" ]; then
 	echo "Download URL not found for arm64.deb package"
