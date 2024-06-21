@@ -282,7 +282,11 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	sudo rm -rf ~/code/logloader
 	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/logloader.git ~/code/logloader
 	cd ~/code/logloader
-	./upgrade_openssl.sh
+
+	# make sure pgk config can find openssl
+	if ! pkg-config --exists openssl; then
+		./upgrade_openssl.sh
+	fi
 
 	# Modify and install the config file
 	CONFIG_FILE=install.config.toml
