@@ -183,7 +183,7 @@ sudo -H pip3 install \
 
 ########## configure environment ##########
 echo "Configuring environment"
-sudo apt remove modemmanager -y
+# sudo apt remove modemmanager -y
 sudo usermod -a -G dialout $USER
 sudo groupadd -f -r gpio
 sudo usermod -a -G gpio $USER
@@ -196,6 +196,25 @@ if [ "$TARGET" = "jetson" ]; then
 	sudo cp $TARGET_DIR/99-gpio.rules /etc/udev/rules.d/
 	sudo udevadm control --reload-rules && sudo udevadm trigger
 fi
+
+# journalctl logging for user services
+CONF_FILE="/etc/systemd/journald.conf"
+
+# Check if the line 'Storage=persistent' exists in the file
+if ! grep -q "^Storage=persistent$" "$CONF_FILE"; then
+    # If the line does not exist, append it to the file
+    echo "Storage=persistent" | sudo tee -a "$CONF_FILE" > /dev/null
+    echo "Storage=persistent has been added to $CONF_FILE."
+else
+    echo "Storage=persistent is already set in $CONF_FILE."
+fi
+
+sudo mkdir -p /var/log/journal
+sudo systemd-tmpfiles --create --prefix /var/log/journal
+sudo chown root:systemd-journal /var/log/journal
+sudo chmod 2755 /var/log/journal
+sudo systemctl restart systemd-journald
+journalctl --disk-usage
 
 ########## scripts ##########
 echo "Installing scripts"
