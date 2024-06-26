@@ -166,7 +166,8 @@ sudo apt-get install -y \
 		snap \
 		snapd \
 		avahi-daemon \
-		libssl-dev
+		libssl-dev \
+		nvidia-jetpack
 
 if [ "$TARGET" = "jetson" ]; then
 	sudo -H pip3 install Jetson.GPIO
