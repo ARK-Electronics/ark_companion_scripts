@@ -10,31 +10,31 @@ TARGET_DIR="$PWD/platform/$TARGET"
 COMMON_DIR="$PWD/platform/common"
 
 # Clone and build repo
-PILOT_PORTAL_SRC_DIR="$HOME/code/pilot-portal"
-sudo rm -rf $PILOT_PORTAL_SRC_DIR
-git clone --depth=1 https://github.com/ARK-Electronics/pilot-portal.git $PILOT_PORTAL_SRC_DIR
+ARK_UI_SRC_DIR="$HOME/code/ark-ui"
+sudo rm -rf $ARK_UI_SRC_DIR
+git clone --depth=1 https://github.com/ARK-Electronics/ark-ui.git $ARK_UI_SRC_DIR
 pushd .
-cd $PILOT_PORTAL_SRC_DIR
+cd $ARK_UI_SRC_DIR
 ./install.sh
 popd
 
 # nginx config
-NGINX_CONFIG_FILE_PATH="/etc/nginx/sites-available/pilot-portal"
-sudo cp "$PILOT_PORTAL_SRC_DIR/pilot-portal.nginx" $NGINX_CONFIG_FILE_PATH
-DEPLOY_PATH="/var/www/pilot-portal"
+NGINX_CONFIG_FILE_PATH="/etc/nginx/sites-available/ark-ui"
+sudo cp "$ARK_UI_SRC_DIR/ark-ui.nginx" $NGINX_CONFIG_FILE_PATH
+DEPLOY_PATH="/var/www/ark-ui"
 sudo mkdir -p $DEPLOY_PATH/html
 sudo mkdir -p $DEPLOY_PATH/api
 
 # Copy frontend and backend files to deployment path
-sudo cp -r $PILOT_PORTAL_SRC_DIR/pilot-portal/dist/* $DEPLOY_PATH/html/
-sudo cp -r $PILOT_PORTAL_SRC_DIR/backend/* $DEPLOY_PATH/api/
+sudo cp -r $ARK_UI_SRC_DIR/ark-ui/dist/* $DEPLOY_PATH/html/
+sudo cp -r $ARK_UI_SRC_DIR/backend/* $DEPLOY_PATH/api/
 
 # Set permissions: www-data owns the path and has read/write permissions
 sudo chown -R www-data:www-data $DEPLOY_PATH
 sudo chmod -R 755 $DEPLOY_PATH
 
-if [ ! -L /etc/nginx/sites-enabled/pilot-portal ]; then
-  sudo ln -s $NGINX_CONFIG_FILE_PATH /etc/nginx/sites-enabled/pilot-portal
+if [ ! -L /etc/nginx/sites-enabled/ark-ui ]; then
+  sudo ln -s $NGINX_CONFIG_FILE_PATH /etc/nginx/sites-enabled/ark-ui
 fi
 
 # Remove default configuration
@@ -62,12 +62,12 @@ sudo systemctl restart polkit
 
 # Install services as user
 mkdir -p ~/.config/systemd/user/
-cp $COMMON_DIR/services/pilot-portal-backend.service ~/.config/systemd/user/
+cp $COMMON_DIR/services/ark-ui-backend.service ~/.config/systemd/user/
 cp $COMMON_DIR/services/hotspot-control.service ~/.config/systemd/user/
 systemctl --user daemon-reload
-systemctl --user enable pilot-portal-backend.service
+systemctl --user enable ark-ui-backend.service
 systemctl --user enable hotspot-control.service
-systemctl --user restart pilot-portal-backend.service
+systemctl --user restart ark-ui-backend.service
 systemctl --user restart hotspot-control.service
 
 echo "Finished $(basename $BASH_SOURCE)"

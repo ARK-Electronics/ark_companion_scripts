@@ -40,7 +40,7 @@ INSTALL_DDS_AGENT="y"
 INSTALL_RTSP_SERVER="y"
 INSTALL_LOGLOADER="y"
 INSTALL_POLARIS="y"
-INSTALL_PILOT_PORTAL="y"
+INSTALL_ARK_UI="y"
 
 POLARIS_API_KEY=""
 USER_EMAIL="logs@arkelectron.com"
@@ -66,8 +66,8 @@ if [ "$#" -gt 0 ]; then
 				POLARIS_API_KEY="$2"
 				shift
 				;;
-			-c | --install-pilot-portal)
-				INSTALL_PILOT_PORTAL="y"
+			-c | --install-ark-ui)
+				INSTALL_ARK_UI="y"
 				shift
 				;;
 			-l | --install-logloader)
@@ -93,7 +93,7 @@ if [ "$#" -gt 0 ]; then
 				echo "  -r, --install-rtsp-server    Install rtsp-server"
 				echo "  -k, --install-polaris        Install polaris-client-mavlink"
 				echo "  -a, --polaris-api-key        Polaris API key"
-				echo "  -c, --install-pilot-portal   Install UI interface at $TARGET.local"
+				echo "  -c, --install-ark-ui         Install UI interface at $TARGET.local"
 				echo "  -l, --install-logloader      Install logloader"
 				echo "  -e, --email EMAIL            Email to use for logloader"
 				echo "  -u, --auto-upload            Auto upload logs to PX4 Flight Review"
@@ -128,8 +128,8 @@ else
 	echo "Do you want to install rtsp-server? (y/n)"
 	read -r INSTALL_RTSP_SERVER
 
-	echo "Do you want to install pilot-portal? (y/n)"
-	read -r INSTALL_PILOT_PORTAL
+	echo "Do you want to install ark-ui? (y/n)"
+	read -r INSTALL_ARK_UI
 
 	echo "Do you want to install the polaris-client-mavlink? (y/n)"
 	read -r INSTALL_POLARIS
@@ -401,8 +401,8 @@ if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 	systemctl --user restart rtsp-server.service
 fi
 
-if [ "$INSTALL_PILOT_PORTAL" = "y" ]; then
-	./install_pilot_portal.sh
+if [ "$INSTALL_ARK_UI" = "y" ]; then
+	./install_ark_ui.sh
 fi
 
 # Install jetson specific services -- these services run as root

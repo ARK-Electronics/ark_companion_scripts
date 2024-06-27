@@ -21,11 +21,11 @@ This service provides an RTSP server via gstreamer using a Pi cam at **rtsp://pi
 **polaris.service** <br>
 This service receives RTCM corrections from the PointOne GNSS Corrections service and publishes them via MAVLink.
 
-**pilot-portal-backend.service** <br>
-This service provides an express backend for the pilot-portal configuration UI.
+**ark-ui-backend.service** <br>
+This service provides an express backend for the ark-ui configuration UI.
 
 **hotspot-control.service** <br>
-This service creates a hotspot after booting if the device is unable to auto connect to a network. You can then use the pilot-portal configuration UI to configure your network.
+This service creates a hotspot after booting if the device is unable to auto connect to a network. You can then use the ark-ui configuration UI to configure your network.
 
 ### Jetson only
 **jetson-can.service** <br>
