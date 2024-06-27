@@ -9,6 +9,14 @@ fi
 TARGET_DIR="$PWD/platform/$TARGET"
 COMMON_DIR="$PWD/platform/common"
 
+# Remove old pilot-portal
+sudo rm /etc/nginx/sites-enabled/pilot-portal
+sudo rm /etc/nginx/sites-available/pilot-portal
+sudo rm -rf /var/www/pilot-portal
+sudo rm ~/.config/systemd/user/pilot-portal-backend.service
+systemctl --user stop pilot-portal-backend.service
+systemctl --user disable pilot-portal-backend.service
+
 # Clone and build repo
 ARK_UI_SRC_DIR="$HOME/code/ark-ui"
 sudo rm -rf $ARK_UI_SRC_DIR
