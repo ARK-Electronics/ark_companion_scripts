@@ -10,7 +10,7 @@ TARGET_DIR="$PWD/platform/$TARGET"
 COMMON_DIR="$PWD/platform/common"
 
 # Clone and build repo
-PILOT_PORTAL_SRC_DIR="~/code/pilot-portal"
+PILOT_PORTAL_SRC_DIR="$HOME/code/pilot-portal"
 sudo rm -rf $PILOT_PORTAL_SRC_DIR
 git clone --depth=1 https://github.com/ARK-Electronics/pilot-portal.git $PILOT_PORTAL_SRC_DIR
 pushd .
