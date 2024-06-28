@@ -298,7 +298,7 @@ sudo ldconfig
 ########## mavsdk-ftp-client ##########
 echo "Installing mavsdk-ftp-client"
 pushd .
-sudo rm -rf ~/code/mavsdk-ftp-client
+sudo rm -rf ~/code/mavsdk-ftp-client &>/dev/null
 git clone https://github.com/ARK-Electronics/mavsdk-ftp-client.git ~/code/mavsdk-ftp-client
 cd ~/code/mavsdk-ftp-client
 make install
@@ -311,10 +311,13 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 
 	echo "Installing logloader"
 
-	# clean up legacy
-	sudo rm -rf ~/logloader
-	sudo rm /etc/systemd/system/logloader.service
-	sudo rm -rf ~/code/logloader
+	# clean up legacy if it exists
+	sudo rm -rf ~/logloader &>/dev/null
+	sudo rm /etc/systemd/system/logloader.service &>/dev/null
+	sudo systemctl stop logloader &>/dev/null
+	sudo systemctl disable logloader &>/dev/null
+
+	sudo rm -rf ~/code/logloader &>/dev/null
 	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/logloader.git ~/code/logloader
 	cd ~/code/logloader
 
@@ -356,10 +359,16 @@ fi
 if [ "$INSTALL_POLARIS" = "y" ]; then
 	echo "Installing polaris-client-mavlink"
 
+	# clean up legacy if it exists
+	sudo rm -rf ~/polaris-client-mavlink &>/dev/null
+	sudo rm /etc/systemd/system/polaris-client-mavlink.service &>/dev/null
+	sudo systemctl stop polaris-client-mavlink &>/dev/null
+	sudo systemctl disable polaris-client-mavlink &>/dev/null
+
 	sudo apt-get install -y libssl-dev libgflags-dev libgoogle-glog-dev libboost-all-dev
 
 	pushd .
-	sudo rm -rf ~/code/polaris-client-mavlink
+	sudo rm -rf ~/code/polaris-client-mavlink &>/dev/null
 	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/polaris-client-mavlink.git ~/code/polaris-client-mavlink
 	cd ~/code/polaris-client-mavlink
 	make install
