@@ -388,7 +388,7 @@ if [ "$INSTALL_POLARIS" = "y" ]; then
 	make install
 
 	# Modify and install the config file
-	CONFIG_FILE="$XDG_DATA_HOME/logloader/config.toml"
+	CONFIG_FILE="$XDG_DATA_HOME/polaris-client-mavlink/config.toml"
 	sed -i "s/^polaris_api_key = \".*\"/polaris_api_key = \"$POLARIS_API_KEY\"/" "$CONFIG_FILE"
 
 	sudo ldconfig
