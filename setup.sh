@@ -307,13 +307,15 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	cd ~/code/logloader
 
 	# make sure pgk config can find openssl
-	if ! pkg-config --exists openssl; then
+	if ! pkg-config --exists openssl || [[ "$(pkg-config --modversion openssl)" < "3.0.2" ]]; then
+		echo "Installing OpenSSL from source"
 		./upgrade_openssl.sh
 	fi
 
+	make install
+
 	# Modify and install the config file
-	CONFIG_FILE=install.config.toml
-	cp config.toml $CONFIG_FILE
+	CONFIG_FILE="$HOME/.local/share/logloader/config.toml"
 	sed -i "s/^email = \".*\"/email = \"$USER_EMAIL\"/" "$CONFIG_FILE"
 
 	if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
@@ -328,7 +330,6 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 		sed -i "s/^public_logs = .*/public_logs = false/" "$CONFIG_FILE"
 	fi
 
-	make install
 	sudo ldconfig
 	popd
 
