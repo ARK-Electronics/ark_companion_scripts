@@ -19,9 +19,9 @@ if [ -z "$SERIALDEVICE" ]; then
     exit 1
 fi
 
-systemctl --user stop mavlink-router
+systemctl --user stop mavlink-router &>/dev/null
 
-python3 /usr/local/bin/reset_fmu_wait_bl.py
+python3 /usr/local/bin/reset_fmu_wait_bl.py &>/dev/null
 
 # If the device is found and file exists, run the uploader script and filter JSON output
 python3 -u /usr/local/bin/px_uploader.py --json-progress --port $SERIALDEVICE $FW_PATH 2>&1 | while IFS= read -r line
