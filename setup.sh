@@ -244,8 +244,14 @@ done
 
 ########## mavlink-router ##########
 echo "Installing mavlink-router"
+
+# clean up legacy if it exists
+sudo systemctl stop mavlink-router &>/dev/null
+sudo systemctl disable mavlink-router &>/dev/null
+sudo rm /etc/systemd/system/mavlink-router.service &>/dev/null
 sudo rm -rf ~/code/mavlink-router
 sudo rm /usr/bin/mavlink-routerd
+
 pushd .
 git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router
 cd ~/code/mavlink-router
@@ -264,6 +270,12 @@ systemctl --user restart mavlink-router.service
 
 ########## dds-agent ##########
 if [ "$INSTALL_DDS_AGENT" = "y" ]; then
+
+	# clean up legacy if it exists
+	sudo systemctl stop dds-agent &>/dev/null
+	sudo systemctl disable dds-agent &>/dev/null
+	sudo rm /etc/systemd/system/dds-agent.service &>/dev/null
+
 	echo "Installing micro-xrce-dds-agent"
 	sudo snap install micro-xrce-dds-agent --edge
 	# Install the service
@@ -312,10 +324,10 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	echo "Installing logloader"
 
 	# clean up legacy if it exists
-	sudo rm -rf ~/logloader &>/dev/null
-	sudo rm /etc/systemd/system/logloader.service &>/dev/null
 	sudo systemctl stop logloader &>/dev/null
 	sudo systemctl disable logloader &>/dev/null
+	sudo rm -rf ~/logloader &>/dev/null
+	sudo rm /etc/systemd/system/logloader.service &>/dev/null
 
 	sudo rm -rf ~/code/logloader &>/dev/null
 	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/logloader.git ~/code/logloader
@@ -324,7 +336,7 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	# make sure pgk config can find openssl
 	if ! pkg-config --exists openssl || [[ "$(pkg-config --modversion openssl)" < "3.0.2" ]]; then
 		echo "Installing OpenSSL from source"
-		./upgrade_openssl.sh
+		./install_openssl.sh
 	fi
 
 	make install
@@ -360,15 +372,17 @@ if [ "$INSTALL_POLARIS" = "y" ]; then
 	echo "Installing polaris-client-mavlink"
 
 	# clean up legacy if it exists
-	sudo rm -rf ~/polaris-client-mavlink &>/dev/null
-	sudo rm /etc/systemd/system/polaris-client-mavlink.service &>/dev/null
 	sudo systemctl stop polaris-client-mavlink &>/dev/null
 	sudo systemctl disable polaris-client-mavlink &>/dev/null
+	sudo rm -rf ~/polaris-client-mavlink &>/dev/null
+	sudo rm /etc/systemd/system/polaris-client-mavlink.service &>/dev/null
+	sudo rm -rf ~/code/polaris-client-mavlink &>/dev/null
 
+	# Install dependencies
 	sudo apt-get install -y libssl-dev libgflags-dev libgoogle-glog-dev libboost-all-dev
 
+	# Clone, build, and install
 	pushd .
-	sudo rm -rf ~/code/polaris-client-mavlink &>/dev/null
 	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/polaris-client-mavlink.git ~/code/polaris-client-mavlink
 	cd ~/code/polaris-client-mavlink
 	make install
@@ -409,7 +423,12 @@ if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 		sudo apt remove gstreamer1.0-vaapi
 	fi
 
+	# clean up legacy if it exists
+	sudo systemctl stop rtsp-server &>/dev/null
+	sudo systemctl disable rtsp-server &>/dev/null
 	sudo rm -rf ~/code/rtsp-server
+
+	# Clone, build, and install
 	git clone --depth=1 https://github.com/ARK-Electronics/rtsp-server.git ~/code/rtsp-server
 	pushd .
 	cd ~/code/rtsp-server
