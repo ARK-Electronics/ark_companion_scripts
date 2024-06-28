@@ -1,5 +1,11 @@
 #!/bin/bash
 
+DEFAULT_XDG_CONF_HOME="$HOME/.config"
+DEFAULT_XDG_DATA_HOME="$HOME/.local/share"
+
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$DEFAULT_XDG_CONF_HOME}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
+
 function check_and_add_alias() {
 	local name="$1"
 	local command="$2"
@@ -191,7 +197,7 @@ sudo usermod -a -G dialout $USER
 sudo groupadd -f -r gpio
 sudo usermod -a -G gpio $USER
 sudo usermod -a -G i2c $USER
-mkdir -p ~/.config/systemd/user/
+mkdir -p $XDG_CONFIG_HOME/systemd/user/
 
 if [ "$TARGET" = "jetson" ]; then
 	sudo systemctl stop nvgetty
@@ -251,7 +257,7 @@ sudo mkdir -p /etc/mavlink-router
 sudo cp $TARGET_DIR/main.conf /etc/mavlink-router/
 
 # Install the service
-sudo cp $TARGET_DIR/services/mavlink-router.service ~/.config/systemd/user/
+sudo cp $TARGET_DIR/services/mavlink-router.service $XDG_CONFIG_HOME/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable mavlink-router.service
 systemctl --user restart mavlink-router.service
@@ -261,7 +267,7 @@ if [ "$INSTALL_DDS_AGENT" = "y" ]; then
 	echo "Installing micro-xrce-dds-agent"
 	sudo snap install micro-xrce-dds-agent --edge
 	# Install the service
-	sudo cp $TARGET_DIR/services/dds-agent.service ~/.config/systemd/user/
+	sudo cp $TARGET_DIR/services/dds-agent.service $XDG_CONFIG_HOME/systemd/user/
 	systemctl --user daemon-reload
 	systemctl --user enable dds-agent.service
 	systemctl --user restart dds-agent.service
@@ -300,8 +306,14 @@ popd
 
 ########## logloader ##########
 if [ "$INSTALL_LOGLOADER" = "y" ]; then
-	echo "Installing logloader"
+
 	pushd .
+
+	echo "Installing logloader"
+
+	# clean up legacy
+	sudo rm -rf ~/logloader
+	sudo rm /etc/systemd/system/logloader.service
 	sudo rm -rf ~/code/logloader
 	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/logloader.git ~/code/logloader
 	cd ~/code/logloader
@@ -315,7 +327,7 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	make install
 
 	# Modify and install the config file
-	CONFIG_FILE="$HOME/.local/share/logloader/config.toml"
+	CONFIG_FILE="$XDG_DATA_HOME/logloader/config.toml"
 	sed -i "s/^email = \".*\"/email = \"$USER_EMAIL\"/" "$CONFIG_FILE"
 
 	if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
@@ -334,7 +346,7 @@ if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	popd
 
 	# Install the service
-	sudo cp $COMMON_DIR/services/logloader.service ~/.config/systemd/user/
+	sudo cp $COMMON_DIR/services/logloader.service $XDG_CONFIG_HOME/systemd/user/
 	systemctl --user daemon-reload
 	systemctl --user enable logloader.service
 	systemctl --user restart logloader.service
@@ -350,16 +362,17 @@ if [ "$INSTALL_POLARIS" = "y" ]; then
 	sudo rm -rf ~/code/polaris-client-mavlink
 	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/polaris-client-mavlink.git ~/code/polaris-client-mavlink
 	cd ~/code/polaris-client-mavlink
-	# Modify and install the config file
-	CONFIG_FILE=install.config.toml
-	cp config.toml $CONFIG_FILE
-	sed -i "s/^polaris_api_key = \".*\"/polaris_api_key = \"$POLARIS_API_KEY\"/" "$CONFIG_FILE"
 	make install
+
+	# Modify and install the config file
+	CONFIG_FILE="$XDG_DATA_HOME/logloader/config.toml"
+	sed -i "s/^polaris_api_key = \".*\"/polaris_api_key = \"$POLARIS_API_KEY\"/" "$CONFIG_FILE"
+
 	sudo ldconfig
 	popd
 
 	# Install the service
-	sudo cp $COMMON_DIR/services/polaris.service ~/.config/systemd/user/
+	sudo cp $COMMON_DIR/services/polaris.service $XDG_CONFIG_HOME/systemd/user/
 	systemctl --user daemon-reload
 	systemctl --user enable polaris.service
 	systemctl --user restart polaris.service
@@ -396,7 +409,7 @@ if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 	popd
 
 	# Install the service
-	sudo cp $COMMON_DIR/services/rtsp-server.service ~/.config/systemd/user/
+	sudo cp $COMMON_DIR/services/rtsp-server.service $XDG_CONFIG_HOME/systemd/user/
 	systemctl --user daemon-reload
 	systemctl --user enable rtsp-server.service
 	systemctl --user restart rtsp-server.service
