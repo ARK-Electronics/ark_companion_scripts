@@ -20,8 +20,8 @@ while true; do
 	INTERFACE=$(iw dev | grep Interface | awk '{print $2}')
 	if [ ! -z "$INTERFACE" ]; then
 		echo "Found wireless interface: $INTERFACE"
-		# Give it a second to come up
-		sleep 5
+		# Give it some time to connect to a network
+		sleep 60
 		break  # Exit the loop when the interface is found
 	else
 		echo "No wireless interface found, retrying in 5 seconds..."
