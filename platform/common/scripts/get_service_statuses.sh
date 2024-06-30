@@ -27,7 +27,7 @@ do
 	fi
 
 	# Print JSON object for the current service
-	echo -n "{\"service\": \"${SERVICE_NAME}\", \"enabled\": \"${ENABLED_STATUS}\", \"active\": \"${ACTIVE_STATUS}\"}"
+	echo -n "{\"name\": \"${SERVICE_NAME}\", \"enabled\": \"${ENABLED_STATUS}\", \"active\": \"${ACTIVE_STATUS}\"}"
 done
 
 # End JSON output
