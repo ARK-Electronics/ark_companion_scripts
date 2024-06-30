@@ -20,7 +20,7 @@ systemctl --user disable pilot-portal-backend.service
 # Clone and build repo
 ARK_UI_SRC_DIR="$HOME/code/ark-ui"
 sudo rm -rf $ARK_UI_SRC_DIR
-git clone --depth=1 https://github.com/ARK-Electronics/ark-ui.git $ARK_UI_SRC_DIR
+git clone -b pr-home_page --depth=1 https://github.com/ARK-Electronics/ark-ui.git $ARK_UI_SRC_DIR
 pushd .
 cd $ARK_UI_SRC_DIR
 ./install.sh
