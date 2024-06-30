@@ -230,6 +230,12 @@ echo "Installing scripts"
 sudo cp $TARGET_DIR/scripts/* /usr/local/bin
 sudo cp $COMMON_DIR/scripts/* /usr/local/bin
 
+########## give sudo for hostname change ##########
+HOSTNAME_SCRIPT="platform/common/wifi/change_hostname.sh"
+echo "www-data ALL=(ALL) NOPASSWD: $HOSTNAME_SCRIPT" > /etc/sudoers.d/change_hostname
+chmod 0440 /etc/sudoers.d/change_hostname
+echo "Sudoers entry added successfully."
+
 ########## bash aliases ##########
 echo "Adding aliases"
 declare -A aliases
@@ -323,12 +329,13 @@ else
 	echo "Unsupported Ubuntu version, not installing MAVSDK"
 fi
 
-########## mavsdk-ftp-client ##########
-echo "Installing mavsdk-ftp-client"
+########## mavsdk-examples ##########
+echo "Installing mavsdk-examples"
 pushd .
 sudo rm -rf ~/code/mavsdk-ftp-client &>/dev/null
-git clone https://github.com/ARK-Electronics/mavsdk-ftp-client.git ~/code/mavsdk-ftp-client
-cd ~/code/mavsdk-ftp-client
+sudo rm -rf ~/code/mavsdk-examples &>/dev/null
+git clone https://github.com/ARK-Electronics/mavsdk-examples.git ~/code/mavsdk-examples
+cd ~/code/mavsdk-examples
 make install
 popd
 

@@ -55,9 +55,6 @@ sudo -u www-data stat $DEPLOY_PATH
 sudo nginx -t
 sudo systemctl restart nginx
 
-# scripts
-sudo cp $COMMON_DIR/wifi/*.sh /usr/local/bin
-
 # Add user to netdev and allow networkmanager control
 sudo adduser $USER netdev
 sudo cp $COMMON_DIR/wifi/99-network.pkla /etc/polkit-1/localauthority/90-mandatory.d/

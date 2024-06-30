@@ -1,14 +1,15 @@
 #!/bin/bash
 
-# Function to get connection details
 get_connection_details() {
 	local connection_name=$1
 	local ssid=$(nmcli -g 802-11-wireless.ssid con show "$connection_name")
 	local password=$(nmcli -s -g 802-11-wireless-security.psk con show "$connection_name")
 	local mode=$(nmcli -g 802-11-wireless.mode con show "$connection_name")
+	local ip_address=$(nmcli -g IP4.ADDRESS con show "$connection_name")
+	local hostname=$(hostname)
 
 	# Return the details as a JSON object
-	echo "{\"ssid\": \"$ssid\", \"password\": \"$password\", \"mode\": \"$mode\"}"
+	echo "{\"ssid\": \"$ssid\", \"password\": \"$password\", \"mode\": \"$mode\", \"ip_address\": \"$ip_address\", \"hostname\": \"$hostname\"}"
 }
 
 # Get the name of the currently active connection
