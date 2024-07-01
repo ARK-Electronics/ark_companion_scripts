@@ -41,10 +41,11 @@ AP_SSID="$(find_existing_ap)"
 
 # Check if the access point SSID is empty and needs creating
 if [ -z "$AP_SSID" ]; then
-	echo "Creating new hotspot"
-	# Create default hotspot
-	AP_SSID="ARK_Hotspot"
+	HOSTNAME=$(hostname)
+	SERIAL=$(cat /proc/device-tree/serial-number)
+	AP_SSID="${HOSTNAME}-${SERIAL}"
 	AP_PASSWORD="password"
+	echo "Creating new hotspot: $AP_SSID"
 	nmcli con add type wifi ifname '*' con-name "$AP_SSID" autoconnect no ssid "$AP_SSID" 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
 	nmcli con modify "$AP_SSID" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$AP_PASSWORD" 802-11-wireless-security.pmf disable
 fi
