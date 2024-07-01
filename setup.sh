@@ -484,3 +484,4 @@ fi
 sudo systemctl enable systemd-time-wait-sync.service
 
 echo "Finished $(basename $BASH_SOURCE)"
+echo "Please reboot your device"
