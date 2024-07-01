@@ -227,11 +227,11 @@ sudo cp $TARGET_DIR/scripts/* /usr/local/bin
 sudo cp $COMMON_DIR/scripts/* /usr/local/bin
 
 ########## sudoers permissions ##########
+# TODO: fix this
 echo "Adding sudoers"
-HOSTNAME_SCRIPT="platform/common/wifi/change_hostname.sh"
-echo "www-data ALL=(ALL) NOPASSWD: $HOSTNAME_SCRIPT" > /etc/sudoers.d/change_hostname
-chmod 0440 /etc/sudoers.d/change_hostname
-echo "Sudoers entry added successfully."
+sudo cp $COMMON_DIR/ark_scripts.sudoers /etc/sudoers.d/ark_scripts
+chmod 0440 /etc/sudoers.d/ark_scripts
+echo "Sudoers entries added successfully."
 
 ########## bash aliases ##########
 echo "Adding aliases"
