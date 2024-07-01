@@ -289,8 +289,6 @@ if [ "$INSTALL_DDS_AGENT" = "y" ]; then
 	systemctl --user daemon-reload
 	systemctl --user enable dds-agent.service
 	systemctl --user restart dds-agent.service
-else
-	echo "micro-xrce-dds-agent already installed"
 fi
 
 ########## Always install MAVSDK ##########
