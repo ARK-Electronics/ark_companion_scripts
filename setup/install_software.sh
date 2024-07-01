@@ -227,10 +227,9 @@ sudo cp $TARGET_DIR/scripts/* /usr/local/bin
 sudo cp $COMMON_DIR/scripts/* /usr/local/bin
 
 ########## sudoers permissions ##########
-# TODO: fix this
 echo "Adding sudoers"
 sudo cp $COMMON_DIR/ark_scripts.sudoers /etc/sudoers.d/ark_scripts
-chmod 0440 /etc/sudoers.d/ark_scripts
+sudo chmod 0440 /etc/sudoers.d/ark_scripts
 echo "Sudoers entries added successfully."
 
 ########## bash aliases ##########
