@@ -1,13 +1,6 @@
 #!/bin/bash
 
-if uname -ar | grep tegra; then
-	TARGET=jetson
-else
-	TARGET=pi
-fi
-
-TARGET_DIR="$PWD/platform/$TARGET"
-COMMON_DIR="$PWD/platform/common"
+echo "Installing ARK-UI"
 
 # Remove old pilot-portal
 sudo rm /etc/nginx/sites-enabled/pilot-portal
