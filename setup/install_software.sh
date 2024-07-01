@@ -182,7 +182,7 @@ elif [ "$TARGET" = "pi" ]; then
 	pip3 install RPi.GPIO
 fi
 
-sudo -H pip3 install \
+pip3 install \
 	meson \
 	pyserial \
 	pymavlink \
