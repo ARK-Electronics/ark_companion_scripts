@@ -175,13 +175,13 @@ sudo apt-get install -y \
 		libssl-dev
 
 if [ "$TARGET" = "jetson" ]; then
-	sudo -H pip3 install Jetson.GPIO
+	pip3 install Jetson.GPIO smbus2
 
 	sudo apt-get install -y \
 		nvidia-jetpack
 
 elif [ "$TARGET" = "pi" ]; then
-	sudo -H pip3 install RPi.GPIO
+	pip3 install RPi.GPIO
 fi
 
 sudo -H pip3 install \
