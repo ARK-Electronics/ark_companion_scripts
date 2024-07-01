@@ -214,7 +214,7 @@ class uploader:
 
     MAX_FLASH_PRGRAM_TIME  = 0.001  # Time on an F7 to send SYNC, RESULT from last data in multi RXed
 
-    def __init__(self, portname, baudrate_bootloader, baudrate_flightstack):
+    def __init__(self, portname, baudrate_bootloader, baudrate_flightstack, json_progress):
         # Open the port, keep the default timeout short so we can poll quickly.
         # On some systems writes can suddenly get stuck without having a
         # write_timeout > 0 set.
@@ -233,6 +233,7 @@ class uploader:
         self.baudrate_flightstack = baudrate_flightstack
         self.baudrate_flightstack_idx = -1
         self.force_erase = False
+        self.json_progress = json_progress
 
     def close(self):
         if self.port is not None:
@@ -428,8 +429,16 @@ class uploader:
 
         percent = (float(progress) / float(maxVal)) * 100.0
 
-        sys.stdout.write("\r%s: [%-20s] %.1f%%" % (label, '='*int(percent/5.0), percent))
-        sys.stdout.flush()
+        if self.json_progress:
+            progress_data = {
+                "status": label,
+                "percent": percent
+            }
+            # print(json.dumps(progress_data))  # Print JSON progress
+            print(json.dumps(progress_data) + '\n')
+        else:
+            sys.stdout.write("\r%s: [%-20s] %.1f%%" % (label, '='*int(percent/5.0), percent))
+            sys.stdout.flush()
 
     # send the CHIP_ERASE command and wait for the bootloader to become ready
     def __erase(self, label):
@@ -723,7 +732,7 @@ class uploader:
                                    "If you know you that the board does not have the silicon errata, use\n"
                                    "this script with --force, or update the bootloader. If you are invoking\n"
                                    "upload using make, you can use force-upload target to force the upload.\n")
-        self.__erase("Erase  ")
+        self.__erase("Erase")
         self.__program("Program", fw)
 
         if self.bl_rev == 2:
@@ -818,7 +827,9 @@ def main():
     parser.add_argument('--force-erase', action="store_true", help="Do not perform the blank check, always erase every sector of the application space")
     parser.add_argument('--boot-delay', type=int, default=None, help='minimum boot delay to store in flash')
     parser.add_argument('--use-protocol-splitter-format', action='store_true', help='use protocol splitter format for reboot')
+    parser.add_argument('--json-progress', action='store_true', default=False, help='Output progress as JSON')
     parser.add_argument('firmware', action="store", nargs='+', help="Firmware file(s)")
+
     args = parser.parse_args()
 
     if args.use_protocol_splitter_format:
@@ -880,19 +891,19 @@ def main():
                     if "linux" in _platform:
                         # Linux, don't open Mac OS and Win ports
                         if "COM" not in port and "tty.usb" not in port:
-                            up = uploader(port, args.baud_bootloader, baud_flightstack)
+                            up = uploader(port, args.baud_bootloader, baud_flightstack, args.json_progress)
                     elif "darwin" in _platform:
                         # OS X, don't open Windows and Linux ports
                         if "COM" not in port and "ACM" not in port:
-                            up = uploader(port, args.baud_bootloader, baud_flightstack)
+                            up = uploader(port, args.baud_bootloader, baud_flightstack, args.json_progress)
                     elif "cygwin" in _platform:
                         # Cygwin, don't open native Windows COM and Linux ports
                         if "COM" not in port and "ACM" not in port:
-                            up = uploader(port, args.baud_bootloader, baud_flightstack)
+                            up = uploader(port, args.baud_bootloader, baud_flightstack, args.json_progress)
                     elif "win" in _platform:
                         # Windows, don't open POSIX ports
                         if "/" not in port:
-                            up = uploader(port, args.baud_bootloader, baud_flightstack)
+                            up = uploader(port, args.baud_bootloader, baud_flightstack, args.json_progress)
                 except Exception as e:
                     # open failed, rate-limit our attempts
                     time.sleep(0.05)
