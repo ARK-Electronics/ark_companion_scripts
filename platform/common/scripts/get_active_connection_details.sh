@@ -5,7 +5,7 @@ get_connection_details() {
 	local ssid=$(nmcli -g 802-11-wireless.ssid con show "$connection_name")
 	local password=$(nmcli -s -g 802-11-wireless-security.psk con show "$connection_name")
 	local mode=$(nmcli -g 802-11-wireless.mode con show "$connection_name")
-	local ip_address=$(nmcli -g IP4.ADDRESS con show "$connection_name")
+	local ip_address=$(nmcli -g IP4.ADDRESS con show "$connection_name" | awk -F'/' '{print $1}')
 	local hostname=$(hostname)
 
 	# Return the details as a JSON object
