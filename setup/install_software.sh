@@ -173,16 +173,16 @@ sudo apt-get install -y \
 		libssl-dev
 
 if [ "$TARGET" = "jetson" ]; then
-	pip3 install Jetson.GPIO smbus2
+	sudo pip3 install Jetson.GPIO smbus2
 
 	sudo apt-get install -y \
 		nvidia-jetpack
 
 elif [ "$TARGET" = "pi" ]; then
-	pip3 install RPi.GPIO
+	sudo pip3 install RPi.GPIO
 fi
 
-pip3 install \
+sudo pip3 install \
 	meson \
 	pyserial \
 	pymavlink \
