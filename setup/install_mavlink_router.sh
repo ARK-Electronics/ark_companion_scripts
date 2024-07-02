@@ -16,8 +16,8 @@ echo "Installing mavlink-router"
 sudo systemctl stop mavlink-router &>/dev/null
 sudo systemctl disable mavlink-router &>/dev/null
 sudo rm /etc/systemd/system/mavlink-router.service &>/dev/null
-sudo rm -rf ~/code/mavlink-router
-sudo rm /usr/bin/mavlink-routerd
+sudo rm -rf ~/code/mavlink-router &>/dev/null
+sudo rm /usr/bin/mavlink-routerd &>/dev/null
 
 pushd .
 git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router

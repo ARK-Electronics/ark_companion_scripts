@@ -11,8 +11,8 @@ sudo systemctl stop logloader &>/dev/null
 sudo systemctl disable logloader &>/dev/null
 sudo rm -rf ~/logloader &>/dev/null
 sudo rm /etc/systemd/system/logloader.service &>/dev/null
-
 sudo rm -rf ~/code/logloader &>/dev/null
+
 git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/logloader.git ~/code/logloader
 cd ~/code/logloader
 

@@ -26,13 +26,27 @@ elif [ "$(lsb_release -cs)" = "jammy" ]; then
 		exit 1
 	fi
 
-	echo "Downloading $download_url..."
-	curl -sSL "$download_url" -o $(basename "$download_url")
+	max_attempts=5
+	attempt_num=1
+	success=false
 
-	echo "Installing $file_name"
-	sudo dpkg -i $file_name
-	sudo rm $file_name
-	sudo ldconfig
+	while [ $attempt_num -le $max_attempts ]; do
+		echo "Attempt $attempt_num: Downloading $download_url..."
+		curl -sSL "$download_url" -o "$file_name" && success=true && break
+		echo "Attempt $attempt_num failed, retrying in 5 seconds..."
+		sleep 5
+		((attempt_num++))
+	done
+
+	if [ "$success" = true ]; then
+		echo "Downloading completed successfully."
+		echo "Installing $file_name"
+		sudo dpkg -i "$file_name"
+		sudo rm "$file_name"
+		sudo ldconfig
+	else
+		echo "Failed to download the file after $max_attempts attempts."
+	fi
 else
 	echo "Unsupported Ubuntu version, not installing MAVSDK"
 fi

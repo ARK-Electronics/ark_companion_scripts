@@ -26,7 +26,7 @@ fi
 # clean up legacy if it exists
 sudo systemctl stop rtsp-server &>/dev/null
 sudo systemctl disable rtsp-server &>/dev/null
-sudo rm -rf ~/code/rtsp-server
+sudo rm -rf ~/code/rtsp-server &>/dev/null
 
 # Clone, build, and install
 git clone --depth=1 https://github.com/ARK-Electronics/rtsp-server.git ~/code/rtsp-server

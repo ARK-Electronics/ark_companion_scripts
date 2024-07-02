@@ -5,12 +5,12 @@ sudo true
 echo "Installing ARK-UI"
 
 # Remove old pilot-portal
+systemctl --user stop pilot-portal-backend.service &>/dev/null
+systemctl --user disable pilot-portal-backend.service &>/dev/null
 sudo rm /etc/nginx/sites-enabled/pilot-portal &>/dev/null
 sudo rm /etc/nginx/sites-available/pilot-portal &>/dev/null
 sudo rm -rf /var/www/pilot-portal &>/dev/null
 sudo rm ~/.config/systemd/user/pilot-portal-backend.service &>/dev/null
-systemctl --user stop pilot-portal-backend.service &>/dev/null
-systemctl --user disable pilot-portal-backend.service &>/dev/null
 
 # Clone and build repo
 ARK_UI_SRC_DIR="$HOME/code/ark-ui"
