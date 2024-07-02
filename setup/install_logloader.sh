@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo true
+
 pushd .
 
 echo "Installing logloader"

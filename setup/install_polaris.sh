@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo true
+
 echo "Installing polaris-client-mavlink"
 
 # clean up legacy if it exists

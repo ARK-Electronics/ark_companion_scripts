@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo true
+
 echo "Installing rtsp-server"
 
 sudo apt-get install -y  \

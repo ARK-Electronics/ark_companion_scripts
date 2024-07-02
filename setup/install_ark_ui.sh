@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo true
+
 echo "Installing ARK-UI"
 
 # Remove old pilot-portal
