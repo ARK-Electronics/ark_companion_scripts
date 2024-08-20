@@ -28,7 +28,7 @@ sudo ldconfig
 popd
 
 # Install the service
-sudo cp $COMMON_DIR/services/rid-transmitter.service $XDG_CONFIG_HOME/systemd/user/
+sudo cp $TARGET_DIR/services/rid-transmitter.service $XDG_CONFIG_HOME/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable rid-transmitter.service
 systemctl --user restart rid-transmitter.service
