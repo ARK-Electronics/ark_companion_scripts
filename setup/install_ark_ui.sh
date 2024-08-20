@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo true
-source $PWD/functions.sh
+source $(basename $BASH_SOURCE)/functions.sh
 echo "Installing ARK-UI"
 
 # Remove old pilot-portal

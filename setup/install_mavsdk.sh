@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo true
-source $PWD/functions.sh
+source $(dirname $BASH_SOURCE)/functions.sh
 
 # Check if we are on 20.04 or 22.04
 if [ "$(lsb_release -cs)" = "focal" ]; then

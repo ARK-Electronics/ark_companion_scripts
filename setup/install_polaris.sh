@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo true
-source $PWD/functions.sh
+source $(dirname $BASH_SOURCE)/functions.sh
 
 echo "Installing polaris-client-mavlink"
 

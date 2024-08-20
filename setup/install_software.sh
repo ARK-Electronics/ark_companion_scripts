@@ -7,7 +7,7 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
 
 # Prompt for sudo password at the start to cache it
 sudo true
-source $PWD/functions.sh
+source $(dirname $BASH_SOURCE)/functions.sh
 
 if uname -ar | grep tegra; then
 	export TARGET=jetson
