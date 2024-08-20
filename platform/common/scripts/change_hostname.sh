@@ -6,4 +6,4 @@ if [ -z "$new_hostname" ]; then
 	exit 1
 fi
 
-hostnamectl set-hostname "$new_hostname"
+sudo hostnamectl set-hostname "$new_hostname"

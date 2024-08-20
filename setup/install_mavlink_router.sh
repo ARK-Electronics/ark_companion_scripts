@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo true
+source $PWD/functions.sh
 
 if uname -ar | grep tegra; then
 	TARGET=jetson
@@ -20,7 +21,7 @@ sudo rm -rf ~/code/mavlink-router &>/dev/null
 sudo rm /usr/bin/mavlink-routerd &>/dev/null
 
 pushd .
-git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router
+git_clone_retry https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router
 cd ~/code/mavlink-router
 meson setup build .
 ninja -C build

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo true
+source $PWD/functions.sh
 
 echo "Installing rtsp-server"
 
@@ -29,7 +30,7 @@ sudo systemctl disable rtsp-server &>/dev/null
 sudo rm -rf ~/code/rtsp-server &>/dev/null
 
 # Clone, build, and install
-git clone --depth=1 https://github.com/ARK-Electronics/rtsp-server.git ~/code/rtsp-server
+git_clone_retry https://github.com/ARK-Electronics/rtsp-server.git ~/code/rtsp-server
 pushd .
 cd ~/code/rtsp-server
 make install

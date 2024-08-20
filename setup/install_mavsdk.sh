@@ -1,13 +1,14 @@
 #!/bin/bash
 
 sudo true
+source $PWD/functions.sh
 
 # Check if we are on 20.04 or 22.04
 if [ "$(lsb_release -cs)" = "focal" ]; then
 	echo "Ubuntu 20.04 detected, building MAVSDK from source"
 	pushd .
 	sudo rm -rf ~/code/MAVSDK
-	git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/mavlink/MAVSDK.git ~/code/MAVSDK
+	git_clone_retry https://github.com/mavlink/MAVSDK.git ~/code/MAVSDK
 	cd ~/code/MAVSDK
 	cmake -Bbuild/default -DCMAKE_BUILD_TYPE=Release -H.
 	cmake --build build/default -j$(nproc)
