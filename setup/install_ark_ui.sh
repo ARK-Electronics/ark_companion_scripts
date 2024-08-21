@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo true
-
+source $(dirname $BASH_SOURCE)/functions.sh
 echo "Installing ARK-UI"
 
 # Remove old pilot-portal
@@ -15,7 +15,7 @@ sudo rm ~/.config/systemd/user/pilot-portal-backend.service &>/dev/null
 # Clone and build repo
 ARK_UI_SRC_DIR="$HOME/code/ark-ui"
 sudo rm -rf $ARK_UI_SRC_DIR
-git clone --depth=1 https://github.com/ARK-Electronics/ark-ui.git $ARK_UI_SRC_DIR
+git_clone_retry https://github.com/ARK-Electronics/ark-ui.git $ARK_UI_SRC_DIR
 pushd .
 cd $ARK_UI_SRC_DIR
 ./install.sh

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo true
+source $(dirname $BASH_SOURCE)/functions.sh
 
 echo "Installing polaris-client-mavlink"
 
@@ -16,7 +17,7 @@ sudo apt-get install -y libssl-dev libgflags-dev libgoogle-glog-dev libboost-all
 
 # Clone, build, and install
 pushd .
-git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/polaris-client-mavlink.git ~/code/polaris-client-mavlink
+git_clone_retry https://github.com/ARK-Electronics/polaris-client-mavlink.git ~/code/polaris-client-mavlink
 cd ~/code/polaris-client-mavlink
 make install
 

@@ -1,37 +1,13 @@
 #!/bin/bash
-
 DEFAULT_XDG_CONF_HOME="$HOME/.config"
 DEFAULT_XDG_DATA_HOME="$HOME/.local/share"
 
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$DEFAULT_XDG_CONF_HOME}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
 
-function check_and_add_alias() {
-	local name="$1"
-	local command="$2"
-	local file="$HOME/.bash_aliases"
-
-	# Check if the alias file exists, create if not
-	[ -f "$file" ] || touch "$file"
-
-	# Check if the alias already exists
-	if grep -q "^alias $name=" "$file"; then
-		echo "Alias '$name' already exists."
-	else
-		# Add the new alias
-		echo "alias $name='$command'" >> "$file"
-		echo "Alias '$name' added."
-	fi
-
-	# Source the aliases file
-	source "$file"
-}
-
-########################
-########  main  ########
-
 # Prompt for sudo password at the start to cache it
 sudo true
+source $(dirname $BASH_SOURCE)/functions.sh
 
 if uname -ar | grep tegra; then
 	export TARGET=jetson
@@ -41,11 +17,12 @@ fi
 
 export TARGET_DIR="$PWD/platform/$TARGET"
 export COMMON_DIR="$PWD/platform/common"
-export INSTALL_DDS_AGENT="y"
-export INSTALL_RTSP_SERVER="y"
-export INSTALL_LOGLOADER="y"
-export INSTALL_POLARIS="y"
-export INSTALL_ARK_UI="y"
+export INSTALL_DDS_AGENT="n"
+export INSTALL_RTSP_SERVER="n"
+export INSTALL_RID_TRANSMITTER="n"
+export INSTALL_LOGLOADER="n"
+export INSTALL_POLARIS="n"
+export INSTALL_ARK_UI="n"
 export POLARIS_API_KEY=""
 export USER_EMAIL="logs@arkelectron.com"
 export UPLOAD_TO_FLIGHT_REVIEW="n"
@@ -54,55 +31,60 @@ export PUBLIC_LOGS="n"
 if [ "$#" -gt 0 ]; then
 	while [ "$#" -gt 0 ]; do
 		case "$1" in
-			-d | --install-dds-agent)
+			--install-dds-agent)
 				INSTALL_DDS_AGENT="y"
 				shift
 				;;
-			-r | --install-rtsp-server)
+			--install-rtsp-server)
 				INSTALL_RTSP_SERVER="y"
 				shift
 				;;
-			-k | --install-polaris)
+			--install-rid-transmitter)
+				INSTALL_RID_TRANSMITTER="y"
+				shift
+				;;
+			--install-polaris)
 				INSTALL_POLARIS="y"
 				shift
 				;;
-			-a | --polaris-api-key)
+			--polaris-api-key)
 				POLARIS_API_KEY="$2"
 				shift
 				;;
-			-c | --install-ark-ui)
+			--install-ark-ui)
 				INSTALL_ARK_UI="y"
 				shift
 				;;
-			-l | --install-logloader)
+			--install-logloader)
 				INSTALL_LOGLOADER="y"
 				shift
 				;;
-			-e | --email)
+			--email)
 				USER_EMAIL="$2"
 				shift 2
 				;;
-			-u | --auto-upload)
+			--auto-upload)
 				UPLOAD_TO_FLIGHT_REVIEW="y"
 				shift
 				;;
-			-p | --public-logs)
+			--public-logs)
 				PUBLIC_LOGS="y"
 				shift
 				;;
 			-h | --help)
 				echo "Usage: $0 [options]"
 				echo "Options:"
-				echo "  -d, --install-dds-agent      Install micro-xrce-dds-agent"
-				echo "  -r, --install-rtsp-server    Install rtsp-server"
-				echo "  -k, --install-polaris        Install polaris-client-mavlink"
-				echo "  -a, --polaris-api-key        Polaris API key"
-				echo "  -c, --install-ark-ui         Install UI interface at $TARGET.local"
-				echo "  -l, --install-logloader      Install logloader"
-				echo "  -e, --email EMAIL            Email to use for logloader"
-				echo "  -u, --auto-upload            Auto upload logs to PX4 Flight Review"
-				echo "  -p, --public-logs            Make logs public on PX4 Flight Review"
-				echo "  -h, --help                   Display this help message"
+				echo "  --install-dds-agent        Install micro-xrce-dds-agent"
+				echo "  --install-rtsp-server      Install rtsp-server"
+				echo "  --install-polaris          Install polaris-client-mavlink"
+				echo "  --polaris-api-key          Polaris API key"
+				echo "  --install-ark-ui           Install UI interface at $TARGET.local"
+				echo "  --install-logloader        Install logloader"
+				echo "  --install-rid-transmitter  Install RemoteIDTransmitter"
+				echo "  --email EMAIL              Email to use for logloader"
+				echo "  --auto-upload              Auto upload logs to PX4 Flight Review"
+				echo "  --public-logs              Make logs public on PX4 Flight Review"
+				echo "  -h, --help                 Display this help message"
 				exit 0
 				;;
 			*)
@@ -132,6 +114,13 @@ else
 	echo "Do you want to install rtsp-server? (y/n)"
 	read -r INSTALL_RTSP_SERVER
 
+	if [ "$TARGET" = "jetson" ]; then
+		# Pi 4 does not support LE coded phy
+		# https://www.argenox.com/library/bluetooth-low-energy/using-raspberry-pi-ble/
+		echo "Do you want to install rid-transmitter? (y/n)"
+		read -r INSTALL_RID_TRANSMITTER
+	fi
+
 	echo "Do you want to install ark-ui? (y/n)"
 	read -r INSTALL_ARK_UI
 
@@ -150,7 +139,7 @@ fi
 
 ########## install dependencies ##########
 echo "Installing dependencies"
-sudo apt update
+sudo apt-get update
 sudo apt-get install -y \
 		apt-utils \
 		gcc-arm-none-eabi \
@@ -173,20 +162,24 @@ sudo apt-get install -y \
 		libssl-dev
 
 if [ "$TARGET" = "jetson" ]; then
-	sudo pip3 install Jetson.GPIO smbus2
-
 	sudo apt-get install -y \
 		nvidia-jetpack
 
-elif [ "$TARGET" = "pi" ]; then
-	sudo pip3 install RPi.GPIO
-fi
+	sudo pip3 install \
+		Jetson.GPIO \
+		smbus2 \
+		meson \
+		pyserial \
+		pymavlink \
+		dronecan
 
-sudo pip3 install \
-	meson \
-	pyserial \
+elif [ "$TARGET" = "pi" ]; then
+	sudo apt-get install python3-RPi.GPIO
+	# https://www.raspberrypi.com/documentation/computers/os.html#python-on-raspberry-pi
+	sudo pip3 install --break-system-packages \
 	pymavlink \
 	dronecan
+fi
 
 ########## configure environment ##########
 echo "Configuring environment"
@@ -202,7 +195,6 @@ if [ "$TARGET" = "jetson" ]; then
 	sudo cp $TARGET_DIR/99-gpio.rules /etc/udev/rules.d/
 	sudo udevadm control --reload-rules && sudo udevadm trigger
 fi
-
 
 ########## journalctl ##########
 echo "Configuring journalctl"
@@ -270,6 +262,10 @@ fi
 
 if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 	./setup/install_rtsp_server.sh
+fi
+
+if [ "$INSTALL_RID_TRANSMITTER" = "y" ]; then
+	./setup/install_rid_transmitter.sh
 fi
 
 if [ "$INSTALL_ARK_UI" = "y" ]; then

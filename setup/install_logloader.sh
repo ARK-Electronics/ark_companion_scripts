@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo true
+source $(dirname $BASH_SOURCE)/functions.sh
 
 pushd .
 
@@ -13,7 +14,8 @@ sudo rm -rf ~/logloader &>/dev/null
 sudo rm /etc/systemd/system/logloader.service &>/dev/null
 sudo rm -rf ~/code/logloader &>/dev/null
 
-git clone --recurse-submodules --depth=1 --shallow-submodules https://github.com/ARK-Electronics/logloader.git ~/code/logloader
+git_clone_retry https://github.com/ARK-Electronics/logloader.git ~/code/logloader
+
 cd ~/code/logloader
 
 # make sure pgk config can find openssl

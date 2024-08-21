@@ -74,4 +74,5 @@ source ~/.bashrc
 
 
 echo "** Install opencv "${version}" successfully"
+echo "** Took "${SECONDS}" seconds"
 echo "** Bye :)"
