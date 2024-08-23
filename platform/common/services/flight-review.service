@@ -1,0 +1,14 @@
+[Unit]
+Description=PX4 Flight Review
+Wants=network.target
+After=syslog.target network.target nginx.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/flight_review/
+ExecStart=python3 app/serve.py --port=5006 --address=0.0.0.0 --use-xheaders --allow-websocket-origin jetson.local:5006
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

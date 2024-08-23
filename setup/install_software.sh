@@ -253,6 +253,7 @@ fi
 ########## logloader ##########
 if [ "$INSTALL_LOGLOADER" = "y" ]; then
 	./setup/install_logloader.sh
+	./setup/install_flight_review.sh
 fi
 
 ########## polaris-client-mavlink ##########

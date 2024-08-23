@@ -5,6 +5,7 @@ function git_clone_retry() {
 	until git clone --recurse-submodules --depth=1 --shallow-submodules "$url" "$dir"; do
 	((retries--)) || return 1
 	echo "git clone failed, retrying in $delay seconds..."
+	rm -rf "$dir" &>/dev/null
 	sleep $delay
 	done
 }

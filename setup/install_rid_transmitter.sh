@@ -22,8 +22,6 @@ cd ~/code/RemoteIDTransmitter
 
 make install
 
-sudo setcap 'cap_net_raw,cap_net_admin+eip' /usr/local/bin/rid-transmitter
-
 sudo ldconfig
 popd
 

@@ -1,7 +1,7 @@
 [Unit]
 Description=ARK UI Backend Service
 Wants=network-online.target
-After=syslog.target network-online.target
+After=syslog.target network-online.target nginx.service
 
 [Service]
 Type=simple
