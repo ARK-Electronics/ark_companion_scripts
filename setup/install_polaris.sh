@@ -12,19 +12,11 @@ sudo rm -rf ~/polaris-client-mavlink &>/dev/null
 sudo rm /etc/systemd/system/polaris-client-mavlink.service &>/dev/null
 sudo rm -rf ~/code/polaris-client-mavlink &>/dev/null
 
-# Install dependencies
-sudo apt-get install -y libssl-dev libgflags-dev libgoogle-glog-dev libboost-all-dev
-
-# Clone, build, and install
-pushd .
 git_clone_retry https://github.com/ARK-Electronics/polaris-client-mavlink.git ~/code/polaris-client-mavlink
+
+pushd .
 cd ~/code/polaris-client-mavlink
 make install
-
-# Modify and install the config file
-CONFIG_FILE="$XDG_DATA_HOME/polaris-client-mavlink/config.toml"
-sed -i "s/^polaris_api_key = \".*\"/polaris_api_key = \"$POLARIS_API_KEY\"/" "$CONFIG_FILE"
-
 sudo ldconfig
 popd
 

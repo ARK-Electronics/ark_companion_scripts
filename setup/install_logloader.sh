@@ -3,8 +3,6 @@
 sudo true
 source $(dirname $BASH_SOURCE)/functions.sh
 
-pushd .
-
 echo "Installing logloader"
 
 # clean up legacy if it exists
@@ -16,32 +14,9 @@ sudo rm -rf ~/code/logloader &>/dev/null
 
 git_clone_retry https://github.com/ARK-Electronics/logloader.git ~/code/logloader
 
+pushd .
 cd ~/code/logloader
-
-# make sure pgk config can find openssl
-if ! pkg-config --exists openssl || [[ "$(pkg-config --modversion openssl)" < "3.0.2" ]]; then
-	echo "Installing OpenSSL from source"
-	./install_openssl.sh
-fi
-
 make install
-
-# Modify and install the config file
-CONFIG_FILE="$XDG_DATA_HOME/logloader/config.toml"
-sed -i "s/^email = \".*\"/email = \"$USER_EMAIL\"/" "$CONFIG_FILE"
-
-if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
-	sed -i "s/^upload_enabled = .*/upload_enabled = true/" "$CONFIG_FILE"
-else
-	sed -i "s/^upload_enabled = .*/upload_enabled = false/" "$CONFIG_FILE"
-fi
-
-if [ "$PUBLIC_LOGS" = "y" ]; then
-	sed -i "s/^public_logs = .*/public_logs = true/" "$CONFIG_FILE"
-else
-	sed -i "s/^public_logs = .*/public_logs = false/" "$CONFIG_FILE"
-fi
-
 sudo ldconfig
 popd
 
