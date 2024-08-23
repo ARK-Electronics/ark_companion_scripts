@@ -20,6 +20,8 @@ export COMMON_DIR="$PWD/platform/common"
 export INSTALL_DDS_AGENT="n"
 export INSTALL_RTSP_SERVER="n"
 export INSTALL_RID_TRANSMITTER="n"
+export MANUFACTURER_CODE="ARK1"
+export SERIAL_NUMBER="C0FFEE123"
 export INSTALL_LOGLOADER="n"
 export INSTALL_POLARIS="n"
 export INSTALL_ARK_UI="n"
@@ -41,6 +43,14 @@ if [ "$#" -gt 0 ]; then
 				;;
 			--install-rid-transmitter)
 				INSTALL_RID_TRANSMITTER="y"
+				shift
+				;;
+			--manufacturer-code)
+				MANUFACTURER_CODE="$2"
+				shift
+				;;
+			--serial-number)
+				SERIAL_NUMBER="$2"
 				shift
 				;;
 			--install-polaris)
@@ -74,17 +84,19 @@ if [ "$#" -gt 0 ]; then
 			-h | --help)
 				echo "Usage: $0 [options]"
 				echo "Options:"
-				echo "  --install-dds-agent        Install micro-xrce-dds-agent"
-				echo "  --install-rtsp-server      Install rtsp-server"
-				echo "  --install-polaris          Install polaris-client-mavlink"
-				echo "  --polaris-api-key          Polaris API key"
-				echo "  --install-ark-ui           Install UI interface at $TARGET.local"
-				echo "  --install-logloader        Install logloader"
-				echo "  --install-rid-transmitter  Install RemoteIDTransmitter"
-				echo "  --email EMAIL              Email to use for logloader"
-				echo "  --auto-upload              Auto upload logs to PX4 Flight Review"
-				echo "  --public-logs              Make logs public on PX4 Flight Review"
-				echo "  -h, --help                 Display this help message"
+				echo "  --install-dds-agent         Install micro-xrce-dds-agent"
+				echo "  --install-rtsp-server       Install rtsp-server"
+				echo "  --install-polaris           Install polaris-client-mavlink"
+				echo "    --polaris-api-key         Polaris API key"
+				echo "  --install-ark-ui            Install UI interface at $TARGET.local"
+				echo "  --install-rid-transmitter   Install RemoteIDTransmitter"
+				echo "    --manufacturer-code CODE  Manufacturer code for RemoteID"
+				echo "    --serial-number SERIAL    Serial number for RemoteID"
+				echo "  --install-logloader         Install logloader"
+				echo "    --email EMAIL             Email to use for logloader"
+				echo "    --auto-upload             Auto upload logs to PX4 Flight Review"
+				echo "    --public-logs             Make logs public on PX4 Flight Review"
+				echo "  -h, --help                  Display this help message"
 				exit 0
 				;;
 			*)
@@ -119,6 +131,12 @@ else
 		# https://www.argenox.com/library/bluetooth-low-energy/using-raspberry-pi-ble/
 		echo "Do you want to install rid-transmitter? (y/n)"
 		read -r INSTALL_RID_TRANSMITTER
+		if [ "$INSTALL_RID_TRANSMITTER" = "y" ]; then
+			echo "Enter Manufacturer Code: "
+			read -r MANUFACTURER_CODE
+			echo "Enter Serial Number: "
+			read -r SERIAL_NUMBER
+		fi
 	fi
 
 	echo "Do you want to install ark-ui? (y/n)"
