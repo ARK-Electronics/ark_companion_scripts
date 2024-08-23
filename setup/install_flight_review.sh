@@ -22,15 +22,22 @@ sudo apt-get install -y sqlite3 fftw3 libfftw3-dev
 pip install -r app/requirements.txt
 python3 -m pip install --upgrade pandas scipy matplotlib
 
-# copy the app
-cp -rf app/ /opt/flight_review/app/
+# create user config overrides
 touch app/config_user.ini
+echo "[general]" >> app/config_user.ini
 echo "domain_name = jetson.local/flight_review" >> app/config_user.ini
 echo "verbose_output = 1" >> app/config_user.ini
 echo "storage_path = /opt/flight_review/data" >> app/config_user.ini
 
+# copy the app
+sudo mkdir -p /opt/flight_review/app/
+sudo cp -r app/* /opt/flight_review/app/
+
+# make user owner
+sudo chown -R $USER:$USER /opt/flight_review
+
 # initialize database
-./app/setup_db.py
+/opt/flight_review/app/setup_db.py
 
 # Install the service
 sudo cp $COMMON_DIR/services/flight-review.service $XDG_CONFIG_HOME/systemd/user/
