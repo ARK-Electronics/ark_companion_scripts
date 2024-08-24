@@ -37,7 +37,7 @@ export INSTALL_LOGLOADER="n"
 export INSTALL_POLARIS="n"
 export INSTALL_ARK_UI="n"
 export POLARIS_API_KEY=""
-export USER_EMAIL="logs@arkelectron.com"
+export USER_EMAIL=""
 export UPLOAD_TO_FLIGHT_REVIEW="n"
 export PUBLIC_LOGS="n"
 
@@ -117,52 +117,41 @@ if [ "$#" -gt 0 ]; then
 		esac
 	done
 else
-	echo "Do you want to install micro-xrce-dds-agent? (y/n)"
-	read -r INSTALL_DDS_AGENT
-
-	echo "Do you want to install logloader? (y/n)"
-	read -r INSTALL_LOGLOADER
+	ask_yes_no "Do you want to install micro-xrce-dds-agent?" INSTALL_DDS_AGENT
+	ask_yes_no "Do you want to install logloader?" INSTALL_LOGLOADER
 
 	if [ "$INSTALL_LOGLOADER" = "y" ]; then
-		echo "Do you want to auto upload to PX4 Flight Review? (y/n)"
-		read -r UPLOAD_TO_FLIGHT_REVIEW
-		if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
-			echo "Please enter your email: "
-			read -r USER_EMAIL
-			echo "Do you want your logs to be public? (y/n)"
-			read -r PUBLIC_LOGS
-		fi
+	    ask_yes_no "Do you want to auto upload to PX4 Flight Review?" UPLOAD_TO_FLIGHT_REVIEW
+	    if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
+	        echo "Please enter your email: "
+	        read -r USER_EMAIL
+	        ask_yes_no "Do you want your logs to be public?" PUBLIC_LOGS
+	    fi
 	fi
 
-	echo "Do you want to install rtsp-server? (y/n)"
-	read -r INSTALL_RTSP_SERVER
+	ask_yes_no "Do you want to install rtsp-server?" INSTALL_RTSP_SERVER
 
 	if [ "$TARGET" = "jetson" ]; then
-		# Pi 4 does not support LE coded phy
-		# https://www.argenox.com/library/bluetooth-low-energy/using-raspberry-pi-ble/
-		echo "Do you want to install rid-transmitter? (y/n)"
-		read -r INSTALL_RID_TRANSMITTER
-		if [ "$INSTALL_RID_TRANSMITTER" = "y" ]; then
-			echo "Enter Manufacturer Code: "
-			read -r MANUFACTURER_CODE
-			echo "Enter Serial Number: "
-			read -r SERIAL_NUMBER
-		fi
+	    ask_yes_no "Do you want to install rid-transmitter?" INSTALL_RID_TRANSMITTER
+	    if [ "$INSTALL_RID_TRANSMITTER" = "y" ]; then
+	        echo "Enter Manufacturer Code: "
+	        read -r MANUFACTURER_CODE
+	        echo "Enter Serial Number: "
+	        read -r SERIAL_NUMBER
+	    fi
 	fi
 
-	echo "Do you want to install ark-ui? (y/n)"
-	read -r INSTALL_ARK_UI
+	ask_yes_no "Do you want to install ark-ui?" INSTALL_ARK_UI
+	ask_yes_no "Do you want to install the polaris-client-mavlink?" INSTALL_POLARIS
 
-	echo "Do you want to install the polaris-client-mavlink? (y/n)"
-	read -r INSTALL_POLARIS
 	if [ "$INSTALL_POLARIS" = "y" ]; then
-		if [ -f "polaris.key" ]; then
-			read -r POLARIS_API_KEY < polaris.key
-			echo "Using API key from polaris.key file"
-		else
-			echo "Enter API key: "
-			read -r POLARIS_API_KEY
-		fi
+	    if [ -f "polaris.key" ]; then
+	        read -r POLARIS_API_KEY < polaris.key
+	        echo "Using API key from polaris.key file"
+	    else
+	        echo "Enter API key: "
+	        read -r POLARIS_API_KEY
+	    fi
 	fi
 fi
 

@@ -1,5 +1,25 @@
 #!/bin/bash
 
+function ask_yes_no() {
+	local prompt="$1"
+	local var_name="$2"
+	local default="$3"
+	local default_display="${!var_name^^}"  # Convert to uppercase for display purposes
+
+	while true; do
+		echo "$prompt (y/n) [default: $default_display]"
+		read -r REPLY
+		if [ -z "$REPLY" ]; then
+			REPLY="${!var_name}"
+		fi
+		case "$REPLY" in
+			y|Y) eval $var_name="y"; break ;;
+			n|N) eval $var_name="n"; break ;;
+			*) echo "Invalid input. Please enter y or n." ;;
+		esac
+	done
+}
+
 function git_clone_retry() {
 	local url="$1" dir="$2" retries=3 delay=5
 	until git clone --recurse-submodules --depth=1 --shallow-submodules "$url" "$dir"; do
