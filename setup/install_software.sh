@@ -6,7 +6,7 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$DEFAULT_XDG_CONF_HOME}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
 
 # Prompt for sudo password at the start to cache it
-sudo true
+sudo -v
 source $(dirname $BASH_SOURCE)/functions.sh
 
 if uname -ar | grep tegra; then

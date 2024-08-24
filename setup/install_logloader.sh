@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo true
+sudo -v
 source $(dirname $BASH_SOURCE)/functions.sh
 
 echo "Installing logloader"

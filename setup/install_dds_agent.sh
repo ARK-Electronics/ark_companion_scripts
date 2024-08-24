@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo true
+sudo -v
 
 if uname -ar | grep tegra; then
 	TARGET=jetson

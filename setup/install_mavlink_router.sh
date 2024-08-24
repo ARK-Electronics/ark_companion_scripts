@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo true
+sudo -v
 source $(dirname $BASH_SOURCE)/functions.sh
 
 if uname -ar | grep tegra; then

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo true
+sudo -v
 source $(dirname $BASH_SOURCE)/functions.sh
 
 # Check if we are on 20.04 or 22.04
