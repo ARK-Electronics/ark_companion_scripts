@@ -29,6 +29,7 @@ fi
 
 export TARGET_DIR="$PWD/platform/$TARGET"
 export COMMON_DIR="$PWD/platform/common"
+
 export INSTALL_DDS_AGENT="n"
 export INSTALL_RTSP_SERVER="n"
 export INSTALL_RID_TRANSMITTER="n"
@@ -180,6 +181,7 @@ sudo apt-get install -y \
 		avahi-daemon \
 		libssl-dev
 
+########## jetson dependencies ##########
 if [ "$TARGET" = "jetson" ]; then
 	sudo apt-get install -y \
 		nvidia-jetpack
@@ -192,6 +194,7 @@ if [ "$TARGET" = "jetson" ]; then
 		pymavlink \
 		dronecan
 
+########## pi dependencies ##########
 elif [ "$TARGET" = "pi" ]; then
 	sudo apt-get install python3-RPi.GPIO
 	# https://www.raspberrypi.com/documentation/computers/os.html#python-on-raspberry-pi
@@ -241,9 +244,9 @@ sudo cp $COMMON_DIR/scripts/* /usr/local/bin
 echo "Adding sudoers"
 sudo cp $COMMON_DIR/ark_scripts.sudoers /etc/sudoers.d/ark_scripts
 sudo chmod 0440 /etc/sudoers.d/ark_scripts
-echo "Sudoers entries added successfully."
 
 ########## user network control ##########
+echo "Giving user network control permissions"
 sudo adduser $USER netdev
 sudo cp $COMMON_DIR/wifi/99-network.pkla /etc/polkit-1/localauthority/90-mandatory.d/
 sudo mkdir -p /etc/polkit-1/rules.d/
@@ -256,8 +259,6 @@ declare -A aliases
 aliases[mavshell]="mavlink_shell.py udp:0.0.0.0:14569"
 aliases[ll]="ls -alF"
 aliases[submodupdate]="git submodule update --init --recursive"
-
-# Iterate over the associative array and add each alias if it does not exist
 for alias_name in "${!aliases[@]}"; do
 	check_and_add_alias "$alias_name" "${aliases[$alias_name]}"
 done
@@ -292,19 +293,22 @@ if [ "$INSTALL_POLARIS" = "y" ]; then
 	./setup/install_polaris.sh
 fi
 
+########## rtsp-server ##########
 if [ "$INSTALL_RTSP_SERVER" = "y" ]; then
 	./setup/install_rtsp_server.sh
 fi
 
+########## rid-transmitter ##########
 if [ "$INSTALL_RID_TRANSMITTER" = "y" ]; then
 	./setup/install_rid_transmitter.sh
 fi
 
+########## ark-ui ##########
 if [ "$INSTALL_ARK_UI" = "y" ]; then
 	./setup/install_ark_ui.sh
 fi
 
-# Install jetson specific services -- these services run as root
+########## jetson specific services -- these services run as root ##########
 if [ "$TARGET" = "jetson" ]; then
 	echo "Installing Jetson services"
 	sudo cp $TARGET_DIR/services/jetson-can.service /etc/systemd/system/
@@ -314,10 +318,8 @@ if [ "$TARGET" = "jetson" ]; then
 	sudo systemctl restart jetson-can.service jetson-clocks.service
 fi
 
-# Enable the time-sync service
 sudo systemctl enable systemd-time-wait-sync.service
 
-# kill sudo refresh process
 cleanup
 
 duration=$SECONDS

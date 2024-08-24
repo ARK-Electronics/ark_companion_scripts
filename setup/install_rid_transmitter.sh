@@ -1,9 +1,21 @@
 #!/bin/bash
 
 sudo -v
-source $(dirname $BASH_SOURCE)/functions.sh
+
+if [ -n "$TARGET_DIR" ]; then
+
+	if uname -ar | grep tegra; then
+		TARGET=jetson
+	else
+		TARGET=pi
+	fi
+
+	export TARGET_DIR="$PWD/platform/$TARGET"
+fi
 
 echo "Installing RemoteIDTransmitter"
+
+source $(dirname $BASH_SOURCE)/functions.sh
 
 # Stop and remove the service
 systemctl --user stop rid-transmitter &>/dev/null
