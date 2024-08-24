@@ -5,11 +5,13 @@ source $(dirname $BASH_SOURCE)/functions.sh
 
 echo "Installing polaris-client-mavlink"
 
-# clean up legacy if it exists
-sudo systemctl stop polaris-client-mavlink &>/dev/null
-sudo systemctl disable polaris-client-mavlink &>/dev/null
-sudo rm -rf ~/polaris-client-mavlink &>/dev/null
+# Stop and remove the service
+systemctl --user stop polaris-client-mavlink &>/dev/null
+systemctl --user disable polaris-client-mavlink &>/dev/null
 sudo rm /etc/systemd/system/polaris-client-mavlink.service &>/dev/null
+
+# Clean up directories
+sudo rm -rf ~/polaris-client-mavlink &>/dev/null
 sudo rm -rf ~/code/polaris-client-mavlink &>/dev/null
 
 git_clone_retry https://github.com/ARK-Electronics/polaris-client-mavlink.git ~/code/polaris-client-mavlink

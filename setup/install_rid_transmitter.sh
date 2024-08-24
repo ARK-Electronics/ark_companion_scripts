@@ -5,10 +5,12 @@ source $(dirname $BASH_SOURCE)/functions.sh
 
 echo "Installing RemoteIDTransmitter"
 
-# clean up legacy if it exists
-sudo systemctl stop rid-transmitter &>/dev/null
-sudo systemctl disable rid-transmitter &>/dev/null
+# Stop and remove the service
+systemctl --user stop rid-transmitter &>/dev/null
+systemctl --user disable rid-transmitter &>/dev/null
 sudo rm /etc/systemd/system/rid-transmitter.service &>/dev/null
+
+# Clean up directories
 sudo rm -rf ~/code/RemoteIDTransmitter &>/dev/null
 
 git_clone_retry https://github.com/ARK-Electronics/RemoteIDTransmitter.git ~/code/RemoteIDTransmitter

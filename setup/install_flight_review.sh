@@ -3,40 +3,41 @@
 sudo true
 source $(dirname $BASH_SOURCE)/functions.sh
 
-pushd .
-
 echo "Installing flight_review"
 
-# clean up legacy if it exists
-sudo systemctl stop flight-review &>/dev/null
-sudo systemctl disable flight-review &>/dev/null
+# Stop and remove the service
+systemctl --user stop flight-review &>/dev/null
+systemctl --user disable flight-review &>/dev/null
 sudo rm /etc/systemd/system/flight-review.service &>/dev/null
+
+# Clean up directories
 sudo rm -rf ~/code/flight_review &>/dev/null
 
 git_clone_retry https://github.com/PX4/flight_review.git ~/code/flight_review
 
+pushd .
 cd ~/code/flight_review
 
-# install dependencies
+# Install dependencies
 sudo apt-get install -y sqlite3 fftw3 libfftw3-dev
 pip install -r app/requirements.txt
 python3 -m pip install --upgrade pandas scipy matplotlib
 
-# create user config overrides
+# Create user config overrides
 touch app/config_user.ini
 echo "[general]" >> app/config_user.ini
 echo "domain_name = jetson.local/flight_review" >> app/config_user.ini
 echo "verbose_output = 1" >> app/config_user.ini
 echo "storage_path = /opt/flight_review/data" >> app/config_user.ini
 
-# copy the app
+# Copy the app to /opt
 sudo mkdir -p /opt/flight_review/app/
 sudo cp -r app/* /opt/flight_review/app/
 
-# make user owner
+# Make user owner
 sudo chown -R $USER:$USER /opt/flight_review
 
-# initialize database
+# Initialize database
 /opt/flight_review/app/setup_db.py
 
 # Install the service

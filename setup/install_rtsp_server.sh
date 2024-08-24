@@ -25,8 +25,8 @@ else
 fi
 
 # clean up legacy if it exists
-sudo systemctl stop rtsp-server &>/dev/null
-sudo systemctl disable rtsp-server &>/dev/null
+systemctl --user stop rtsp-server &>/dev/null
+systemctl --user disable rtsp-server &>/dev/null
 sudo rm -rf ~/code/rtsp-server &>/dev/null
 
 # Clone, build, and install

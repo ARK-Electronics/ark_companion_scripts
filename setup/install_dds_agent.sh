@@ -11,8 +11,8 @@ fi
 TARGET_DIR="$PWD/platform/$TARGET"
 
 # clean up legacy if it exists
-sudo systemctl stop dds-agent &>/dev/null
-sudo systemctl disable dds-agent &>/dev/null
+systemctl --user stop dds-agent &>/dev/null
+systemctl --user disable dds-agent &>/dev/null
 sudo rm /etc/systemd/system/dds-agent.service &>/dev/null
 
 echo "Installing micro-xrce-dds-agent"

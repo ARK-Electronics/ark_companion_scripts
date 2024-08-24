@@ -5,11 +5,13 @@ source $(dirname $BASH_SOURCE)/functions.sh
 
 echo "Installing logloader"
 
-# clean up legacy if it exists
-sudo systemctl stop logloader &>/dev/null
-sudo systemctl disable logloader &>/dev/null
-sudo rm -rf ~/logloader &>/dev/null
+# Stop and remove the service
+systemctl --user stop logloader &>/dev/null
+systemctl --user disable logloader &>/dev/null
 sudo rm /etc/systemd/system/logloader.service &>/dev/null
+
+# Clean up directories
+sudo rm -rf ~/logloader &>/dev/null
 sudo rm -rf ~/code/logloader &>/dev/null
 
 git_clone_retry https://github.com/ARK-Electronics/logloader.git ~/code/logloader

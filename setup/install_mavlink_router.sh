@@ -14,8 +14,8 @@ TARGET_DIR="$PWD/platform/$TARGET"
 echo "Installing mavlink-router"
 
 # clean up legacy if it exists
-sudo systemctl stop mavlink-router &>/dev/null
-sudo systemctl disable mavlink-router &>/dev/null
+systemctl --user stop mavlink-router &>/dev/null
+systemctl --user disable mavlink-router &>/dev/null
 sudo rm /etc/systemd/system/mavlink-router.service &>/dev/null
 sudo rm -rf ~/code/mavlink-router &>/dev/null
 sudo rm /usr/bin/mavlink-routerd &>/dev/null
