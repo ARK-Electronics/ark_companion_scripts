@@ -30,3 +30,10 @@ function check_and_add_alias() {
 	# Source the aliases file
 	source "$file"
 }
+
+function sudo_refresh_loop() {
+	while true; do
+		sudo -v
+		sleep 60
+	done
+}

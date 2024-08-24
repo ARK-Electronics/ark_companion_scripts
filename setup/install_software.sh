@@ -5,9 +5,20 @@ DEFAULT_XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$DEFAULT_XDG_CONF_HOME}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
 
-# Prompt for sudo password at the start to cache it
-sudo -v
+# Load helper functions
 source $(dirname $BASH_SOURCE)/functions.sh
+
+function cleanup() {
+    echo "Cleaning up..."
+    kill $SUDO_PID
+    exit 0
+}
+
+trap cleanup SIGINT SIGTERM
+
+# keep sudo credentials alive in the background
+sudo_refresh_loop &
+SUDO_PID=$!
 
 if uname -ar | grep tegra; then
 	export TARGET=jetson
@@ -303,6 +314,9 @@ fi
 
 # Enable the time-sync service
 sudo systemctl enable systemd-time-wait-sync.service
+
+# kill sudo refresh process
+cleanup
 
 echo "Finished $(basename $BASH_SOURCE)"
 echo "Please reboot your device"
