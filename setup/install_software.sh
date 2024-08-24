@@ -9,9 +9,9 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
 source $(dirname $BASH_SOURCE)/functions.sh
 
 function cleanup() {
-    echo "Cleaning up..."
-    kill $SUDO_PID
-    exit 0
+	echo "Cleaning up..."
+	kill $SUDO_PID
+	exit 0
 }
 
 trap cleanup SIGINT SIGTERM
@@ -36,12 +36,13 @@ export INSTALL_RID_TRANSMITTER="n"
 export MANUFACTURER_CODE="ARK1"
 export SERIAL_NUMBER="C0FFEE123"
 export INSTALL_LOGLOADER="n"
-export INSTALL_POLARIS="n"
-export INSTALL_ARK_UI="n"
-export POLARIS_API_KEY=""
+export UPLOAD_SERVER="review.px4.io"
 export USER_EMAIL=""
 export UPLOAD_TO_FLIGHT_REVIEW="n"
 export PUBLIC_LOGS="n"
+export INSTALL_POLARIS="n"
+export INSTALL_ARK_UI="n"
+export POLARIS_API_KEY=""
 
 if [ "$#" -gt 0 ]; then
 	while [ "$#" -gt 0 ]; do
@@ -123,37 +124,49 @@ else
 	ask_yes_no "Do you want to install logloader?" INSTALL_LOGLOADER
 
 	if [ "$INSTALL_LOGLOADER" = "y" ]; then
-	    ask_yes_no "Do you want to auto upload to PX4 Flight Review?" UPLOAD_TO_FLIGHT_REVIEW
-	    if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
-	        echo "Please enter your email: "
-	        read -r USER_EMAIL
-	        ask_yes_no "Do you want your logs to be public?" PUBLIC_LOGS
-	    fi
+
+		ask_yes_no "Upload to local Flight Review server only?" UPLOAD_TO_LOCAL_SERVER
+		if [ "$UPLOAD_TO_LOCAL_SERVER" = "y" ]; then
+			# Setup for local only
+			USER_EMAIL=""
+			UPLOAD_SERVER="jetson.local:5006"
+			UPLOAD_TO_FLIGHT_REVIEW="y"
+			PUBLIC_LOGS="y"
+
+		else
+			# Setup PX4 server upload settings
+			ask_yes_no "Do you want to auto upload to PX4 Flight Review?" UPLOAD_TO_FLIGHT_REVIEW
+			if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
+				echo "Please enter your email: "
+				read -r USER_EMAIL
+				ask_yes_no "Do you want your logs to be public?" PUBLIC_LOGS
+			fi
+		fi
 	fi
 
 	ask_yes_no "Do you want to install rtsp-server?" INSTALL_RTSP_SERVER
 
 	if [ "$TARGET" = "jetson" ]; then
-	    ask_yes_no "Do you want to install rid-transmitter?" INSTALL_RID_TRANSMITTER
-	    if [ "$INSTALL_RID_TRANSMITTER" = "y" ]; then
-	        echo "Enter Manufacturer Code: "
-	        read -r MANUFACTURER_CODE
-	        echo "Enter Serial Number: "
-	        read -r SERIAL_NUMBER
-	    fi
+		ask_yes_no "Do you want to install rid-transmitter?" INSTALL_RID_TRANSMITTER
+		if [ "$INSTALL_RID_TRANSMITTER" = "y" ]; then
+			echo "Enter Manufacturer Code: "
+			read -r MANUFACTURER_CODE
+			echo "Enter Serial Number: "
+			read -r SERIAL_NUMBER
+		fi
 	fi
 
 	ask_yes_no "Do you want to install ark-ui?" INSTALL_ARK_UI
 	ask_yes_no "Do you want to install the polaris-client-mavlink?" INSTALL_POLARIS
 
 	if [ "$INSTALL_POLARIS" = "y" ]; then
-	    if [ -f "polaris.key" ]; then
-	        read -r POLARIS_API_KEY < polaris.key
-	        echo "Using API key from polaris.key file"
-	    else
-	        echo "Enter API key: "
-	        read -r POLARIS_API_KEY
-	    fi
+		if [ -f "polaris.key" ]; then
+			read -r POLARIS_API_KEY < polaris.key
+			echo "Using API key from polaris.key file"
+		else
+			echo "Enter API key: "
+			read -r POLARIS_API_KEY
+		fi
 	fi
 fi
 
@@ -222,10 +235,10 @@ fi
 echo "Configuring journalctl"
 CONF_FILE="/etc/systemd/journald.conf"
 if ! grep -q "^Storage=persistent$" "$CONF_FILE"; then
-    echo "Storage=persistent" | sudo tee -a "$CONF_FILE" > /dev/null
-    echo "Storage=persistent has been added to $CONF_FILE."
+	echo "Storage=persistent" | sudo tee -a "$CONF_FILE" > /dev/null
+	echo "Storage=persistent has been added to $CONF_FILE."
 else
-    echo "Storage=persistent is already set in $CONF_FILE."
+	echo "Storage=persistent is already set in $CONF_FILE."
 fi
 
 sudo mkdir -p /var/log/journal
