@@ -318,5 +318,9 @@ sudo systemctl enable systemd-time-wait-sync.service
 # kill sudo refresh process
 cleanup
 
-echo "Finished $(basename $BASH_SOURCE)"
+duration=$SECONDS
+minutes=$(((duration % 3600) / 60))
+seconds=$((duration % 60))
+
+echo "Finished, took $minutes min, $seconds sec"
 echo "Please reboot your device"
