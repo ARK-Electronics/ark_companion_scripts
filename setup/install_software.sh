@@ -253,6 +253,13 @@ sudo cp $COMMON_DIR/ark_scripts.sudoers /etc/sudoers.d/ark_scripts
 sudo chmod 0440 /etc/sudoers.d/ark_scripts
 echo "Sudoers entries added successfully."
 
+########## user network control ##########
+sudo adduser $USER netdev
+sudo cp $COMMON_DIR/wifi/99-network.pkla /etc/polkit-1/localauthority/90-mandatory.d/
+sudo mkdir -p /etc/polkit-1/rules.d/
+sudo cp $COMMON_DIR/wifi/02-network-manager.rules /etc/polkit-1/rules.d/
+sudo systemctl restart polkit
+
 ########## bash aliases ##########
 echo "Adding aliases"
 declare -A aliases
@@ -278,6 +285,11 @@ fi
 
 ########## mavsdk-examples ##########
 ./setup/install_mavsdk_examples.sh
+
+########## hotspot-control ##########
+cp $COMMON_DIR/services/hotspot-control.service ~/.config/systemd/user/
+systemctl --user enable hotspot-control.service
+systemctl --user restart hotspot-control.service
 
 ########## logloader ##########
 if [ "$INSTALL_LOGLOADER" = "y" ]; then
