@@ -17,6 +17,7 @@ function cleanup() {
 trap cleanup SIGINT SIGTERM
 
 # keep sudo credentials alive in the background
+sudo -v
 sudo_refresh_loop &
 SUDO_PID=$!
 
