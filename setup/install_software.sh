@@ -9,7 +9,6 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
 source $(dirname $BASH_SOURCE)/functions.sh
 
 function cleanup() {
-	echo "Cleaning up..."
 	kill $SUDO_PID
 	exit 0
 }
@@ -333,7 +332,6 @@ fi
 
 sudo systemctl enable systemd-time-wait-sync.service
 
-cleanup
 
 duration=$SECONDS
 minutes=$(((duration % 3600) / 60))
@@ -341,3 +339,5 @@ seconds=$((duration % 60))
 
 echo "Finished, took $minutes min, $seconds sec"
 echo "Please reboot your device"
+
+cleanup
