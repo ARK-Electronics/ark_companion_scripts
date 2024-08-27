@@ -128,7 +128,7 @@ else
 		if [ "$UPLOAD_TO_LOCAL_SERVER" = "y" ]; then
 			# Setup for local only
 			USER_EMAIL=""
-			UPLOAD_SERVER="jetson.local:5006"
+			UPLOAD_SERVER="$(hostname -f).local:5006"
 			UPLOAD_TO_FLIGHT_REVIEW="y"
 			PUBLIC_LOGS="y"
 
