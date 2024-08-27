@@ -195,8 +195,10 @@ sudo apt-get install -y \
 
 ########## jetson dependencies ##########
 if [ "$TARGET" = "jetson" ]; then
+	echo "Installing jetpack"
 	sudo apt-get install -y \
 		nvidia-jetpack
+	echo "Jetpack finished"
 
 	sudo pip3 install \
 		Jetson.GPIO \
