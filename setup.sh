@@ -2,5 +2,7 @@
 OUTPUT_FILE="output.txt"
 pushd .
 cd "$(dirname "$0")"
-./setup/install_software.sh 2>&1 | awk '{ print strftime("[%H:%M:%S]"), $0 }' | tee ${OUTPUT_FILE}
+./setup/install_software.sh 2>&1 | while IFS= read -r line; do
+    echo "$(date +"[%H:%M:%S]") $line"
+done | tee ${OUTPUT_FILE}
 popd &>/dev/null
