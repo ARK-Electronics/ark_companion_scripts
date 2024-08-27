@@ -26,7 +26,7 @@ python3 -m pip install --upgrade pandas scipy matplotlib
 # Create user config overrides
 touch app/config_user.ini
 echo "[general]" >> app/config_user.ini
-echo "domain_name = $(hostname -f)/flight_review" >> app/config_user.ini
+echo "domain_name = $(hostname -f)/flight-review" >> app/config_user.ini
 echo "verbose_output = 1" >> app/config_user.ini
 echo "storage_path = /opt/flight_review/data" >> app/config_user.ini
 
