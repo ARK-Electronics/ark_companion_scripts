@@ -2,5 +2,5 @@
 OUTPUT_FILE="output.txt"
 pushd .
 cd "$(dirname "$0")"
-./setup/install_software.sh 2>&1 | tee ${OUTPUT_FILE}
+./setup/install_software.sh 2>&1 | awk '{ print strftime("[%H:%M:%S]"), $0 }' | tee ${OUTPUT_FILE}
 popd &>/dev/null
