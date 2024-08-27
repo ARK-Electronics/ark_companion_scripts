@@ -23,7 +23,7 @@ sudo ldconfig
 popd
 
 # Install the service
-sudo cp $COMMON_DIR/services/polaris.service $XDG_CONFIG_HOME/systemd/user/
+cp $COMMON_DIR/services/polaris.service $XDG_CONFIG_HOME/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable polaris.service
 systemctl --user restart polaris.service

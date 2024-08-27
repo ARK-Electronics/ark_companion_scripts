@@ -23,7 +23,7 @@ sudo ldconfig
 popd
 
 # Install the service
-sudo cp $COMMON_DIR/services/logloader.service $XDG_CONFIG_HOME/systemd/user/
+cp $COMMON_DIR/services/logloader.service $XDG_CONFIG_HOME/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable logloader.service
 systemctl --user restart logloader.service

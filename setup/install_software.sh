@@ -290,7 +290,7 @@ fi
 ./setup/install_mavsdk_examples.sh
 
 ########## hotspot-control ##########
-cp $COMMON_DIR/services/hotspot-control.service ~/.config/systemd/user/
+cp $COMMON_DIR/services/hotspot-control.service $XDG_CONFIG_HOME/systemd/user/
 systemctl --user enable hotspot-control.service
 systemctl --user restart hotspot-control.service
 

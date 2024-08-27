@@ -38,7 +38,7 @@ sudo ldconfig
 popd
 
 # Install the service
-sudo cp $COMMON_DIR/services/rtsp-server.service $XDG_CONFIG_HOME/systemd/user/
+cp $COMMON_DIR/services/rtsp-server.service $XDG_CONFIG_HOME/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable rtsp-server.service
 systemctl --user restart rtsp-server.service

@@ -10,7 +10,7 @@ systemctl --user disable pilot-portal-backend.service &>/dev/null
 sudo rm /etc/nginx/sites-enabled/pilot-portal &>/dev/null
 sudo rm /etc/nginx/sites-available/pilot-portal &>/dev/null
 sudo rm -rf /var/www/pilot-portal &>/dev/null
-sudo rm ~/.config/systemd/user/pilot-portal-backend.service &>/dev/null
+sudo rm $XDG_CONFIG_HOME/systemd/user/pilot-portal-backend.service &>/dev/null
 
 # Clone and build repo
 ARK_UI_SRC_DIR="$HOME/code/ark-ui"
@@ -51,8 +51,8 @@ sudo nginx -t
 sudo systemctl restart nginx
 
 # Install services as user
-mkdir -p ~/.config/systemd/user/
-cp $COMMON_DIR/services/ark-ui-backend.service ~/.config/systemd/user/
+mkdir -p $XDG_CONFIG_HOME/systemd/user/
+cp $COMMON_DIR/services/ark-ui-backend.service $XDG_CONFIG_HOME/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable ark-ui-backend.service
 systemctl --user restart ark-ui-backend.service

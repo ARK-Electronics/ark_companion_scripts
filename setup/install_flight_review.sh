@@ -41,7 +41,7 @@ sudo chown -R $USER:$USER /opt/flight_review
 /opt/flight_review/app/setup_db.py
 
 # Install the service
-sudo cp $COMMON_DIR/services/flight-review.service $XDG_CONFIG_HOME/systemd/user/
+cp $COMMON_DIR/services/flight-review.service $XDG_CONFIG_HOME/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable flight-review.service
 systemctl --user restart flight-review.service
