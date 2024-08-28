@@ -1,4 +1,8 @@
 #!/bin/bash
+DEFAULT_XDG_CONF_HOME="$HOME/.config"
+DEFAULT_XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$DEFAULT_XDG_CONF_HOME}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
 
 sudo -v
 source $(dirname $BASH_SOURCE)/functions.sh
@@ -16,7 +20,9 @@ echo "Installing mavlink-router"
 # clean up legacy if it exists
 systemctl --user stop mavlink-router &>/dev/null
 systemctl --user disable mavlink-router &>/dev/null
+sudo rm -rf /etc/mavlink-router &>/dev/null
 sudo rm /etc/systemd/system/mavlink-router.service &>/dev/null
+
 sudo rm -rf ~/code/mavlink-router &>/dev/null
 sudo rm /usr/bin/mavlink-routerd &>/dev/null
 
@@ -27,10 +33,9 @@ meson setup build .
 ninja -C build
 sudo ninja -C build install
 popd
-sudo mkdir -p /etc/mavlink-router
-sudo cp $TARGET_DIR/main.conf /etc/mavlink-router/
-sudo chown $USER:$USER /etc/mavlink-router/main.conf
-sudo chmod 644 /etc/mavlink-router/main.conf
+mkdir -p $XDG_CONFIG_HOME/mavlink-router/
+mkdir -p $XDG_DATA_HOME/mavlink-router/
+cp $TARGET_DIR/main.conf $XDG_DATA_HOME/mavlink-router/main.conf
 
 # Install the service
 cp $TARGET_DIR/services/mavlink-router.service $XDG_CONFIG_HOME/systemd/user/

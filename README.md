@@ -18,7 +18,7 @@ When running the **setup.sh** script you will be prompted to install the below s
 ### Jetson and Pi
 
 **mavlink-router.service** <br>
-This service enables mavlink-router to route mavlink packets between endpoints. The **platform/`target`/main.conf** file defines these endpoints and is installed at **/etc/mavlink-router/**. The USB on the FMU is connected directly to the companion for a reliable high speed chip to chip connection.
+This service enables mavlink-router to route mavlink packets between endpoints. The **platform/`target`/main.conf** file defines these endpoints and is installed at **~/.local/share/mavlink-router/main.conf**. The USB on the FMU is connected directly to the companion for a reliable high speed chip to chip connection.
 
 **dds-agent.service** <br>
 Bridges PX4 uORB pub/sub with ROS2. This service starts the DDS agent which connects with the PX4 uXRCE-DDS-Client. The FMU `Telem1` port is connected directly to the Jetson UART. This service depends on the `systemd-timesyncd` service to synchronize system time with an accurate remote reference time source.

@@ -1,2 +1,1 @@
 jetson ALL=(ALL) NOPASSWD: /bin/hostnamectl
-jetson ALL=(ALL) NOPASSWD: /etc/mavlink-router/
