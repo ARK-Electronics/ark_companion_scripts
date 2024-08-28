@@ -30,4 +30,4 @@ do
     echo "$line" | jq -c 'select(type == "object")' 2>/dev/null || :
 done
 
-systemctl --user start mavlink-router
+systemctl --user restart mavlink-router
