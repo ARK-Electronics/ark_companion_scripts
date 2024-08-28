@@ -28,7 +28,9 @@ ninja -C build
 sudo ninja -C build install
 popd
 sudo mkdir -p /etc/mavlink-router
-cp $TARGET_DIR/main.conf /etc/mavlink-router/
+sudo cp $TARGET_DIR/main.conf /etc/mavlink-router/
+sudo chown $USER:$USER /etc/mavlink-router/main.conf
+sudo chmod 644 /etc/mavlink-router/main.conf
 
 # Install the service
 cp $TARGET_DIR/services/mavlink-router.service $XDG_CONFIG_HOME/systemd/user/
