@@ -1,1 +1,1 @@
-jetson ALL=(ALL) NOPASSWD: /bin/hostnamectl
+ALL ALL=(ALL) NOPASSWD: /bin/hostnamectl
