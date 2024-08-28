@@ -19,104 +19,22 @@ sudo -v
 sudo_refresh_loop &
 SUDO_PID=$!
 
-if uname -ar | grep tegra; then
-	export TARGET=jetson
+determine_target
+
+# Source the main configuration file
+if [ -f "default.env" ]; then
+	source "default.env"
 else
-	export TARGET=pi
+	echo "Configuration file default.env not found!"
+	exit 1
 fi
 
 export TARGET_DIR="$PWD/platform/$TARGET"
 export COMMON_DIR="$PWD/platform/common"
 
-export INSTALL_DDS_AGENT="n"
-export INSTALL_RTSP_SERVER="n"
-export INSTALL_RID_TRANSMITTER="n"
-export MANUFACTURER_CODE="ARK1"
-export SERIAL_NUMBER="C0FFEE123"
-export INSTALL_LOGLOADER="n"
-export UPLOAD_SERVER="review.px4.io"
-export USER_EMAIL=""
-export UPLOAD_TO_FLIGHT_REVIEW="n"
-export PUBLIC_LOGS="n"
-export INSTALL_POLARIS="n"
-export INSTALL_ARK_UI="n"
-export POLARIS_API_KEY=""
-
-if [ "$#" -gt 0 ]; then
-	while [ "$#" -gt 0 ]; do
-		case "$1" in
-			--install-dds-agent)
-				INSTALL_DDS_AGENT="y"
-				shift
-				;;
-			--install-rtsp-server)
-				INSTALL_RTSP_SERVER="y"
-				shift
-				;;
-			--install-rid-transmitter)
-				INSTALL_RID_TRANSMITTER="y"
-				shift
-				;;
-			--manufacturer-code)
-				MANUFACTURER_CODE="$2"
-				shift
-				;;
-			--serial-number)
-				SERIAL_NUMBER="$2"
-				shift
-				;;
-			--install-polaris)
-				INSTALL_POLARIS="y"
-				shift
-				;;
-			--polaris-api-key)
-				POLARIS_API_KEY="$2"
-				shift
-				;;
-			--install-ark-ui)
-				INSTALL_ARK_UI="y"
-				shift
-				;;
-			--install-logloader)
-				INSTALL_LOGLOADER="y"
-				shift
-				;;
-			--email)
-				USER_EMAIL="$2"
-				shift 2
-				;;
-			--auto-upload)
-				UPLOAD_TO_FLIGHT_REVIEW="y"
-				shift
-				;;
-			--public-logs)
-				PUBLIC_LOGS="y"
-				shift
-				;;
-			-h | --help)
-				echo "Usage: $0 [options]"
-				echo "Options:"
-				echo "  --install-dds-agent         Install micro-xrce-dds-agent"
-				echo "  --install-rtsp-server       Install rtsp-server"
-				echo "  --install-polaris           Install polaris-client-mavlink"
-				echo "    --polaris-api-key         Polaris API key"
-				echo "  --install-ark-ui            Install UI interface at $TARGET.local"
-				echo "  --install-rid-transmitter   Install RemoteIDTransmitter"
-				echo "    --manufacturer-code CODE  Manufacturer code for RemoteID"
-				echo "    --serial-number SERIAL    Serial number for RemoteID"
-				echo "  --install-logloader         Install logloader"
-				echo "    --email EMAIL             Email to use for logloader"
-				echo "    --auto-upload             Auto upload logs to PX4 Flight Review"
-				echo "    --public-logs             Make logs public on PX4 Flight Review"
-				echo "  -h, --help                  Display this help message"
-				exit 0
-				;;
-			*)
-				echo "Unknown argument: $1"
-				exit 1
-				;;
-		esac
-	done
+if [ -f "user.env" ]; then
+	echo "Found user.env, skipping interactive prompt"
+	source "user.env"
 else
 	ask_yes_no "Do you want to install micro-xrce-dds-agent?" INSTALL_DDS_AGENT
 	ask_yes_no "Do you want to install logloader?" INSTALL_LOGLOADER

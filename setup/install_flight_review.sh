@@ -1,18 +1,10 @@
 #!/bin/bash
-DEFAULT_XDG_CONF_HOME="$HOME/.config"
-DEFAULT_XDG_DATA_HOME="$HOME/.local/share"
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$DEFAULT_XDG_CONF_HOME}"
-export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
-
-sudo -v
 source $(dirname $BASH_SOURCE)/functions.sh
 
 echo "Installing flight_review"
 
 # Stop and remove the service
-systemctl --user stop flight-review &>/dev/null
-systemctl --user disable flight-review &>/dev/null
-sudo rm /etc/systemd/system/flight-review.service &>/dev/null
+stop_and_disable_remove_service flight-review
 
 # Clean up directories
 sudo rm -rf ~/code/flight_review &>/dev/null
@@ -45,9 +37,6 @@ sudo chown -R $USER:$USER /opt/flight_review
 /opt/flight_review/app/setup_db.py
 
 # Install the service
-cp $COMMON_DIR/services/flight-review.service $XDG_CONFIG_HOME/systemd/user/
-systemctl --user daemon-reload
-systemctl --user enable flight-review.service
-systemctl --user restart flight-review.service
+install_and_enable_service flight-review
 
 popd
