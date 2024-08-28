@@ -58,12 +58,15 @@ function install_and_enable_service() {
 }
 
 function stop_disable_remove_service() {
-    sudo systemctl stop $1.service &>/dev/null
-    sudo systemctl disable $1.service &>/dev/null
-    systemctl --user stop $1.service &>/dev/null
-    systemctl --user disable $1.service &>/dev/null
-    sudo rm /etc/systemd/system/$1.service &>/dev/null
+	sudo systemctl stop $1.service &>/dev/null
+	sudo systemctl disable $1.service &>/dev/null
+	systemctl --user stop $1.service &>/dev/null
+	systemctl --user disable $1.service &>/dev/null
+	sudo rm /etc/systemd/system/$1.service &>/dev/null
+	sudo rm /lib/systemd/system/$1.service &>/dev/null
 	sudo rm $XDG_CONFIG_HOME/systemd/user/$1.service &>/dev/null
+	sudo systemctl daemon-reload
+	systemctl --user daemon-reload
 }
 
 function git_clone_retry() {
