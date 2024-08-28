@@ -30,4 +30,6 @@ do
     echo "$line" | jq -c 'select(type == "object")' 2>/dev/null || :
 done
 
-systemctl --user restart mavlink-router
+python3 /usr/local/bin/reset_fmu_fast.py &>/dev/null
+
+systemctl --user restart mavlink-router &>/dev/null
