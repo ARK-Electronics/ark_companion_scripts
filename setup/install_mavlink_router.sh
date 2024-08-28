@@ -24,4 +24,4 @@ mkdir -p $XDG_DATA_HOME/mavlink-router/
 cp $TARGET_DIR/main.conf $XDG_DATA_HOME/mavlink-router/main.conf
 
 # Install the service
-install_and_enable_target_service mavlink-router
+install_and_enable_service mavlink-router

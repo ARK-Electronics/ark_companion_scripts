@@ -1,7 +1,6 @@
 [Unit]
 Description=Mavlink Router
 Wants=network.target
-ConditionPathIsDirectory=/dev/serial/by-id
 After=network-online.target syslog.target
 
 [Service]

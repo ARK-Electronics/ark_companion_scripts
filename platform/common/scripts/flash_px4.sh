@@ -32,4 +32,6 @@ done
 
 python3 /usr/local/bin/reset_fmu_fast.py &>/dev/null
 
+sleep 3
+
 systemctl --user restart mavlink-router &>/dev/null
