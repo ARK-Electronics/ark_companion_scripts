@@ -3,8 +3,8 @@ source $(dirname $BASH_SOURCE)/functions.sh
 echo "Installing ARK-UI"
 
 # Remove old ark-ui
-stop_and_disable_remove_service pilot-portal
-stop_and_disable_remove_service ark-ui-backend
+stop_disable_remove_service pilot-portal
+stop_disable_remove_service ark-ui-backend
 
 # clean up old nginx
 sudo rm /etc/nginx/sites-enabled/ark-ui &>/dev/null

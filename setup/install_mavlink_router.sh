@@ -6,7 +6,7 @@ determine_target
 echo "Installing mavlink-router"
 
 # clean up legacy if it exists
-stop_and_disable_remove_service mavlink-router
+stop_disable_remove_service mavlink-router
 
 # remove old config, source, and binary
 sudo rm -rf /etc/mavlink-router &>/dev/null

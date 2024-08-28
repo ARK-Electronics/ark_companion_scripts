@@ -57,7 +57,7 @@ function install_and_enable_service() {
 	systemctl --user restart $1.service
 }
 
-function stop_and_disable_remove_service() {
+function stop_disable_remove_service() {
     sudo systemctl stop $1.service &>/dev/null
     sudo systemctl disable $1.service &>/dev/null
     systemctl --user stop $1.service &>/dev/null

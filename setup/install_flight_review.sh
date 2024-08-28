@@ -4,7 +4,7 @@ source $(dirname $BASH_SOURCE)/functions.sh
 echo "Installing flight_review"
 
 # Stop and remove the service
-stop_and_disable_remove_service flight-review
+stop_disable_remove_service flight-review
 
 # Clean up directories
 sudo rm -rf ~/code/flight_review &>/dev/null

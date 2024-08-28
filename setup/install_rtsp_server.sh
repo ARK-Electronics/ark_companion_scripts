@@ -24,7 +24,7 @@ else
 	sudo apt remove gstreamer1.0-vaapi
 fi
 
-stop_and_disable_remove_service rtsp-server
+stop_disable_remove_service rtsp-server
 
 # clean up legacy if it exists
 sudo rm -rf ~/code/rtsp-server &>/dev/null

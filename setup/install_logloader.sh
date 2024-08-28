@@ -4,7 +4,7 @@ source $(dirname $BASH_SOURCE)/functions.sh
 echo "Installing logloader"
 
 # Stop and remove the service
-stop_and_disable_remove_service logloader
+stop_disable_remove_service logloader
 
 # Clean up directories
 sudo rm -rf ~/logloader &>/dev/null

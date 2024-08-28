@@ -6,7 +6,7 @@ determine_target
 echo "Installing micro-xrce-dds-agent"
 
 # clean up legacy if it exists
-stop_and_disable_remove_service dds-agent
+stop_disable_remove_service dds-agent
 
 sudo snap install micro-xrce-dds-agent --edge
 
