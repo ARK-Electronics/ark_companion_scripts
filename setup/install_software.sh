@@ -84,6 +84,7 @@ else
 					echo "Invalid Serial Number. Please try again."
 				fi
 			done
+		fi
 	fi
 
 	ask_yes_no "Do you want to install ark-ui?" INSTALL_ARK_UI
