@@ -10,8 +10,8 @@ stop_disable_remove_service polaris-client-mavlink
 # Clean up directories
 sudo rm -rf ~/polaris-client-mavlink &>/dev/null
 sudo rm -rf ~/code/polaris-client-mavlink &>/dev/null
-sudo rm /usr/local/bin/polaris-client-mavlink
-sudo rm /usr/local/bin/polaris
+sudo rm /usr/local/bin/polaris-client-mavlink &>/dev/null
+sudo rm /usr/local/bin/polaris &>/dev/null
 
 git_clone_retry https://github.com/ARK-Electronics/polaris-client-mavlink.git ~/code/polaris-client-mavlink
 
