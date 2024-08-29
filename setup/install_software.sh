@@ -65,11 +65,25 @@ else
 	if [ "$TARGET" = "jetson" ]; then
 		ask_yes_no "Do you want to install rid-transmitter?" INSTALL_RID_TRANSMITTER
 		if [ "$INSTALL_RID_TRANSMITTER" = "y" ]; then
-			echo "Enter Manufacturer Code: "
-			read -r MANUFACTURER_CODE
-			echo "Enter Serial Number: "
-			read -r SERIAL_NUMBER
-		fi
+			while true; do
+				echo "Enter Manufacturer Code (4 characters, digits and uppercase letters only, no O or I): "
+				read -r MANUFACTURER_CODE
+				if [[ $MANUFACTURER_CODE =~ ^[A-HJ-NP-Z0-9]{4}$ ]]; then
+					break
+				else
+					echo "Invalid Manufacturer Code. Please try again."
+				fi
+			done
+
+			while true; do
+				echo "Enter Serial Number (1-15 characters, digits and uppercase letters only, no O or I): "
+				read -r SERIAL_NUMBER
+				if [[ $SERIAL_NUMBER =~ ^[A-HJ-NP-Z0-9]{1,15}$ ]]; then
+					break
+				else
+					echo "Invalid Serial Number. Please try again."
+				fi
+			done
 	fi
 
 	ask_yes_no "Do you want to install ark-ui?" INSTALL_ARK_UI
