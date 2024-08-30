@@ -1,6 +1,4 @@
 #!/bin/bash
-
-sudo true
 source $(dirname $BASH_SOURCE)/functions.sh
 
 echo "Installing mavsdk-examples"

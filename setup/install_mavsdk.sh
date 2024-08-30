@@ -1,6 +1,4 @@
 #!/bin/bash
-
-sudo true
 source $(dirname $BASH_SOURCE)/functions.sh
 
 # Check if we are on 20.04 or 22.04
@@ -39,13 +37,22 @@ elif [ "$(lsb_release -cs)" = "jammy" ]; then
 		((attempt_num++))
 	done
 
-	if [ "$success" = true ]; then
-		echo "Downloading completed successfully."
-		echo "Installing $file_name"
-		sudo dpkg -i "$file_name"
-		sudo rm "$file_name"
-		sudo ldconfig
-	else
+if [ "$success" = true ]; then
+	echo "Downloading completed successfully."
+	echo "Installing $file_name"
+
+	for attempt in {1..5}; do
+		sudo dpkg -i "$file_name" && break || sleep 5
+	done
+
+	if [ $attempt -eq 5 ]; then
+		echo "Failed to install $file_name after 5 attempts."
+		exit 1
+	fi
+
+	sudo rm "$file_name"
+	sudo ldconfig
+else
 		echo "Failed to download the file after $max_attempts attempts."
 	fi
 else

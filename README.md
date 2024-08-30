@@ -1,5 +1,7 @@
 # Getting started
-This repository contains scripts and services for use with ARK Electronics companion computer hardware. You can safely run this script multiple times.
+This repository contains scripts and services for use with ARK Electronics companion computer hardware.
+
+Run the setup script on the device. This script can be safely run multiple times. Clean builds of each repository are performed on each run.
 ```
 ./setup.sh
 ```
@@ -11,16 +13,21 @@ This repository contains scripts and services for use with ARK Electronics compa
 
 ## Services
 
-#### Common -- *installed at ~/.config/systemd/user*
+When running the **setup.sh** script you will be prompted to install the below services. The services are installed as [systemd user services](https://www.unixsysadmin.com/systemd-user-services/) and conform to the [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/latest/index.html).
+
+### Jetson and Pi
 
 **mavlink-router.service** <br>
-This service enables mavlink-router to route mavlink packets between endpoints. The **platform/`target`/main.conf** file defines these endpoints and is installed at **/etc/mavlink-router/**. The USB on the FMU is connected directly to the companion for a reliable high speed chip to chip connection.
+This service enables mavlink-router to route mavlink packets between endpoints. The **platform/`target`/main.conf** file defines these endpoints and is installed at **~/.local/share/mavlink-router/main.conf**. The USB on the FMU is connected directly to the companion for a reliable high speed chip to chip connection.
 
 **dds-agent.service** <br>
 Bridges PX4 uORB pub/sub with ROS2. This service starts the DDS agent which connects with the PX4 uXRCE-DDS-Client. The FMU `Telem1` port is connected directly to the Jetson UART. This service depends on the `systemd-timesyncd` service to synchronize system time with an accurate remote reference time source.
 
 **logloader.service** <br>
 This service downloads log files from the SD card of the flight controller via MAVLink and optionally uploads them to [PX4 Flight Review](https://review.px4.io/). <br>
+
+**flight-review.service** <br>
+This service hosts a local PX4 Flight Review server on port 5006 <br>
 
 **rtsp-server.service** <br>
 This service provides an RTSP server via gstreamer using a Pi cam at **rtsp://`target`.local:8554/fpv** <br>
@@ -34,8 +41,10 @@ This service provides an express backend for the ark-ui configuration UI. The AR
 **hotspot-control.service** <br>
 This service creates a hotspot after booting if the device is unable to auto connect to a network. You can then use the ARK UI to configure your network.
 
-#### Jetson only -- *installed at /etc/systemd/system*
+### Jetson only
 
+**rid-transmitter.service** <br>
+This service starts the RemoteIDTransmitter service which broadcasts RemoteID data via Bluetooth.
 
 **jetson-can.service** <br>
 This service enables the Jetson CAN interface.
@@ -44,4 +53,4 @@ This service enables the Jetson CAN interface.
 This service sets the Jetson clocks to their maximum rate.
 
 ## Scripts
-All installed scripts are placed at **/usr/local/bin**.
+All installed scripts and binaries are placed at **/usr/local/bin**.

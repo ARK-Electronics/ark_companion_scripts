@@ -1,7 +1,7 @@
 #!/bin/bash
-
-sudo true
 source $(dirname $BASH_SOURCE)/functions.sh
+
+determine_target
 
 echo "Installing rtsp-server"
 
@@ -24,9 +24,9 @@ else
 	sudo apt remove gstreamer1.0-vaapi
 fi
 
+stop_disable_remove_service rtsp-server
+
 # clean up legacy if it exists
-sudo systemctl stop rtsp-server &>/dev/null
-sudo systemctl disable rtsp-server &>/dev/null
 sudo rm -rf ~/code/rtsp-server &>/dev/null
 
 # Clone, build, and install
@@ -38,7 +38,4 @@ sudo ldconfig
 popd
 
 # Install the service
-sudo cp $COMMON_DIR/services/rtsp-server.service $XDG_CONFIG_HOME/systemd/user/
-systemctl --user daemon-reload
-systemctl --user enable rtsp-server.service
-systemctl --user restart rtsp-server.service
+install_and_enable_service rtsp-server

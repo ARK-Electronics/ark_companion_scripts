@@ -1,22 +1,15 @@
 #!/bin/bash
-
-sudo true
 source $(dirname $BASH_SOURCE)/functions.sh
 
-if uname -ar | grep tegra; then
-	TARGET=jetson
-else
-	TARGET=pi
-fi
-
-TARGET_DIR="$PWD/platform/$TARGET"
+determine_target
 
 echo "Installing mavlink-router"
 
 # clean up legacy if it exists
-sudo systemctl stop mavlink-router &>/dev/null
-sudo systemctl disable mavlink-router &>/dev/null
-sudo rm /etc/systemd/system/mavlink-router.service &>/dev/null
+stop_disable_remove_service mavlink-router
+
+# remove old config, source, and binary
+sudo rm -rf /etc/mavlink-router &>/dev/null
 sudo rm -rf ~/code/mavlink-router &>/dev/null
 sudo rm /usr/bin/mavlink-routerd &>/dev/null
 
@@ -27,11 +20,8 @@ meson setup build .
 ninja -C build
 sudo ninja -C build install
 popd
-sudo mkdir -p /etc/mavlink-router
-sudo cp $TARGET_DIR/main.conf /etc/mavlink-router/
+mkdir -p $XDG_DATA_HOME/mavlink-router/
+cp $TARGET_DIR/main.conf $XDG_DATA_HOME/mavlink-router/main.conf
 
 # Install the service
-sudo cp $TARGET_DIR/services/mavlink-router.service $XDG_CONFIG_HOME/systemd/user/
-systemctl --user daemon-reload
-systemctl --user enable mavlink-router.service
-systemctl --user restart mavlink-router.service
+install_and_enable_service mavlink-router
