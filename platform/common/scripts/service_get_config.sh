@@ -1,5 +1,27 @@
 #!/bin/bash
 
+# This script outputs JSON structures in the following format:
+#
+# On success:
+# {
+#     "status": "success",
+#     "data": "<contents of config.toml in JSON string format>"
+# }
+#
+# On failure:
+# {
+#     "status": "fail",
+#     "data": "<error message>"
+# }
+#
+# Usage: ./script_name.sh <serviceName>
+# Example: ./script_name.sh myService
+#
+# Exit codes:
+# 1 - Service name not provided
+# 2 - config.toml not found in the service directory
+# 3 - Service directory not found
+
 SERVICE_NAME="$1"
 
 # Base directory containing service data
