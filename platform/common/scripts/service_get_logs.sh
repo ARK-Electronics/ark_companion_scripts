@@ -9,7 +9,7 @@ if [ -z "$SERVICE_NAME" ]; then
 fi
 
 # Fetch the last 50 lines of logs for the specified service
-LOG_OUTPUT=$(journalctl --user -u "$SERVICE_NAME" -n 50 --no-pager 2>&1)
+LOG_OUTPUT=$(journalctl --user -u "$SERVICE_NAME" -n 50 --no-pager -o cat 2>&1)
 
 # Check if the command was successful
 if [ $? -eq 0 ]; then
