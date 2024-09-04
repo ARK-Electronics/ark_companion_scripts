@@ -70,13 +70,25 @@ function stop_disable_remove_service() {
 }
 
 function git_clone_retry() {
-	local url="$1" dir="$2" retries=3 delay=5
-	until git clone --recurse-submodules --depth=1 --shallow-submodules "$url" "$dir"; do
-	((retries--)) || return 1
-	echo "git clone failed, retrying in $delay seconds..."
-	rm -rf "$dir" &>/dev/null
-	sleep $delay
-	done
+	local url="$1" dir="$2" branch="$3" retries=3 delay=5
+
+	if [ -n "$branch" ]; then
+		# Clone with a specific branch and avoid shallow clone
+		until git clone --recurse-submodules -b "$branch" "$url" "$dir"; do
+			((retries--)) || return 1
+			echo "git clone failed, retrying in $delay seconds..."
+			rm -rf "$dir" &>/dev/null
+			sleep $delay
+		done
+	else
+		# Shallow clone if no branch is specified
+		until git clone --recurse-submodules --depth=1 --shallow-submodules "$url" "$dir"; do
+			((retries--)) || return 1
+			echo "git clone failed, retrying in $delay seconds..."
+			rm -rf "$dir" &>/dev/null
+			sleep $delay
+		done
+	fi
 }
 
 function check_and_add_alias() {
