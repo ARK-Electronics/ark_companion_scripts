@@ -8,7 +8,7 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
 source $(dirname $BASH_SOURCE)/functions.sh
 
 function cleanup() {
-	kill $SUDO_PID
+	kill -9 $SUDO_PID
 	exit 0
 }
 
