@@ -45,15 +45,25 @@ for dir in "$BASE_DIR"/*/; do
 	if [ "$dir_name" == "$SERVICE_NAME" ]; then
 		service_found=true
 
-		# Check if the config.toml file exists in the directory
-		CONFIG_FILE="$dir/config.toml"
+		# Default config file name
+		CONFIG_FILE_NAME="config.toml"
+
+		# Check if a manifest file exists and read the configFile entry
+		MANIFEST_FILE="$dir/$SERVICE_NAME.manifest.json"
+		if [ -f "$MANIFEST_FILE" ]; then
+			CONFIG_FILE_NAME=$(grep -Po '(?<="configFile": ")[^"]*' "$MANIFEST_FILE")
+			[ -z "$CONFIG_FILE_NAME" ] && CONFIG_FILE_NAME="config.toml"  # Fallback to default if empty
+		fi
+
+		# Check if the config file exists in the directory
+		CONFIG_FILE="$dir/$CONFIG_FILE_NAME"
 		if [ -f "$CONFIG_FILE" ]; then
-			# Output the contents of the config.toml file in JSON format
+			# Output the contents of the config file in JSON format
 			config_content=$(cat "$CONFIG_FILE" | jq -Rs .)
 			echo "{\"status\": \"success\", \"data\": ${config_content}}"
 			exit 0
 		else
-			echo "{\"status\": \"fail\", \"data\": \"config.toml not found in $dir\"}"
+			echo "{\"status\": \"fail\", \"data\": \"$CONFIG_FILE_NAME not found in $dir\"}"
 			exit 2
 		fi
 	fi
