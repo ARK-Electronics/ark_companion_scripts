@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script outputs a JSON structure that lists all user services along with their enabled status, active status,
-# and whether a config file is present. The config file name is taken from the service manifest, if available.
+# and the config file name if available. If no config file is available, it returns an empty string.
 #
 # The JSON structure is as follows:
 # {
@@ -10,7 +10,7 @@
 #             "name": "<service_name>",
 #             "enabled": "<enabled_status>",
 #             "active": "<active_status>",
-#             "config_available": "<true|false>",
+#             "config_file": "<config_file_name_or_empty_string>",
 #             "visible": "<true|false>"
 #         },
 #         ...
@@ -20,7 +20,7 @@
 # - "name": The name of the service (without the .service extension).
 # - "enabled": The enabled status of the service ("enabled", "disabled", or an error message).
 # - "active": The active status of the service ("active", "inactive", or an error message).
-# - "config_available": Indicates whether a config file is present ("true" or "false").
+# - "config_file": The name of the config file if available, or an empty string if not.
 # - "visible": Indicates whether the service should be visible in the UI ("true" or "false").
 #
 # Example usage: ./service_get_statuses.sh
@@ -44,24 +44,21 @@ for i in "${!service_files[@]}"; do
 
 	MANIFEST_FILE="$BASE_DIR/$SERVICE_NAME/$SERVICE_NAME.manifest.json"
 	VISIBLE="true"
-	CONFIG_FILE_NAME="config.toml"
+	CONFIG_FILE_NAME=""
 
 	if [ -f "$MANIFEST_FILE" ]; then
-		VISIBLE=$(grep -Po '(?<="visible": ")[^"]*' "$MANIFEST_FILE")
+		VISIBLE=$(grep -Po '(?<="visible": )[^,]*' "$MANIFEST_FILE" | tr -d ' ')
 		[ -z "$VISIBLE" ] && VISIBLE="true"
 
 		CONFIG_FILE_NAME=$(grep -Po '(?<="configFile": ")[^"]*' "$MANIFEST_FILE")
-		[ -z "$CONFIG_FILE_NAME" ] && CONFIG_FILE_NAME="config.toml"
 	fi
 
 	CONFIG_FILE="$BASE_DIR/$SERVICE_NAME/$CONFIG_FILE_NAME"
-	if [ -f "$CONFIG_FILE" ]; then
-		CONFIG_AVAILABLE="true"
-	else
-		CONFIG_AVAILABLE="false"
+	if [ ! -f "$CONFIG_FILE" ]; then
+		CONFIG_FILE_NAME=""
 	fi
 
-	echo -n "{\"name\": \"${SERVICE_NAME}\", \"enabled\": \"${ENABLED_STATUS}\", \"active\": \"${ACTIVE_STATUS}\", \"config_available\": \"${CONFIG_AVAILABLE}\", \"visible\": \"${VISIBLE}\"}"
+	echo -n "{\"name\": \"${SERVICE_NAME}\", \"enabled\": \"${ENABLED_STATUS}\", \"active\": \"${ACTIVE_STATUS}\", \"config_file\": \"${CONFIG_FILE_NAME}\", \"visible\": \"${VISIBLE}\"}"
 
 	if [ "$i" -lt "$((service_count - 1))" ]; then
 		echo ","

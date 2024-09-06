@@ -225,9 +225,9 @@ fi
 ./setup/install_mavsdk_examples.sh
 
 ########## hotspot-control ##########
-cp $COMMON_DIR/services/hotspot-control.service $XDG_CONFIG_HOME/systemd/user/
-systemctl --user enable hotspot-control.service
-systemctl --user restart hotspot-control.service
+stop_disable_remove_service hotspot-control
+add_service_manifest hotspot-control
+install_and_enable_service hotspot-control
 
 ########## logloader ##########
 if [ "$INSTALL_LOGLOADER" = "y" ]; then
