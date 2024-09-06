@@ -118,3 +118,28 @@ function sudo_refresh_loop() {
 		sleep 60
 	done
 }
+
+function add_service_manifest() {
+	local SERVICE_NAME="$1"
+	local MANIFEST_SOURCE="${PROJECT_ROOT}/manifests/${SERVICE_NAME}.manifest.json"
+	local APP_DIR="$XDG_DATA_HOME/${SERVICE_NAME}"
+
+	if [ ! -f "$MANIFEST_SOURCE" ]; then
+		echo "Error: Manifest file ${SERVICE_NAME}.manifest.json not found in ${PROJECT_ROOT}/manifests/"
+		return 1
+	fi
+
+	if [ ! -d "$APP_DIR" ]; then
+		mkdir -p "$APP_DIR"
+	fi
+
+	cp "$MANIFEST_SOURCE" "$APP_DIR"
+
+	if [ $? -eq 0 ]; then
+		echo "Successfully copied ${SERVICE_NAME}.manifest.json to ${APP_DIR}/"
+		return 0
+	else
+		echo "Error: Failed to copy manifest file for ${SERVICE_NAME}"
+		return 1
+	fi
+}

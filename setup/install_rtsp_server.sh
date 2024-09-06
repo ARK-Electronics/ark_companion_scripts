@@ -37,5 +37,7 @@ make install
 sudo ldconfig
 popd
 
+add_service_manifest rtsp-server
+
 # Install the service
 install_and_enable_service rtsp-server

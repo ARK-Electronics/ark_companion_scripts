@@ -1,0 +1,6 @@
+{
+  "displayName": "Mavlink Router",
+  "visible": true,
+  "description": "Routes mavlink data between endpoints.",
+  "configFile": "main.conf"
+}

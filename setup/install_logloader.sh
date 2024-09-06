@@ -18,5 +18,7 @@ make install
 sudo ldconfig
 popd
 
+add_service_manifest logloader
+
 # Install the service
 install_and_enable_service logloader

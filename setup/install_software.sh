@@ -29,6 +29,7 @@ else
 	exit 1
 fi
 
+export PROJECT_ROOT="$PWD"
 export TARGET_DIR="$PWD/platform/$TARGET"
 export COMMON_DIR="$PWD/platform/common"
 

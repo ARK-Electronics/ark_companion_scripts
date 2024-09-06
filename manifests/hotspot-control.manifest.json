@@ -1,0 +1,6 @@
+{
+  "displayName": "Hotspot Control",
+  "visible": false,
+  "description": "Creates and configures a WiFi hotspot if no local WiFi network is detected at boot.",
+  "configFile": ""
+}
