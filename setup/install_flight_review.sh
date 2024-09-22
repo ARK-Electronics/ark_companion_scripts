@@ -27,8 +27,6 @@ elif [ "$TARGET" = "pi" ]; then
 	pip install --break-system-packages --upgrade pandas scipy matplotlib
 fi
 
-
-
 # Create user config overrides
 touch app/config_user.ini
 echo "[general]" >> app/config_user.ini
@@ -45,6 +43,8 @@ sudo chown -R $USER:$USER /opt/flight_review
 
 # Initialize database
 /opt/flight_review/app/setup_db.py
+
+add_service_manifest flight-review
 
 # Install the service
 install_and_enable_service flight-review

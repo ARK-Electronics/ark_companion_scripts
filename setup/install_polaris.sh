@@ -21,5 +21,7 @@ make install
 sudo ldconfig
 popd
 
+add_service_manifest polaris
+
 # Install the service
 install_and_enable_service polaris

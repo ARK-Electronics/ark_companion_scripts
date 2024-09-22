@@ -70,13 +70,25 @@ function stop_disable_remove_service() {
 }
 
 function git_clone_retry() {
-	local url="$1" dir="$2" retries=3 delay=5
-	until git clone --recurse-submodules --depth=1 --shallow-submodules "$url" "$dir"; do
-	((retries--)) || return 1
-	echo "git clone failed, retrying in $delay seconds..."
-	rm -rf "$dir" &>/dev/null
-	sleep $delay
-	done
+	local url="$1" dir="$2" branch="$3" retries=3 delay=5
+
+	if [ -n "$branch" ]; then
+		# Clone with a specific branch and avoid shallow clone
+		until git clone --recurse-submodules -b "$branch" "$url" "$dir"; do
+			((retries--)) || return 1
+			echo "git clone failed, retrying in $delay seconds..."
+			rm -rf "$dir" &>/dev/null
+			sleep $delay
+		done
+	else
+		# Shallow clone if no branch is specified
+		until git clone --recurse-submodules --depth=1 --shallow-submodules "$url" "$dir"; do
+			((retries--)) || return 1
+			echo "git clone failed, retrying in $delay seconds..."
+			rm -rf "$dir" &>/dev/null
+			sleep $delay
+		done
+	fi
 }
 
 function check_and_add_alias() {
@@ -105,4 +117,29 @@ function sudo_refresh_loop() {
 		sudo -v
 		sleep 60
 	done
+}
+
+function add_service_manifest() {
+	local SERVICE_NAME="$1"
+	local MANIFEST_SOURCE="${PROJECT_ROOT}/manifests/${SERVICE_NAME}.manifest.json"
+	local APP_DIR="$XDG_DATA_HOME/${SERVICE_NAME}"
+
+	if [ ! -f "$MANIFEST_SOURCE" ]; then
+		echo "Error: Manifest file ${SERVICE_NAME}.manifest.json not found in ${PROJECT_ROOT}/manifests/"
+		return 1
+	fi
+
+	if [ ! -d "$APP_DIR" ]; then
+		mkdir -p "$APP_DIR"
+	fi
+
+	cp "$MANIFEST_SOURCE" "$APP_DIR"
+
+	if [ $? -eq 0 ]; then
+		echo "Successfully copied ${SERVICE_NAME}.manifest.json to ${APP_DIR}/"
+		return 0
+	else
+		echo "Error: Failed to copy manifest file for ${SERVICE_NAME}"
+		return 1
+	fi
 }

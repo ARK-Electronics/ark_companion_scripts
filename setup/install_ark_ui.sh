@@ -22,6 +22,7 @@ cd $ARK_UI_SRC_DIR
 ./install.sh
 popd
 
+
 # nginx config
 NGINX_CONFIG_FILE_PATH="/etc/nginx/sites-available/ark-ui"
 sudo cp "$ARK_UI_SRC_DIR/ark-ui.nginx" $NGINX_CONFIG_FILE_PATH
@@ -50,6 +51,8 @@ sudo -u www-data stat $DEPLOY_PATH
 # Test the configuration and restart
 sudo nginx -t
 sudo systemctl restart nginx
+
+add_service_manifest ark-ui-backend
 
 # Install services as user
 install_and_enable_service ark-ui-backend

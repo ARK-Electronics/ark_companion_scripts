@@ -19,5 +19,7 @@ make install
 sudo ldconfig
 popd
 
+add_service_manifest rid-transmitter
+
 # Install the service
 install_and_enable_target_service rid-transmitter
