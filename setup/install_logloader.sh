@@ -10,7 +10,7 @@ stop_disable_remove_service logloader
 sudo rm -rf ~/logloader &>/dev/null
 sudo rm -rf ~/code/logloader &>/dev/null
 
-git_clone_retry https://github.com/ARK-Electronics/logloader.git ~/code/logloader pr-upload_local_always
+git_clone_retry https://github.com/ARK-Electronics/logloader.git ~/code/logloader
 
 pushd .
 cd ~/code/logloader

@@ -16,7 +16,7 @@ sudo rm -rf /var/www/ark-ui &>/dev/null
 # Clone and build repo
 ARK_UI_SRC_DIR="$HOME/code/ark-ui"
 sudo rm -rf $ARK_UI_SRC_DIR
-git_clone_retry https://github.com/ARK-Electronics/ark-ui.git $ARK_UI_SRC_DIR pr-service_config
+git_clone_retry https://github.com/ARK-Electronics/ark-ui.git $ARK_UI_SRC_DIR
 pushd .
 cd $ARK_UI_SRC_DIR
 ./install.sh
