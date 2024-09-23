@@ -3,16 +3,16 @@
 APN="fast.t-mobile.com"
 
 while true; do
-		MODEM_LIST=$(mmcli -L | grep -Eo '/Modem/[0-9]+')
-		if [ -n "$MODEM_LIST" ]; then
-				# Extract the first modem instance (if multiple modems are found)
-				MODEM_INSTANCE=$(echo "$MODEM_LIST" | head -n 1 | grep -Eo '[0-9]+')
-				echo "Modem detected: instance $MODEM_INSTANCE"
-				break
-		else
-				echo "No modem detected. Retrying in 5 seconds..."
-				sleep 5
-		fi
+	MODEM_LIST=$(mmcli -L | grep -Eo '/Modem/[0-9]+')
+	if [ -n "$MODEM_LIST" ]; then
+		# Extract the first modem instance (if multiple modems are found)
+		MODEM_INSTANCE=$(echo "$MODEM_LIST" | head -n 1 | grep -Eo '[0-9]+')
+		echo "Modem detected: instance $MODEM_INSTANCE"
+		break
+	else
+		echo "No modem detected. Retrying in 5 seconds..."
+		sleep 5
+	fi
 done
 
 sudo mmcli -m $MODEM_INSTANCE --3gpp-set-initial-eps-bearer-settings="apn=$APN"
