@@ -29,6 +29,6 @@ sudo ip link set wwan0 up
 sudo ip addr add $IP_ADDRESS/$PREFIX dev wwan0
 sudo ip link set dev wwan0 arp off
 sudo ip link set wwan0 mtu $MTU
-sudo ip route add default via $GATEWAY dev wwan0 metric 200
+sudo ip route add default via $GATEWAY dev wwan0 metric 4294967295
 
 echo "ARK LTE modem setup completed."
