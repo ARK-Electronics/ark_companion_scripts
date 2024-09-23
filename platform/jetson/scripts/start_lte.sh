@@ -13,6 +13,8 @@ else
   echo "Modem is connected."
 fi
 
+BEARER_INFO=$(mmcli -m 0 --bearer=1)
+
 IP_ADDRESS=$(echo "$BEARER_INFO" | grep -Po '(?<=address: )[0-9.]+')
 PREFIX=$(echo "$BEARER_INFO" | grep -Po '(?<=prefix: )[0-9]+')
 GATEWAY=$(echo "$BEARER_INFO" | grep -Po '(?<=gateway: )[0-9.]+')
