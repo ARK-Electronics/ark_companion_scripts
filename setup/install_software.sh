@@ -34,11 +34,11 @@ if [ -f "user.env" ]; then
 	echo "Found user.env, skipping interactive prompt"
 	source "user.env"
 else
-	ask_yes_no "Do you want to install micro-xrce-dds-agent?" INSTALL_DDS_AGENT
-	ask_yes_no "Do you want to install logloader?" INSTALL_LOGLOADER
+	ask_yes_no "Install micro-xrce-dds-agent?" INSTALL_DDS_AGENT
+	ask_yes_no "Install logloader?" INSTALL_LOGLOADER
 
 	if [ "$INSTALL_LOGLOADER" = "y" ]; then
-		ask_yes_no "Do you want to auto upload to PX4 Flight Review?" UPLOAD_TO_FLIGHT_REVIEW
+		ask_yes_no "Upload automatically to PX4 Flight Review?" UPLOAD_TO_FLIGHT_REVIEW
 		if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
 			echo "Please enter your email: "
 			read -r USER_EMAIL
@@ -46,10 +46,10 @@ else
 		fi
 	fi
 
-	ask_yes_no "Do you want to install rtsp-server?" INSTALL_RTSP_SERVER
+	ask_yes_no "Install rtsp-server?" INSTALL_RTSP_SERVER
 
 	if [ "$TARGET" = "jetson" ]; then
-		ask_yes_no "Do you want to install rid-transmitter?" INSTALL_RID_TRANSMITTER
+		ask_yes_no "Install rid-transmitter?" INSTALL_RID_TRANSMITTER
 		if [ "$INSTALL_RID_TRANSMITTER" = "y" ]; then
 			while true; do
 				echo "Enter Manufacturer Code (4 characters, digits and uppercase letters only, no O or I) [default: $MANUFACTURER_CODE]: "
@@ -83,15 +83,15 @@ else
 		fi
 	fi
 
-	ask_yes_no "Do you want to install ark-ui?" INSTALL_ARK_UI
-	ask_yes_no "Do you want to install the polaris-client-mavlink?" INSTALL_POLARIS
+	ask_yes_no "Install ark-ui?" INSTALL_ARK_UI
+	ask_yes_no "Install polaris-client-mavlink?" INSTALL_POLARIS
 
 	if [ "$INSTALL_POLARIS" = "y" ]; then
 		if [ -f "polaris.key" ]; then
 			read -r POLARIS_API_KEY < polaris.key
 			echo "Using API key from polaris.key file"
 		else
-			echo "Enter API key: "
+			echo "Enter API key: [default: none]"
 			read -r POLARIS_API_KEY
 		fi
 	fi
