@@ -43,7 +43,7 @@ if [ ! -L /etc/nginx/sites-enabled/ark-ui ]; then
 fi
 
 # Remove default configuration
-sudo rm /etc/nginx/sites-enabled/default
+sudo rm /etc/nginx/sites-enabled/default &>/dev/null
 
 # To check that it can run
 sudo -u www-data stat $DEPLOY_PATH
