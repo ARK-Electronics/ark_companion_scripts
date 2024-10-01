@@ -1,8 +1,6 @@
 #!/bin/bash
 source $(dirname $BASH_SOURCE)/functions.sh
 
-determine_target
-
 echo "Installing RemoteIDTransmitter"
 
 # Stop and remove the service

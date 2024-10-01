@@ -1,25 +1,28 @@
 #!/bin/bash
+
+# Refresh sudo credentials
+sudo -v
+
+# Setup XDG environment variables
 DEFAULT_XDG_CONF_HOME="$HOME/.config"
 DEFAULT_XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$DEFAULT_XDG_CONF_HOME}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
 
-sudo -v
+# Determine target platform
+if uname -ar | grep tegra; then
+	export TARGET=jetson
+else
+	export TARGET=pi
+fi
 
-function determine_target() {
-	if [ -z "$TARGET" ]; then
+# Setup paths
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export PROJECT_ROOT="$SCRIPT_DIR/.."
+export TARGET_DIR="$PROJECT_ROOT/platform/$TARGET"
+export COMMON_DIR="$PROJECT_ROOT/platform/common"
 
-		if uname -ar | grep tegra; then
-			export TARGET=jetson
-		else
-			export TARGET=pi
-		fi
-	fi
-
-	if [ -z "$TARGET_DIR" ]; then
-		export TARGET_DIR="$PWD/platform/$TARGET"
-	fi
-}
+########## FUNCTIONS ##########
 
 function ask_yes_no() {
 	local prompt="$1"

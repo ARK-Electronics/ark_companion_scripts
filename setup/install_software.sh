@@ -19,8 +19,6 @@ sudo -v
 sudo_refresh_loop &
 SUDO_PID=$!
 
-determine_target
-
 # Source the main configuration file
 if [ -f "default.env" ]; then
 	source "default.env"
@@ -29,7 +27,6 @@ else
 	exit 1
 fi
 
-export PROJECT_ROOT="$PWD"
 export TARGET_DIR="$PWD/platform/$TARGET"
 export COMMON_DIR="$PWD/platform/common"
 
@@ -41,23 +38,11 @@ else
 	ask_yes_no "Do you want to install logloader?" INSTALL_LOGLOADER
 
 	if [ "$INSTALL_LOGLOADER" = "y" ]; then
-
-		ask_yes_no "Upload to local Flight Review server only?" UPLOAD_TO_LOCAL_SERVER
-		if [ "$UPLOAD_TO_LOCAL_SERVER" = "y" ]; then
-			# Setup for local only
-			USER_EMAIL=""
-			UPLOAD_SERVER="http://$(hostname -f).local:5006"
-			UPLOAD_TO_FLIGHT_REVIEW="y"
-			PUBLIC_LOGS="y"
-
-		else
-			# Setup PX4 server upload settings
-			ask_yes_no "Do you want to auto upload to PX4 Flight Review?" UPLOAD_TO_FLIGHT_REVIEW
-			if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
-				echo "Please enter your email: "
-				read -r USER_EMAIL
-				ask_yes_no "Do you want your logs to be public?" PUBLIC_LOGS
-			fi
+		ask_yes_no "Do you want to auto upload to PX4 Flight Review?" UPLOAD_TO_FLIGHT_REVIEW
+		if [ "$UPLOAD_TO_FLIGHT_REVIEW" = "y" ]; then
+			echo "Please enter your email: "
+			read -r USER_EMAIL
+			ask_yes_no "Do you want your logs to be public?" PUBLIC_LOGS
 		fi
 	fi
 
@@ -67,9 +52,14 @@ else
 		ask_yes_no "Do you want to install rid-transmitter?" INSTALL_RID_TRANSMITTER
 		if [ "$INSTALL_RID_TRANSMITTER" = "y" ]; then
 			while true; do
-				echo "Enter Manufacturer Code (4 characters, digits and uppercase letters only, no O or I): "
-				read -r MANUFACTURER_CODE
-				if [[ $MANUFACTURER_CODE =~ ^[A-HJ-NP-Z0-9]{4}$ ]]; then
+				echo "Enter Manufacturer Code (4 characters, digits and uppercase letters only, no O or I) [default: $MANUFACTURER_CODE]: "
+				read -r input
+				if [ -z "$input" ]; then
+					# Use the preset value if the input is empty
+					input=$MANUFACTURER_CODE
+				fi
+				if [[ $input =~ ^[A-HJ-NP-Z0-9]{4}$ ]]; then
+					MANUFACTURER_CODE=$input
 					break
 				else
 					echo "Invalid Manufacturer Code. Please try again."
@@ -77,9 +67,14 @@ else
 			done
 
 			while true; do
-				echo "Enter Serial Number (1-15 characters, digits and uppercase letters only, no O or I): "
-				read -r SERIAL_NUMBER
-				if [[ $SERIAL_NUMBER =~ ^[A-HJ-NP-Z0-9]{1,15}$ ]]; then
+				echo "Enter Serial Number (1-15 characters, digits and uppercase letters only, no O or I) [default: $SERIAL_NUMBER]: "
+				read -r input
+				if [ -z "$input" ]; then
+					# Use the preset value if the input is empty
+					input=$SERIAL_NUMBER
+				fi
+				if [[ $input =~ ^[A-HJ-NP-Z0-9]{1,15}$ ]]; then
+					SERIAL_NUMBER=$input
 					break
 				else
 					echo "Invalid Serial Number. Please try again."
