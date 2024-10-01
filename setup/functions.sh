@@ -10,7 +10,7 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$DEFAULT_XDG_CONF_HOME}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
 
 # Determine target platform
-if uname -ar | grep tegra; then
+if uname -ar | grep -q tegra; then
 	export TARGET=jetson
 else
 	export TARGET=pi
