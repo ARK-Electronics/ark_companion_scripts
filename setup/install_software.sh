@@ -19,8 +19,6 @@ sudo -v
 sudo_refresh_loop &
 SUDO_PID=$!
 
-determine_target
-
 # Source the main configuration file
 if [ -f "default.env" ]; then
 	source "default.env"
@@ -29,7 +27,6 @@ else
 	exit 1
 fi
 
-export PROJECT_ROOT="$PWD"
 export TARGET_DIR="$PWD/platform/$TARGET"
 export COMMON_DIR="$PWD/platform/common"
 
