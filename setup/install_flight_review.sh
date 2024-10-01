@@ -17,14 +17,14 @@ cd ~/code/flight_review
 # Install dependencies
 if [ "$TARGET" = "jetson" ]; then
 	sudo apt-get install -y sqlite3 fftw3 libfftw3-dev
-	pip install -r app/requirements.txt
-	python3 -m pip install --upgrade pandas scipy matplotlib
+	sudo pip install -r app/requirements.txt
+	sudo python3 -m pip install --upgrade pandas scipy matplotlib
 
 elif [ "$TARGET" = "pi" ]; then
 	sudo apt-get install -y sqlite3 fftw3 libfftw3-dev
 	# https://www.raspberrypi.com/documentation/computers/os.html#python-on-raspberry-pi
-	pip install --break-system-packages -r app/requirements.txt
-	pip install --break-system-packages --upgrade pandas scipy matplotlib
+	sudo pip install --break-system-packages -r app/requirements.txt
+	sudo pip install --break-system-packages --upgrade pandas scipy matplotlib
 fi
 
 # Create user config overrides

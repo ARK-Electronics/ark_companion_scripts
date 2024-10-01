@@ -24,10 +24,22 @@ for dir in "$BASE_DIR"/*/; do
 	if [ "$dir_name" == "$SERVICE_NAME" ]; then
 		service_found=true
 
-		# Check if the config.toml file exists in the directory
-		CONFIG_FILE="$dir/config.toml"
+		# Default config file name
+		CONFIG_FILE_NAME="config.toml"
+
+		# Check if a manifest file exists and read the configFile entry
+		MANIFEST_FILE="$dir/$SERVICE_NAME.manifest.json"
+		if [ -f "$MANIFEST_FILE" ]; then
+			CONFIG_FILE_NAME=$(grep -Po '(?<="configFile": ")[^"]*' "$MANIFEST_FILE")
+			[ -z "$CONFIG_FILE_NAME" ] && CONFIG_FILE_NAME="config.toml"  # Fallback to default if empty
+		fi
+
+		# Full path to the config file
+		CONFIG_FILE="$dir/$CONFIG_FILE_NAME"
+
+		# Check if the config file exists
 		if [ -f "$CONFIG_FILE" ]; then
-			# Save the new configuration content to the config.toml file
+			# Save the new configuration content to the config file
 			echo "$CONFIG_CONTENT" > "$CONFIG_FILE"
 			if [ $? -eq 0 ]; then
 				echo "{\"status\": \"success\", \"data\": \"Configuration saved successfully\"}"
@@ -37,7 +49,7 @@ for dir in "$BASE_DIR"/*/; do
 				exit 2
 			fi
 		else
-			echo "{\"status\": \"fail\", \"data\": \"config.toml not found in $dir\"}"
+			echo "{\"status\": \"fail\", \"data\": \"$CONFIG_FILE_NAME not found in $dir\"}"
 			exit 2
 		fi
 	fi
