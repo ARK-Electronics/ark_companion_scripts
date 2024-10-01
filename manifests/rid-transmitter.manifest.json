@@ -1,0 +1,6 @@
+{
+  "displayName": "Remote ID Transmitter",
+  "visible": true,
+  "description": "Remote ID Transmitter via Bluetooth",
+  "configFile": "config.toml"
+}
