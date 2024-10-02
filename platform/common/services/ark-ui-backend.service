@@ -5,8 +5,8 @@ After=syslog.target network-online.target nginx.service
 
 [Service]
 Type=simple
-ExecStart=%h/.local/bin/start_ark_ui_backend.sh
 WorkingDirectory=/var/www/ark-ui/api
+ExecStart=%h/.local/bin/start_ark_ui_backend.sh
 Restart=on-failure
 
 [Install]
