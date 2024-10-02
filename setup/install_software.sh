@@ -179,8 +179,8 @@ journalctl --disk-usage
 
 ########## scripts ##########
 echo "Installing scripts"
-sudo cp $TARGET_DIR/scripts/* /usr/local/bin
-sudo cp $COMMON_DIR/scripts/* /usr/local/bin
+sudo cp $TARGET_DIR/scripts/* ~/.local/bin
+sudo cp $COMMON_DIR/scripts/* ~/.local/bin
 
 ########## sudoers permissions ##########
 echo "Adding sudoers"

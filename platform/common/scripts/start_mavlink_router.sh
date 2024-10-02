@@ -15,7 +15,7 @@ fi
 sed -i "s|^Device =.*|Device = $DEVICE_PATH|" "$MAVLINK_ROUTERD_CONF_FILE"
 
 # Enable mavlink usb stream first
-python3 /usr/local/bin/vbus_enable.py
+python3 ~/.local/bin/vbus_enable.py
 
 sleep 3
 

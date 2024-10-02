@@ -5,7 +5,7 @@ After=syslog.target network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/start_hotspot_fallback.sh
+ExecStart=%h/.local/bin/start_hotspot_fallback.sh
 
 [Install]
 WantedBy=default.target

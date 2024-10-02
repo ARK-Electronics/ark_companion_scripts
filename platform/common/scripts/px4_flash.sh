@@ -20,17 +20,17 @@ fi
 
 systemctl --user stop mavlink-router &>/dev/null
 
-python3 /usr/local/bin/reset_fmu_wait_bl.py &>/dev/null
+python3 ~/.local/bin/reset_fmu_wait_bl.py &>/dev/null
 
 echo "Flashing $SERIALDEVICE"
 
 # If the device is found and file exists, run the uploader script and filter JSON output
-python3 -u /usr/local/bin/px_uploader.py --json-progress --port $SERIALDEVICE $FW_PATH 2>&1 | while IFS= read -r line
+python3 -u ~/.local/bin/px_uploader.py --json-progress --port $SERIALDEVICE $FW_PATH 2>&1 | while IFS= read -r line
 do
     echo "$line" | jq -c 'select(type == "object")' 2>/dev/null || :
 done
 
-python3 /usr/local/bin/reset_fmu_fast.py &>/dev/null
+python3 ~/.local/bin/reset_fmu_fast.py &>/dev/null
 
 sleep 3
 

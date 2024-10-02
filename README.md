@@ -53,4 +53,4 @@ This service enables the Jetson CAN interface.
 This service sets the Jetson clocks to their maximum rate.
 
 ## Scripts
-All installed scripts and binaries are placed at **/usr/local/bin**.
+All installed scripts and binaries are placed at **~/.local/bin**.
