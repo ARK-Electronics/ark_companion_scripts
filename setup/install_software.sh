@@ -95,6 +95,10 @@ else
 			read -r POLARIS_API_KEY
 		fi
 	fi
+
+	if [ "$TARGET" = "jetson" ]; then
+		ask_yes_no "Install JetPack?" INSTALL_JETPACK
+	fi
 fi
 
 ########## install dependencies ##########
@@ -123,10 +127,11 @@ sudo apt-get install -y \
 
 ########## jetson dependencies ##########
 if [ "$TARGET" = "jetson" ]; then
-	echo "Installing jetpack"
-	sudo apt-get install -y \
-		nvidia-jetpack
-	echo "Jetpack finished"
+	if [ "$INSTALL_JETPACK" = "y" ]; then
+		echo "Installing JetPack"
+		sudo apt-get install -y nvidia-jetpack
+		echo "JetPack installation finished"
+	fi
 
 	sudo pip3 install \
 		Jetson.GPIO \
