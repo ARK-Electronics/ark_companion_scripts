@@ -6,7 +6,7 @@ After=syslog.target network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/rid-transmitter
+ExecStart=%h/.local/bin/rid-transmitter
 
 [Install]
 WantedBy=default.target
