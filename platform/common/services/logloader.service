@@ -6,7 +6,7 @@ After=syslog.target network.target mavlink-router.service
 [Service]
 Type=simple
 Environment=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
-ExecStart=/usr/local/bin/logloader
+ExecStart=%h/.local/bin/logloader
 Restart=always
 RestartSec=5
 
