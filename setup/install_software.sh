@@ -4,6 +4,12 @@ DEFAULT_XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$DEFAULT_XDG_CONF_HOME}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$DEFAULT_XDG_DATA_HOME}"
 
+# Check if system is holding package management lock
+if fuser /var/lib/apt/lists/lock >/dev/null 2>&1; then
+    echo "Another apt process is running. Please try again later."
+    exit 1
+fi
+
 # Load helper functions
 source $(dirname $BASH_SOURCE)/functions.sh
 
@@ -184,8 +190,9 @@ journalctl --disk-usage
 
 ########## scripts ##########
 echo "Installing scripts"
-sudo cp $TARGET_DIR/scripts/* ~/.local/bin
-sudo cp $COMMON_DIR/scripts/* ~/.local/bin
+mkdir -p ~/.local/bin
+cp $TARGET_DIR/scripts/* ~/.local/bin
+cp $COMMON_DIR/scripts/* ~/.local/bin
 
 ########## sudoers permissions ##########
 echo "Adding sudoers"

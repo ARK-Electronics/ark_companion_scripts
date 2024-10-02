@@ -14,9 +14,8 @@ sudo rm /usr/bin/mavlink-routerd &>/dev/null
 pushd .
 git_clone_retry https://github.com/mavlink-router/mavlink-router.git ~/code/mavlink-router
 cd ~/code/mavlink-router
-meson setup build --prefix=$HOME/.local
-ninja -C build
-sudo ninja -C build install
+meson setup build --prefix=$HOME/.local -Dsystemdsystemunitdir=
+ninja -C build install
 popd
 mkdir -p $XDG_DATA_HOME/mavlink-router/
 cp $TARGET_DIR/main.conf $XDG_DATA_HOME/mavlink-router/main.conf
