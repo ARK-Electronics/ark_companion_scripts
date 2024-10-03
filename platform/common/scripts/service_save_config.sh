@@ -1,14 +1,14 @@
 #!/bin/bash
 
 SERVICE_NAME="$1"
-CONFIG_CONTENT="$2"
+CONFIG_FILE_PATH="$2"
 
 # Base directory containing service data
 BASE_DIR="$HOME/.local/share"
 
-# Check if the service name and config content were provided
-if [ -z "$SERVICE_NAME" ] || [ -z "$CONFIG_CONTENT" ]; then
-	echo "{\"status\": \"fail\", \"data\": \"Usage: $0 <serviceName> <configContent>\"}"
+# Check if the service name and config file path were provided
+if [ -z "$SERVICE_NAME" ] || [ -z "$CONFIG_FILE_PATH" ]; then
+	echo "{\"status\": \"fail\", \"data\": \"Usage: $0 <serviceName> <configFilePath>\"}"
 	exit 1
 fi
 
@@ -39,8 +39,8 @@ for dir in "$BASE_DIR"/*/; do
 
 		# Check if the config file exists
 		if [ -f "$CONFIG_FILE" ]; then
-			# Save the new configuration content to the config file
-			echo "$CONFIG_CONTENT" > "$CONFIG_FILE"
+			# Move the temp config file to the final destination
+			mv "$CONFIG_FILE_PATH" "$CONFIG_FILE"
 			if [ $? -eq 0 ]; then
 				echo "{\"status\": \"success\", \"data\": \"Configuration saved successfully\"}"
 				exit 0
