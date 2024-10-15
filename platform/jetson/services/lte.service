@@ -1,0 +1,12 @@
+[Unit]
+Description=Set up ARK LTE Modem
+After=network.target sys-subsystem-net-devices-wwan0.device ModemManager.service
+Requires=sys-subsystem-net-devices-wwan0.device ModemManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/start_lte.sh
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
